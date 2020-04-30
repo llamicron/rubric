@@ -2,6 +2,35 @@ use std::path::{PathBuf, Path};
 use std::fs::{File, canonicalize, OpenOptions, metadata};
 use std::io::{self, Write};
 
+
+/// Trait to convert a struct to csv (comma separated values).
+///
+/// Your implementation should *not* append a newline
+///
+/// ## Example Implementation
+/// ```rust
+/// use lab_grader::results_file::AsCsv;
+///
+/// // A dummy struct so we can impl AsCsv
+/// pub struct Point {
+///     x: i32,
+///     y: i32
+/// }
+///
+/// impl AsCsv for Point {
+///     fn as_csv(&self) -> String {
+///         format!("{},{}", self.x, self.y)
+///     }
+/// }
+///
+/// let p = Point { x: 4, y: 8 };
+/// assert_eq!(p.as_csv(), "4,8");
+/// ```
+pub trait AsCsv {
+    fn as_csv(&self) -> String;
+}
+
+/// A CSV results file containing the results of the grading process.
 #[derive(Debug)]
 pub struct ResultsFile {
     pub path: PathBuf,
@@ -73,6 +102,7 @@ impl ResultsFile {
     /// Returns an `io::Result` containing the size written.
     /// `ResultsFile` must be mutable.
     ///
+    /// ## Example
     /// ```rust
     /// # use lab_grader::results_file::ResultsFile;
     /// let mut rf = ResultsFile::new("append.csv").unwrap();
@@ -89,8 +119,36 @@ impl ResultsFile {
         self.handle.write(record.as_bytes())
     }
 
+    /// Writes an item to the csv file in csv format. This item must implement
+    /// the [AsCsv][ascsv] trait.
+    ///
+    /// This method *does* append a newline after the record is written. Again,
+    /// the results file will need to be mutable.
+    ///
+    /// [ascsv]: crate::results_file::AsCsv
+    /// ## Example
+    /// ```rust
+    /// # use lab_grader::results_file::{ResultsFile, AsCsv};
+    /// # struct Point { x: i32, y: i32 };
+    /// # impl AsCsv for &Point {
+    /// #     fn as_csv(&self) -> String { format!("{},{}", self.x, self.y) }
+    /// # }
+    /// // A custom struct that implements AsCsv
+    /// let point = Point { x: 6, y: 19 };
+    ///
+    /// let mut rf = ResultsFile::new("as_csv.csv").unwrap();
+    /// assert!(rf.length() == 0);
+    /// if let Err(e) = rf.write_csv(&point) {
+    ///     // Something went wrong, deal with it
+    /// }
+    /// assert!(rf.length() > 0);
+    /// # use std::fs::remove_file;
+    /// # remove_file("as_csv.csv").unwrap()
+    /// ```
+    pub fn write_csv<R: AsCsv>(&mut self, record: R) -> io::Result<usize> {
+        self.append(&format!("{}\n", record.as_csv()))
+    }
 }
-
 
 
 
@@ -98,6 +156,17 @@ impl ResultsFile {
 mod tests {
     use super::*;
     use std::fs::{canonicalize, remove_file, create_dir};
+
+    pub struct Point {
+        x: i32,
+        y: i32
+    }
+
+    impl AsCsv for &Point {
+        fn as_csv(&self) -> String {
+            format!("{},{}", self.x, self.y)
+        }
+    }
 
     fn test_dir() -> PathBuf {
         let path = canonicalize(".").expect("test_data dir missing. Are you in the right directory?");
@@ -187,6 +256,24 @@ mod tests {
         rf.append(&content).expect("Couldn't write to results file");
         rf.append(&content).expect("Couldn't write to results file");
         rf.append(&content).expect("Couldn't write to results file");
+        assert!(rf.length() > 0);
+
+        delete(&file);
+    }
+
+    #[test]
+    fn test_write_csv() {
+        let mut file = test_dir();
+        file.push("write_csv.csv");
+
+        let point = Point { x: 5, y: 7 };
+
+        let mut rf = ResultsFile::new(&file).unwrap();
+        assert!(rf.length() == 0);
+
+        let result = rf.write_csv(&point);
+
+        assert!(result.is_ok());
         assert!(rf.length() > 0);
 
         delete(&file);
