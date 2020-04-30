@@ -4,6 +4,35 @@ use std::fmt;
 use ansi_term::Color::{Green, Red, White};
 use ansi_term::ANSIGenericString;
 
+/// A macro to easily create a hashmap
+///
+/// ## Example
+/// ```rust
+/// # #[macro_use] extern crate lab_grader;
+/// # use std::collections::HashMap;
+///
+/// // The long way
+/// let mut map = HashMap::new();
+/// map.insert(String::from("key"), String::from("value"));
+///
+/// // the macro way
+/// let data = data! { "key" => "value" };
+/// assert_eq!(map, data);
+/// ```
+#[macro_export]
+macro_rules! data(
+    { $($key:expr => $value:expr),+ } => {
+        {
+            let mut m = ::std::collections::HashMap::new();
+            $(
+                m.insert(String::from($key), String::from($value));
+            )+
+            m
+        }
+     };
+);
+
+
 pub struct Criterion {
     pub name: String,
     pub worth: i16,
@@ -50,8 +79,9 @@ impl Criterion {
     ///
     /// **A criterion with data**
     /// ```rust
-    /// # use std::collections::HashMap;
+    /// # #[macro_use] extern crate lab_grader;
     /// # use lab_grader::criterion::Criterion;
+    /// # use std::collections::HashMap;
     ///
     /// let mut c = Criterion::new(
     ///     "A test criterion with data!",
@@ -64,8 +94,9 @@ impl Criterion {
     ///
     /// // The above criterion takes a HashMap into it's closure,
     /// // so we must establish the data to send into the closure
-    /// let mut my_data = HashMap::new();
-    /// my_data.insert("my_key".to_string(), "my_value".to_string());
+    /// let my_data = data! {
+    ///     "my_key" => "my_value"
+    /// };
     ///
     /// assert!(c.test_with_data(&my_data));
     /// ```
@@ -111,6 +142,7 @@ impl Criterion {
     ///
     /// ## Example
     /// ```rust
+    /// # #[macro_use] extern crate lab_grader;
     /// # use lab_grader::criterion::Criterion;
     /// # use std::collections::HashMap;
     ///
@@ -123,8 +155,9 @@ impl Criterion {
     ///     })
     /// );
     ///
-    /// let mut my_data = HashMap::new();
-    /// my_data.insert("my_key".to_string(), "my_value".to_string());
+    /// let my_data = data! {
+    ///     "my_key" => "my_value"
+    /// };
     ///
     /// c.test_with_data(&my_data);
     /// // It's either Some(true) or Some(false) since we've tested
@@ -245,8 +278,9 @@ mod tests {
             })
         );
 
-        let mut data: HashMap<String, String> = HashMap::new();
-        data.insert(String::from("my_var"), String::from("value"));
+        let data = data! {
+            "my_var" => "value"
+        };
 
         assert!(c.test_with_data(&data));
     }
@@ -299,4 +333,14 @@ mod tests {
         assert_eq!(format!("{}", c2), "\u{1b}[31m      Test criterion\u{1b}[0m  +\u{1b}[31m 0\u{1b}[0m  \u{1b}[37mfailed!\u{1b}[0m");
     }
 
+    #[test]
+    fn test_data_macro() {
+        // The long way
+        let mut map = HashMap::new();
+        map.insert(String::from("key"), String::from("value"));
+
+        // the macro way
+        let data = data! { "key" => "value" };
+        assert_eq!(map, data);
+    }
 }

@@ -5,6 +5,8 @@ use lab_grader::criterion::Criterion;
 
 fn main() {
     let mut crits: Vec<Criterion> = vec![
+        // These are all in-line. See `examples/abstracted.rs` for
+        // a better way to organize these.
         Criterion::new(
             "My first criterion",
             10,
