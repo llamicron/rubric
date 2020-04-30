@@ -162,6 +162,27 @@ impl Criterion {
     }
 }
 
+/// Displays the results of the criterion.
+/// You should test the criterion before printing it.
+///
+/// Given a configuration with the name `Test criterion`,
+/// success message `passed!`, and failure message `failed!`,
+/// this is what would print:
+///
+/// **Printed before testing**
+/// ```text
+/// ⚪ Test criterion: not tested
+/// ```
+/// **Printed after a successful test**
+/// ```text
+/// ✅ Test criterion: passed!
+/// ```
+/// **Printed after a failed test**
+/// ```text
+/// ❌ Test criterion: failed!
+/// ```
+///
+/// Studies show students respond well to bright emoji, as most cannot read.
 impl fmt::Display for Criterion {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let msg: String;
