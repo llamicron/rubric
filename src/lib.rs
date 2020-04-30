@@ -11,11 +11,3 @@ extern crate ansi_term;
 
 pub mod results_file;
 pub mod criterion;
-
-
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}

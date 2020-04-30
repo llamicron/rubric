@@ -1,10 +1,22 @@
+//! Definitions for creating and running criteria
+//!
+//! A criterion is one specific item in a series of items that form a grade.
+//! Each criterion has a name, point value, and a related function.
+//! Testing the criterion is running the function, which will return true
+//! or false. A final grade can be calculated by adding up all the values
+//! of the criteria, if they passed.
+//!
+//! The aim of this application is the make the definition of Criteria
+//! as easy as possible, and the make that definition most of the work involved.
+//! You shouldn't have to worry about students submitting, or persisting results.
+//! Just define the criteria and distribute the program to your students.
 use std::collections::HashMap;
 use std::fmt;
 
 use ansi_term::Color::{Green, Red, White};
 use ansi_term::ANSIGenericString;
 
-/// A macro to easily create a hashmap
+/// A macro to easily create a `HashMap<String, String>`
 ///
 /// ## Example
 /// ```rust
@@ -33,6 +45,7 @@ macro_rules! data(
 );
 
 
+/// A criterion
 pub struct Criterion {
     pub name: String,
     pub worth: i16,
