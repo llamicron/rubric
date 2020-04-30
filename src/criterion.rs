@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::fmt;
 
+use ansi_term::Color::{Green, Red, White};
+use ansi_term::ANSIGenericString;
 
 pub struct Criterion {
     pub name: String,
@@ -165,40 +167,49 @@ impl Criterion {
 /// Displays the results of the criterion.
 /// You should test the criterion before printing it.
 ///
+/// Output will be aligned, as you'll normally be printing
+/// a lot of these at once.
+///
 /// Given a configuration with the name `Test criterion`,
 /// success message `passed!`, and failure message `failed!`,
 /// this is what would print:
 ///
 /// **Printed before testing**
 /// ```text
-/// ⚪ Test criterion: not tested
+/// My first criterion  +**  not tested
 /// ```
 /// **Printed after a successful test**
 /// ```text
-/// ✅ Test criterion: passed!
+/// My first criterion  +10  passed!
 /// ```
 /// **Printed after a failed test**
 /// ```text
-/// ❌ Test criterion: failed!
+/// My first criterion  + 0  failed!
 /// ```
-///
-/// Studies show students respond well to bright emoji, as most cannot read.
 impl fmt::Display for Criterion {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let msg: String;
+        let name: ANSIGenericString<str>;
+        let worth: ANSIGenericString<str>;
+        let reason: ANSIGenericString<str>;
         if let Some(status) = self.status {
             if status {
                 // success
-                msg = format!("✅ {}: {}", self.name, self.success_message());
+                name   = Green.paint(format!("{:>20}", &self.name));
+                worth  = Green.paint(format!("{:>2}", self.worth));
+                reason = White.paint(self.success_message().to_string());
             } else {
+                name   = Red.paint(format!("{:>20}", &self.name));
+                worth  = Red.paint(format!("{:>2}", 0));
+                reason = White.paint(self.failure_message().to_string());
                 // Error
-                msg = format!("❌ {}: {}", self.name, self.failure_message());
             }
         } else {
             // not yet run
-            msg = format!("⚪ {}: not tested", self.name);
+            name   = White.paint(format!("{:>20}", &self.name));
+            worth  = White.paint("**");
+            reason = White.paint(format!("not tested"));
         }
-        write!(f, "{}", msg)
+        write!(f, "{}  +{}  {}", name, worth, reason)
     }
 }
 
@@ -266,12 +277,13 @@ mod tests {
             })
         );
 
+        // Lots of hiddent characters following...
         // You need to test it before it will print successfully
-        assert_eq!(format!("{}", c), "⚪ Test criterion: not tested");
+        assert_eq!(format!("{}", c), "\u{1b}[37m      Test criterion\u{1b}[0m  +\u{1b}[37m**\u{1b}[0m  \u{1b}[37mnot tested\u{1b}[0m");
 
         // Test it first
         c.test();
-        assert_eq!(format!("{}", c), "✅ Test criterion: passed!");
+        assert_eq!(format!("{}", c), "\u{1b}[32m      Test criterion\u{1b}[0m  +\u{1b}[32m10\u{1b}[0m  \u{1b}[37mpassed!\u{1b}[0m");
 
         // and this one will always fail
         let mut c2 = Criterion::new(
@@ -284,7 +296,7 @@ mod tests {
         );
         // Test it first
         c2.test();
-        assert_eq!(format!("{}", c2), "❌ Test criterion: failed!");
+        assert_eq!(format!("{}", c2), "\u{1b}[31m      Test criterion\u{1b}[0m  +\u{1b}[31m 0\u{1b}[0m  \u{1b}[37mfailed!\u{1b}[0m");
     }
 
 }

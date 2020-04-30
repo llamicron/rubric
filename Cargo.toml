@@ -13,6 +13,7 @@ keywords = [ "grade", "academia", "automation", ]
 categories = [ "command-line-utilities", ]
 
 [dependencies]
+ansi_term = "0.12"
 
 [dev-dependencies]
 tempdir = "0.3"
