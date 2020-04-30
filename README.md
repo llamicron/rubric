@@ -1,4 +1,4 @@
-# Lab Grader
+# Lab Grader ![Testing Suite](https://github.com/llamicron/lab_grader/workflows/Testing%20Suite/badge.svg)
 
 [Repository](https://github.com/llamicron/lab_grader) | [Documentation](https://docs.rs/crate/lab_grader)
 
