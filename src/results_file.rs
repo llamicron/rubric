@@ -1,10 +1,11 @@
 use std::path::{PathBuf, Path};
-use std::fs::{canonicalize, OpenOptions};
-use std::io;
+use std::fs::{File, canonicalize, OpenOptions, metadata};
+use std::io::{self, Write};
 
 #[derive(Debug)]
 pub struct ResultsFile {
-    pub path: PathBuf
+    pub path: PathBuf,
+    handle: File
 }
 
 impl ResultsFile {
@@ -25,21 +26,69 @@ impl ResultsFile {
     ///
     /// ## Example
     /// ```rust
-    /// let rf = ResultFile::new("my_results_file.csv").expect("Couldn't create results file");
-    /// // write some records
+    /// use lab_grader::results_file::ResultsFile;
+    ///
+    /// let rf = ResultsFile::new("my_results_file.csv").expect("Couldn't create results file");
+    /// # use std::fs::remove_file;
+    /// # remove_file("my_results_file.csv").unwrap();
     /// ```
     pub fn new<P: AsRef<Path>>(path: P) -> Result<ResultsFile, io::Error> {
         // Create the file if it doesn't already exist
-        let _ = OpenOptions::new().append(true).create(true).open(&path)?;
+        let handle = OpenOptions::new().append(true).create(true).open(&path)?;
         // Get the full canonical path to the file path provided
         let mut full_path = canonicalize(path)?;
         // Set the extension to csv if it isn't already
         full_path.set_extension("csv");
 
         Ok(ResultsFile {
-            path: full_path
+            path: full_path,
+            handle
         })
     }
+
+    /// Returns the length of the results file in bytes.
+    ///
+    /// This will panic if the file doesn't exist or if this process
+    /// does not have permission to access it. The file is created by this
+    /// process when making a new `ResultsFile`, so as long as you don't change
+    /// the file permissions or delete the file while your program is running,
+    /// you'll be fine.
+    ///
+    /// ## Example
+    /// ```rust
+    /// # use lab_grader::results_file::ResultsFile;
+    /// let rf = ResultsFile::new("file.csv").unwrap();
+    ///
+    /// assert!(rf.length() == 0);
+    /// # use std::fs::remove_file;
+    /// # remove_file("file.csv").unwrap();
+    /// ```
+    pub fn length(&self) -> u64 {
+        let m = metadata(&self.path).expect("File does not exist or this process does not have permission to access it");
+        m.len()
+    }
+
+    /// Appends the given `&str` to the file, without a trailing newline.
+    ///
+    /// Returns an `io::Result` containing the size written.
+    /// `ResultsFile` must be mutable.
+    ///
+    /// ```rust
+    /// # use lab_grader::results_file::ResultsFile;
+    /// let mut rf = ResultsFile::new("append.csv").unwrap();
+    ///
+    /// assert!(rf.length() == 0);
+    /// if let Err(e) = rf.append("here's some content\n") {
+    ///     // Something went wrong, deal with it
+    /// }
+    /// assert!(rf.length() > 0);
+    /// # use std::fs::remove_file;
+    /// # remove_file("append.csv").unwrap();
+    /// ```
+    pub fn append(&mut self, record: &str) -> io::Result<usize> {
+        self.handle.write(record.as_bytes())
+    }
+
 }
 
 
@@ -117,5 +166,29 @@ mod tests {
             assert_eq!(ext, "csv");
         }
         delete(path);
+    }
+
+    #[test]
+    fn test_get_length() {
+        let mut file = test_dir();
+        file.push("length.csv");
+        let rf = ResultsFile::new(&file).unwrap();
+        assert!(rf.length() == 0);
+        delete(&file);
+    }
+
+    #[test]
+    fn test_append() {
+        let content = "here's some content to write";
+        let mut file = test_dir();
+        file.push("append.csv");
+        let mut rf = ResultsFile::new(&file).unwrap();
+        assert!(rf.length() == 0);
+        rf.append(&content).expect("Couldn't write to results file");
+        rf.append(&content).expect("Couldn't write to results file");
+        rf.append(&content).expect("Couldn't write to results file");
+        assert!(rf.length() > 0);
+
+        delete(&file);
     }
 }
