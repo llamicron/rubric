@@ -10,5 +10,6 @@ extern crate ansi_term;
 
 
 pub mod results_file;
+pub mod submission;
 pub mod criterion;
 // pub mod criteria;
