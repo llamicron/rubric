@@ -10,6 +10,8 @@ fn flush() {
 /// into the provided type. If parsing fails, it will print an error message
 /// **and then quit the current process**.
 ///
+/// This method trims whitespace on the beginning and end of the input string.
+///
 /// If you wish to deal with the error yourself instead of quitting,
 /// then call `prompt`, then `parse` yourself.
 ///
