@@ -119,8 +119,28 @@ impl Submission {
     /// `passed` or `failed` vectors.
     ///
     /// ## Example
-    /// TODO: Write an example
     /// ```rust
+    /// # use lab_grader::data;
+    /// # use lab_grader::criterion::Criterion;
+    /// # use lab_grader::submission::Submission;
+    /// # use std::collections::HashMap;
+    /// let mut sub = Submission::new("Luke", 1234);
+    /// sub.use_data(data! {
+    ///     "key" => "value"
+    /// });
+    /// // Just one criterion here to save space
+    /// let mut crits: Vec<Criterion> = vec![
+    ///     Criterion::new("Test Criterion", 10, ("passed", "failed"), Box::new(
+    ///         |data: &HashMap<String, String>| {
+    ///             data["key"] == "value"
+    ///         }
+    ///     ))
+    /// ];
+    /// sub.grade_against(&mut crits);
+    /// assert_eq!(crits[0].status, Some(true));
+    /// assert_eq!(sub.grade, 10);
+    /// assert_eq!(sub.passed.len(), 1);
+    /// assert_eq!(sub.failed.len(), 0);
     /// ```
     pub fn grade_against(&mut self, criteria: &mut Vec<Criterion>) {
         for crit in criteria {
@@ -226,5 +246,7 @@ mod tests {
         sub.grade_against(&mut crits);
         assert_eq!(crits[0].status, Some(true));
         assert_eq!(sub.grade, 10);
+        assert_eq!(sub.passed.len(), 1);
+        assert_eq!(sub.failed.len(), 0);
     }
 }
