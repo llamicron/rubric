@@ -5,7 +5,6 @@
 // struct Criteria {
 //     criteria: Vec<Criterion>,
 //     data: &HashMap<String, String>,
-//     // submissions: Vec<Submission>,
 // }
 
 
