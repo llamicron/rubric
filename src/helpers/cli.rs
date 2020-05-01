@@ -16,6 +16,7 @@ fn flush() {
 /// ## Example
 /// ```no_run
 /// #[macro_use] extern crate lab_grader;
+/// use lab_grader::helpers;
 ///
 /// fn main() {
 ///     let string = prompt!("Enter a string: ", String);

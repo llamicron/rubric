@@ -6,6 +6,7 @@
 extern crate ansi_term;
 extern crate serde;
 extern crate serde_json;
+extern crate reqwest;
 
 #[cfg(test)]
 #[macro_use] extern crate pretty_assertions;
