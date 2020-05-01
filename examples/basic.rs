@@ -1,7 +1,8 @@
-#[macro_use]
 extern crate lab_grader;
 
+use lab_grader::submission::Submission;
+
 fn main() {
-    let input = prompt!("enter something: ", String);
-    println!("{}", input);
+    let sub = Submission::from_cli();
+    println!("{:?}", sub);
 }

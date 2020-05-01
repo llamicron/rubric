@@ -3,6 +3,7 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
+use crate::prompt;
 use crate::results_file::AsCsv;
 use crate::criterion::Criterion;
 
@@ -69,6 +70,10 @@ impl Submission {
     /// a name and ID from the console and calling
     /// `Submission::new()` with those values
     ///
+    /// Warning: If the user doesn't enter valid values for name and id,
+    /// this will **terminate the program**. Be sure that's what you want to do
+    /// before using it.
+    ///
     /// ## Example
     /// **Rust:**
     /// ```no_run
@@ -77,15 +82,19 @@ impl Submission {
     /// ```
     /// **In the terminal:**
     /// ```text
-    /// Name: ...
-    /// ID: ...
+    /// Name: Luke
+    /// ID: 123
+    /// ```
+    /// **With invalid input:**
+    /// ```text
+    /// Name: Luke
+    /// ID: not a number
+    /// Could not parse input
     /// ```
     pub fn from_cli() -> Submission {
-        // let name = String::new();
-        // let id = String::new();
-
-
-        unimplemented!();
+        let name = prompt!("Name: ", String);
+        let id = prompt!("ID: ", u32);
+        Submission::new(name, id)
     }
 
     /// Attaches data to a submission
