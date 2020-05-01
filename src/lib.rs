@@ -3,6 +3,10 @@
 //! This crate provides some tools to help with grading labs.
 //!
 //! Examples coming soon...
+
+#![feature(proc_macro_hygiene, decl_macro)]
+#[macro_use] extern crate rocket;
+extern crate rocket_contrib;
 extern crate ansi_term;
 extern crate serde;
 extern crate serde_json;
@@ -15,6 +19,7 @@ pub mod results_file;
 pub mod submission;
 pub mod criterion;
 pub mod helpers;
+pub mod server;
 
 
 pub use submission::Submission;

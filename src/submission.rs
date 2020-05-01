@@ -1,11 +1,15 @@
 //! A bundle of data that represents a students work.
 use std::collections::HashMap;
+// use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
 use crate::prompt;
 use crate::results_file::AsCsv;
 use crate::criterion::Criterion;
+use crate::server;
+
+pub static CSV_HEADER: &str = "name,id,grade,passed,failed,data\n";
 
 /// A submission is a bundle of data that represents
 /// one student's submission. They will do some sort of work
@@ -188,9 +192,27 @@ impl Submission {
             }
         }
     }
+
+
+    /// Spins up a webserver to accept submission.
+    ///
+    /// Accepted submissions will be written to a [`ResultsFile`](crate::results_file::ResultsFile).
+    /// The web server will run on the provided port.
+    ///
+    /// The results file will be placed in the directory you execute the code in,
+    /// and be called `results.csv`.
+    ///
+    /// Support for custom results file locations is coming...
+    /// ```no_run
+    /// use lab_grader::Submission;
+    /// Submission::server(8080);
+    /// ```
+    pub fn server(port: u16) {
+        server::run(port);
+    }
 }
 
-impl AsCsv for Submission {
+impl AsCsv for &Submission {
     fn as_csv(&self) -> String {
         let data_string = self.data.keys().map(|k| {
             format!("{}=>{}", k, self.data[k])
@@ -240,12 +262,12 @@ mod tests {
 
         // We can't directly compare it because the order of the
         // hashmap items will change arbitrarily
-        assert!(sub.as_csv().contains("Luke,1234,0,"));
+        assert!((&sub).as_csv().contains("Luke,1234,0,"));
 
         // Submission with no data, passes, or failures
         let sub2 = Submission::new("Luke", 1234);
         let expected = String::from("Luke,1234,0,,,");
-        assert_eq!(sub2.as_csv(), expected);
+        assert_eq!((&sub2).as_csv(), expected);
     }
 
     #[test]
