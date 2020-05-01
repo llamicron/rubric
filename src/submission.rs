@@ -63,6 +63,31 @@ impl Submission {
         }
     }
 
+
+    /// Prompts the user for a name and ID number
+    /// and returns a Submission. Equivalent to getting
+    /// a name and ID from the console and calling
+    /// `Submission::new()` with those values
+    ///
+    /// ## Example
+    /// **Rust:**
+    /// ```no_run
+    /// # use lab_grader::submission::Submission;
+    /// let mut sub = Submission::from_cli();
+    /// ```
+    /// **In the terminal:**
+    /// ```text
+    /// Name: ...
+    /// ID: ...
+    /// ```
+    pub fn from_cli() -> Submission {
+        // let name = String::new();
+        // let id = String::new();
+
+
+        unimplemented!();
+    }
+
     /// Attaches data to a submission
     ///
     /// The data must be a [`HashMap<String, String>`](std::collections::HashMap).

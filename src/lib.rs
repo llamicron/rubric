@@ -13,4 +13,5 @@ extern crate serde_json;
 pub mod results_file;
 pub mod submission;
 pub mod criterion;
+pub mod helpers;
 // pub mod criteria;
