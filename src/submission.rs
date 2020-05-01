@@ -9,8 +9,6 @@ use crate::results_file::AsCsv;
 use crate::criterion::Criterion;
 use crate::server;
 
-pub static CSV_HEADER: &str = "name,id,grade,passed,failed,data\n";
-
 /// A submission is a bundle of data that represents
 /// one student's submission. They will do some sort of work
 /// for a lab, then run a rust script that builds some criteria,
@@ -212,7 +210,7 @@ impl Submission {
     }
 }
 
-impl AsCsv for &Submission {
+impl AsCsv for Submission {
     fn as_csv(&self) -> String {
         let data_string = self.data.keys().map(|k| {
             format!("{}=>{}", k, self.data[k])
@@ -227,6 +225,14 @@ impl AsCsv for &Submission {
             self.failed.join(";"),
             data_string
         )
+    }
+
+    fn filename(&self) -> String {
+        String::from("submission.csv")
+    }
+
+    fn header(&self) -> &'static str {
+        "name,id,grade,passed,failed,data\n"
     }
 }
 

@@ -5,12 +5,10 @@ use std::io::{self, Write};
 
 /// Trait to convert a struct to csv (comma separated values).
 ///
-/// Your implementation should *not* append a newline
-///
 /// ## Example Implementation
 /// ```rust
 /// use lab_grader::results_file::AsCsv;
-///
+
 /// // A dummy struct so we can impl AsCsv
 /// pub struct Point {
 ///     x: i32,
@@ -21,13 +19,30 @@ use std::io::{self, Write};
 ///     fn as_csv(&self) -> String {
 ///         format!("{},{}", self.x, self.y)
 ///     }
+///
+///     fn filename(&self) -> String {
+///         String::from("points.csv")
+///     }
+///
+///     fn header(&self) -> &'static str {
+///         "x,y\n"
+///     }
 /// }
 ///
 /// let p = Point { x: 4, y: 8 };
+/// assert_eq!(p.header(), "x,y\n");
+/// assert_eq!(p.filename(), "points.csv");
 /// assert_eq!(p.as_csv(), "4,8");
 /// ```
 pub trait AsCsv {
+    /// The item in CSV format. This should *not* append a newline.
     fn as_csv(&self) -> String;
+    /// The filename where this type should be saved.
+    /// Usually this should just be `<item>.csv`
+    fn filename(&self) -> String;
+    /// The header for the csv file. Should match the fields
+    /// in `as_csv()`
+    fn header(&self) -> &'static str;
 }
 
 /// A CSV results file containing the results of the grading process.
@@ -39,6 +54,8 @@ pub struct ResultsFile {
 
 impl ResultsFile {
     /// Creates a new `ResultsFile`, creating the file if necessary.
+    ///
+    /// **Note**: You probably shouldn't use this. Instead, try `ResultsFile::for_item` below.
     ///
     /// A file will be created at the given path, and write the given header.
     /// The path provided is anything that can be converted from to a
@@ -76,6 +93,10 @@ impl ResultsFile {
             }
         }
         Ok(rf)
+    }
+
+    pub fn for_item<I: AsCsv>(item: &I) -> Result<ResultsFile, io::Error> {
+        ResultsFile::new(item.filename(), item.header())
     }
 
     /// Returns the length of the results file in bytes.
@@ -133,22 +154,24 @@ impl ResultsFile {
     /// ```rust
     /// # use lab_grader::results_file::{ResultsFile, AsCsv};
     /// # struct Point { x: i32, y: i32 };
-    /// # impl AsCsv for &Point {
+    /// # impl AsCsv for Point {
     /// #     fn as_csv(&self) -> String { format!("{},{}", self.x, self.y) }
+    /// #     fn filename(&self) -> String { String::from("points.csv") }
+    /// #     fn header(&self) -> &'static str { "x,y\n" }
     /// # }
     /// // A custom struct that implements AsCsv
     /// let point = Point { x: 6, y: 19 };
     ///
-    /// let mut rf = ResultsFile::new("as_csv.csv", "x,y").unwrap();
-    /// assert!(rf.length() == 3);
+    /// let mut rf = ResultsFile::for_item(&point).unwrap();
+    /// assert!(rf.length() == 4);
     /// if let Err(e) = rf.write_csv(&point) {
     ///     // Something went wrong, deal with it
     /// }
-    /// assert!(rf.length() > 3);
+    /// assert!(rf.length() > 4);
     /// # use std::fs::remove_file;
-    /// # remove_file("as_csv.csv").unwrap()
+    /// # remove_file(point.filename()).unwrap()
     /// ```
-    pub fn write_csv<R: AsCsv>(&mut self, record: R) -> io::Result<usize> {
+    pub fn write_csv<R: AsCsv>(&mut self, record: &R) -> io::Result<usize> {
         self.append(&format!("{}\n", record.as_csv()))
     }
 }
@@ -165,9 +188,17 @@ mod tests {
         y: i32
     }
 
-    impl AsCsv for &Point {
+    impl AsCsv for Point {
         fn as_csv(&self) -> String {
             format!("{},{}", self.x, self.y)
+        }
+
+        fn filename(&self) -> String {
+            String::from("points.csv")
+        }
+
+        fn header(&self) -> &'static str {
+            "x,y\n"
         }
     }
 
@@ -274,5 +305,13 @@ mod tests {
         assert!(rf.length() > 3);
 
         delete(&file);
+    }
+
+    #[test]
+    fn test_results_file_for_csv_item() {
+        let point = Point { x: 32, y: 37 };
+        let rf = ResultsFile::for_item(&point).expect("Couldn't make file");
+        assert!(format!("{}", rf.path.display()).contains(&point.filename()));
+        delete(point.filename());
     }
 }
