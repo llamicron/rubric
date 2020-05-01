@@ -1,8 +1,49 @@
-//! A crate to assist with grading TCMG labs.
+//! A criterion runner
 //!
-//! This crate provides some tools to help with grading labs.
+//! For complete examples, see the [examples](https://github.com/llamicron/lab_grader/tree/master/examples)
+//! directory on Github.
 //!
-//! Examples coming soon...
+//! ## Example
+//! ```no_run
+//! extern crate lab_grader;
+//!
+//! use lab_grader::*;
+//!
+//! fn main() {
+//!     // Step 1: Build a Submission
+//!     // Collect name and ID from the command line
+//!     let mut sub = Submission::from_cli();
+//!     // Give the submission some data using the data! macro
+//!     sub.use_data(data! {
+//!         "some_key" => "some value"
+//!     });
+//!
+//!     // Step 2: Establish Criteria
+//!     let mut criteria = vec![
+//!         Criterion::new(
+//!             // The criterion's name
+//!             "First criterion",
+//!             // How many points it's worth
+//!             10,
+//!             // pass/fail messages
+//!             ("passed", "failed"),
+//!             // The test that determines if the criterion passes or not
+//!             Box::new(|data: &HashMap<String, String>| -> bool {
+//!                 data["some_key"] == "some value"
+//!             })
+//!         )
+//!     ];
+//!
+//!     // Grade the submission against the criteria.
+//!     // This will assign it a grade and fill it's `passed` and `failed` fields
+//!     sub.grade_against(&mut criteria);
+//!
+//!     // Print out all the criteria to the student
+//!     for crit in criteria {
+//!         println!("{}", crit);
+//!     }
+//! }
+//! ```
 
 #![feature(proc_macro_hygiene, decl_macro)]
 #[macro_use] extern crate rocket;
@@ -19,7 +60,7 @@ pub mod results_file;
 pub mod submission;
 pub mod criterion;
 pub mod helpers;
-pub mod server;
+mod server;
 
 
 pub use submission::Submission;

@@ -1,6 +1,5 @@
 //! A bundle of data that represents a students work.
 use std::collections::HashMap;
-// use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
