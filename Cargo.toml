@@ -1,6 +1,6 @@
 [package]
 name = "lab_grader"
-version = "0.2.1"
+version = "0.3.0"
 authors = ["llamicron <llamicron@gmail.com>"]
 edition = "2018"
 description = "A crate to help grade labs and assignments"

@@ -7,6 +7,7 @@
 //! ```no_run
 //! extern crate lab_grader;
 //!
+//! use std::collections::HashMap;
 //! use lab_grader::*;
 //!
 //! fn main() {
@@ -45,6 +46,7 @@
 //! }
 //! ```
 
+// External crates
 #![feature(proc_macro_hygiene, decl_macro)]
 #[macro_use] extern crate rocket;
 extern crate rocket_contrib;
@@ -53,17 +55,26 @@ extern crate serde;
 extern crate serde_json;
 extern crate reqwest;
 
+// Testing external crates
 #[cfg(test)]
 #[macro_use] extern crate pretty_assertions;
 
+// Public modules
 pub mod results_file;
 pub mod submission;
 pub mod criterion;
 pub mod helpers;
+
+// Private modules
 mod server;
 
 
+
+// Public uses
 pub use submission::Submission;
-pub use results_file::{ResultsFile, AsCsv};
-pub use helpers::{cli, web};
 pub use criterion::Criterion;
+pub use results_file::AsCsv;
+pub use helpers::web;
+
+// private uses
+use results_file::ResultsFile;
