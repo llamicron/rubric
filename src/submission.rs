@@ -227,7 +227,7 @@ impl AsCsv for Submission {
     }
 
     fn filename(&self) -> String {
-        String::from("submission.csv")
+        String::from("submissions.csv")
     }
 
     fn header(&self) -> &'static str {
