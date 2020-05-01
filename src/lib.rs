@@ -15,4 +15,9 @@ pub mod results_file;
 pub mod submission;
 pub mod criterion;
 pub mod helpers;
-// pub mod criteria;
+
+
+pub use submission::Submission;
+pub use results_file::{ResultsFile, AsCsv};
+pub use helpers::{cli, web};
+pub use criterion::Criterion;
