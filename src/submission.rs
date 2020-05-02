@@ -1,9 +1,13 @@
 //! A bundle of data that represents a students work.
+
+// std uses
 use std::collections::HashMap;
 
+// external uses
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 
+// internal uses
 use crate::prompt;
 use crate::results_file::AsCsv;
 use crate::criterion::Criterion;
@@ -17,6 +21,7 @@ use crate::server;
 /// collect the graded submissions.
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct Submission {
+    /// A local timestamp when the submission was created
     pub time: DateTime<Local>,
     /// The students name
     pub name: String,
