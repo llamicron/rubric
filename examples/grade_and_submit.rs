@@ -67,7 +67,7 @@ fn main() {
                 // Test code goes here
                 true
             })
-        )
+        ),
     ];
 
     // Grade the submission against the criteria

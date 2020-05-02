@@ -45,12 +45,114 @@ macro_rules! data(
 );
 
 /// A criterion
+///
+/// This is the heart of the application. Each criterion is responsible for
+/// checking one thing, and *one thing only*. You should build a list of criteria.
+///
+/// ## A lone `Criterion`
+/// A Criterion has some informational fields (`name`, `messages`), a point value (`worth`),
+/// a `status`, and most importantly a `test`. The test takes in a `HashMap<String, String>`
+/// and returns a `bool`. The signature of every criterion's test is always the same.
+///
+/// ```rust
+/// use std::collections::HashMap;
+/// use lab_grader::*;
+///
+/// let mut crit = Criterion::new(
+///     // Name
+///     "My First Criterion",
+///     // Worth
+///     10,
+///     // Pass/Fail messages, a tuple
+///     ("passed", "failed"),
+///     // Test function, contained in a Box
+///     Box::new(|_: &HashMap<String, String>| -> bool {
+///         // test code goes here
+///         // determine if this should pass or fail
+///         true
+///     })
+/// );
+///
+/// assert!(crit.status.is_none());
+/// crit.test()
+/// assert_eq!(crit.status, Some(true));
+/// ```
+/// We can also extract the test into a function defined elsewhere. This just helps with organization.
+/// ```rust
+/// # use std::collections::HashMap;
+/// # use_lab_grader::*;
+/// fn my_test(_: &HashMap<String, String>) -> bool {
+///     // code here...
+///     true
+/// }
+///
+/// fn main() {
+///     let mut crit = Criterion::new(
+///         "My Second Criterion",
+///         10,
+///         ("passed", "failed"),
+///         Box::new(my_test)
+///     );
+///
+///     crit.test();
+///     // ...
+/// }
+/// ```
+///
+/// We can also pass data to a criterion. This data *must* be a `&HashMap<String, String>`
+/// ```rust
+/// # use std::collections::HashMap;
+/// # use lab_grader::*;
+///
+/// fn my_test(data: &HashMap<String, String>) -> {
+///     if let Some(value) = data.get("key") {
+///         return value == "value"
+///     }
+///     false
+/// }
+///
+/// fn main() {
+///     let mut crit = Criterion::new(
+///         "My Third Criterion",
+///         10,
+///         ("passed", "failed"),
+///         Box::new(my_test)
+///     );
+///
+///     // Now we need some data to pass to the criterion
+///     // this crate provides a data macro that builds a HashMap
+///     let data = data! {
+///         "key" => "value"
+///     }
+///     crit.test_with_data(&data);
+///     assert_eq!(crit.status, Some(true));
+/// }
+/// ```
 pub struct Criterion {
+    /// A short (< 30 characters), descriptive name
     pub name: String,
+    /// Point value of this criterion. If it passes, this value
+    /// will be added to the [`Submission`](crate::submission::Submission) grade.
+    ///
+    /// Can be negative if you wish to subtract points. Be sure to get your logic right.
+    /// This value is added to the submission grade *if the test returns true*.
     pub worth: i16,
+    /// Pass or fail messages, respectively
+    ///
+    /// When printing a criterion, the appropriate message
+    /// will be printed. Not much use other than that.
     pub messages: (&'static str, &'static str),
+    /// The criterion's test
+    ///
+    /// Determines if the criterion passes or fails. This signature is
+    /// required.
     pub test: Box<dyn Fn(&HashMap<String, String>) -> bool>,
+    /// If the test passed, failed, or hasn't been run.
+    ///
+    /// `None` if it hasn't been run, Some(`true`) or Some(`false`) otherwise.
+    /// If this value is `Some`, the test has been run.
     pub status: Option<bool>,
+    /// Currently does nothing because i'm lazy
     pub hide: bool,
 }
 
