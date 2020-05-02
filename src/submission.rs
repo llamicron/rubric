@@ -1,6 +1,7 @@
 //! A bundle of data that represents a students work.
 use std::collections::HashMap;
 
+use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 
 use crate::prompt;
@@ -16,6 +17,7 @@ use crate::server;
 /// collect the graded submissions.
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct Submission {
+    pub time: DateTime<Local>,
     /// The students name
     pub name: String,
     /// The students institutional ID
@@ -56,6 +58,7 @@ impl Submission {
     /// ```
     pub fn new<S: AsRef<str>>(name: S, id: u32) -> Submission {
         Submission {
+            time: Local::now(),
             name: name.as_ref().to_string(),
             id,
             grade: 0,
@@ -216,7 +219,8 @@ impl AsCsv for Submission {
         }).collect::<Vec<String>>().join(";");
 
         format!(
-            "{},{},{},{},{},{}",
+            "{},{},{},{},{},{},{}",
+            self.time.to_rfc3339(),
             self.name,
             self.id,
             self.grade,
@@ -231,7 +235,7 @@ impl AsCsv for Submission {
     }
 
     fn header(&self) -> &'static str {
-        "name,id,grade,passed,failed,data\n"
+        "time,name,id,grade,passed,failed,data\n"
     }
 }
 
@@ -271,8 +275,8 @@ mod tests {
 
         // Submission with no data, passes, or failures
         let sub2 = Submission::new("Luke", 1234);
-        let expected = String::from("Luke,1234,0,,,");
-        assert_eq!((&sub2).as_csv(), expected);
+        let expected = "Luke,1234,0,,,";
+        assert!((&sub2).as_csv().contains(expected));
     }
 
     #[test]
@@ -282,10 +286,12 @@ mod tests {
         sub.pass("something");
         sub.fail("something");
 
-        let expected = r#"{"name":"Luke","id":1234,"grade":0,"passed":["something"],"failed":["something"],"data":{"k2":"v2","k":"v"}}"#;
+        let expected = r#"{"time":"2020-05-01T22:23:21.180875-05:00","name":"Luke","id":1234,"grade":0,"passed":["something"],"failed":["something"],"data":{"k2":"v2","k":"v"}}"#;
         assert!(serde_json::to_string(&sub).unwrap().contains(r#""name":"Luke""#));
         let built_sub: Submission = serde_json::from_str(expected).unwrap();
-        assert_eq!(built_sub, sub);
+        assert_eq!(built_sub.name, sub.name);
+        assert_eq!(built_sub.id, sub.id);
+        assert_eq!(built_sub.grade, sub.grade);
     }
 
     #[test]

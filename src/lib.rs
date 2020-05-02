@@ -54,6 +54,7 @@ extern crate ansi_term;
 extern crate serde;
 extern crate serde_json;
 extern crate reqwest;
+extern crate chrono;
 
 // Testing external crates
 #[cfg(test)]
