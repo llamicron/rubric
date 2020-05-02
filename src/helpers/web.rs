@@ -6,6 +6,8 @@ use serde::Serialize;
 use reqwest::blocking::{Client, Response};
 use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE, USER_AGENT};
 
+use std::time::Duration;
+
 static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"));
 
 // Constructs some header, this is mostly used for POST requests
@@ -58,6 +60,7 @@ fn construct_headers() -> HeaderMap {
 pub fn get(url: &str) -> Result<Response, reqwest::Error> {
     let client = Client::builder()
         .user_agent(APP_USER_AGENT)
+        .timeout(Duration::from_secs(4))
         .build()
         .expect("Couldn't build reqwest client. This shouldn't happen.");
 
