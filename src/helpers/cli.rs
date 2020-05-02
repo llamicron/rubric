@@ -1,4 +1,4 @@
-//! Functions that deal with the terminal
+//! Functions and macros that deal with the terminal
 use std::io::{stdout, stdin, Write};
 
 

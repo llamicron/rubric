@@ -1,3 +1,7 @@
+//! Functions to easily make web requests
+//!
+//! These use the [`reqwest`](https://docs.rs/reqwest/0.10.4/reqwest/) crate
+//! to make requests.
 use serde::Serialize;
 use reqwest::blocking::{Client, Response};
 use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE, USER_AGENT};
