@@ -371,7 +371,7 @@ impl fmt::Display for Criterion {
             worth = White.paint("**");
             reason = White.paint(format!("not tested"));
         }
-        write!(f, "{}  +{}  {}", name, worth, reason)
+        write!(f, "{}  +{}/{:>2}  {}", name, worth, self.worth, reason)
     }
 }
 
