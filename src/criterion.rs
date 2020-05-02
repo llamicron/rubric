@@ -54,6 +54,7 @@ macro_rules! data(
 /// a `status`, and most importantly a `test`. The test takes in a `HashMap<String, String>`
 /// and returns a `bool`. The signature of every criterion's test is always the same.
 ///
+///
 /// ```rust
 /// use std::collections::HashMap;
 /// use lab_grader::*;
@@ -74,13 +75,15 @@ macro_rules! data(
 /// );
 ///
 /// assert!(crit.status.is_none());
-/// crit.test()
+/// crit.test();
 /// assert_eq!(crit.status, Some(true));
 /// ```
+///
+///
 /// We can also extract the test into a function defined elsewhere. This just helps with organization.
 /// ```rust
 /// # use std::collections::HashMap;
-/// # use_lab_grader::*;
+/// # use lab_grader::*;
 /// fn my_test(_: &HashMap<String, String>) -> bool {
 ///     // code here...
 ///     true
@@ -99,12 +102,13 @@ macro_rules! data(
 /// }
 /// ```
 ///
+///
 /// We can also pass data to a criterion. This data *must* be a `&HashMap<String, String>`
 /// ```rust
 /// # use std::collections::HashMap;
 /// # use lab_grader::*;
 ///
-/// fn my_test(data: &HashMap<String, String>) -> {
+/// fn my_test(data: &HashMap<String, String>) -> bool {
 ///     if let Some(value) = data.get("key") {
 ///         return value == "value"
 ///     }
@@ -123,7 +127,7 @@ macro_rules! data(
 ///     // this crate provides a data macro that builds a HashMap
 ///     let data = data! {
 ///         "key" => "value"
-///     }
+///     };
 ///     crit.test_with_data(&data);
 ///     assert_eq!(crit.status, Some(true));
 /// }
