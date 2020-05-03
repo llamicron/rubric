@@ -13,11 +13,13 @@ use crate::results_file::AsCsv;
 use crate::criterion::Criterion;
 use crate::server;
 
+
+
 /// A type alias to HashMap<String, String>
 ///
 /// This is the data type that all criteria accept,
 /// and how data is stored in a submission
-// pub type TestData = HashMap<String, String>;
+pub type TestData = HashMap<String, String>;
 
 /// A submission is a bundle of data that represents
 /// one student's submission. They will do some sort of work
@@ -36,9 +38,9 @@ pub struct Submission {
     /// Numerical grade for the submission.
     /// Each criterion will add to this grade if it passes.
     pub grade: i16,
-    /// A hashmap of extra data that may be sent by the submission.
+    /// Extra data attached to the submission.
     /// Leave it empty if you don't need it
-    pub data: HashMap<String, String>,
+    pub data: TestData,
     /// The criteria (name) that this submission passed
     pub passed: Vec<String>,
     /// The citeria (name) that this submission failed
@@ -114,7 +116,7 @@ impl Submission {
 
     /// Attaches data to a submission
     ///
-    /// The data must be a [`HashMap<String, String>`](std::collections::HashMap).
+    /// The data must be a [`TestData`](crate::submission::TestData).
     /// You may want to use the [`data!`](../macro.data.html) macro to make it
     /// easier to establish your data.
     ///
@@ -134,8 +136,8 @@ impl Submission {
     /// assert_eq!(sub.data["key"], "value");
     /// assert_eq!(sub.data["key2"], "value2");
     /// ```
-    pub fn use_data(&mut self, data: HashMap<String, String>) {
-        self.data = data
+    pub fn use_data(&mut self, data: TestData) {
+        self.data = data;
     }
 
     /// Marks a criterion as passed. Provide the name of the criterion.
@@ -172,7 +174,8 @@ impl Submission {
     /// # use lab_grader::data;
     /// # use lab_grader::criterion::Criterion;
     /// # use lab_grader::submission::Submission;
-    /// # use std::collections::HashMap;
+    /// # use lab_grader::TestData;
+    /// #
     /// let mut sub = Submission::new("Luke", 1234);
     /// sub.use_data(data! {
     ///     "key" => "value"
@@ -180,7 +183,7 @@ impl Submission {
     /// // Just one criterion here to save space
     /// let mut crits: Vec<Criterion> = vec![
     ///     Criterion::new("Test Criterion", 10, ("passed", "failed"), Box::new(
-    ///         |data: &HashMap<String, String>| {
+    ///         |data: &TestData| -> bool {
     ///             data["key"] == "value"
     ///         }
     ///     ))

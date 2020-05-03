@@ -76,6 +76,7 @@ pub use submission::Submission;
 pub use criterion::Criterion;
 pub use results_file::AsCsv;
 pub use helpers::web;
+pub use submission::TestData;
 
 // private uses
 use results_file::ResultsFile;

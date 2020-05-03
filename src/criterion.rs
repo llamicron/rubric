@@ -10,13 +10,15 @@
 //! as easy as possible, and the make that definition most of the work involved.
 //! You shouldn't have to worry about students submitting, or persisting results.
 //! Just define the criteria and distribute the program to your students.
-use std::collections::HashMap;
 use std::fmt;
 
 use ansi_term::ANSIGenericString;
 use ansi_term::Color::{Green, Red, White};
 
-/// A macro to easily create a `HashMap<String, String>`
+use crate::TestData;
+
+/// A macro to easily create a `TestData` struct, which is
+/// really just an alias to `HashMap<String, String>`
 ///
 /// ## Example
 /// ```rust
@@ -51,8 +53,9 @@ macro_rules! data(
 ///
 /// ## A lone `Criterion`
 /// A Criterion has some informational fields (`name`, `messages`), a point value (`worth`),
-/// a `status`, and most importantly a `test`. The test takes in a `HashMap<String, String>`
-/// and returns a `bool`. The signature of every criterion's test is always the same.
+/// a `status`, and most importantly a `test`. The test takes in a reference to
+/// [`TestData`](crate::submission::TestData) and returns a `bool`. The signature of every
+/// criterion's test is always the same.
 ///
 ///
 /// ```rust
@@ -67,7 +70,7 @@ macro_rules! data(
 ///     // Pass/Fail messages, a tuple
 ///     ("passed", "failed"),
 ///     // Test function, contained in a Box
-///     Box::new(|_: &HashMap<String, String>| -> bool {
+///     Box::new(|_: &TestData| -> bool {
 ///         // test code goes here
 ///         // determine if this should pass or fail
 ///         true
@@ -82,9 +85,8 @@ macro_rules! data(
 ///
 /// We can also extract the test into a function defined elsewhere. This just helps with organization.
 /// ```rust
-/// # use std::collections::HashMap;
 /// # use lab_grader::*;
-/// fn my_test(_: &HashMap<String, String>) -> bool {
+/// fn my_test(_: &TestData) -> bool {
 ///     // code here...
 ///     true
 /// }
@@ -105,10 +107,9 @@ macro_rules! data(
 ///
 /// We can also pass data to a criterion. This data *must* be a `&HashMap<String, String>`
 /// ```rust
-/// # use std::collections::HashMap;
 /// # use lab_grader::*;
 ///
-/// fn my_test(data: &HashMap<String, String>) -> bool {
+/// fn my_test(data: &TestData) -> bool {
 ///     if let Some(value) = data.get("key") {
 ///         return value == "value"
 ///     }
@@ -150,7 +151,7 @@ pub struct Criterion {
     ///
     /// Determines if the criterion passes or fails. This signature is
     /// required.
-    pub test: Box<dyn Fn(&HashMap<String, String>) -> bool>,
+    pub test: Box<dyn Fn(&TestData) -> bool>,
     /// If the test passed, failed, or hasn't been run.
     ///
     /// `None` if it hasn't been run, Some(`true`) or Some(`false`) otherwise.
@@ -168,26 +169,24 @@ impl Criterion {
     /// These messages will be printed when printing the criterion.
     ///
     /// The `test` parameter is a [`Box`][box] around a closure accepting
-    /// a [HashMap][hashmap] returning a bool. This can get a bit confusing.
+    /// a reference to [TestData][testdata] returning a bool. This can get a bit confusing.
     /// The `test` closure should return true if the criterion passes, otherwise false.
-    /// The `&HashMap` parameter allows data from outside the closure to be passed in. The signature
-    /// of the `&HashMap` is `&HashMap<String, String>`, so all keys and values must be `String`s.
-    /// This is done to generalize the `test` field, as all criteria must have the same signature.
+    /// The `&TestData` parameter allows data from outside the closure to be passed in. `TestData` is
+    /// just an alias to `HashMap<String, String>`, so all keys and values must be `String`s.
     ///
-    /// [hashmap]: std::collections::HashMap
+    /// [testdata]: crate::submission::TestData
     /// [box]: std::boxed::Box
     ///
     /// ## Example
     /// **A basic criterion**
     /// ```rust
-    /// use std::collections::HashMap;
-    /// use lab_grader::criterion::Criterion;
+    /// use lab_grader::{Criterion, TestData};
     ///
     /// let mut c = Criterion::new(
     ///     "A test criterion",
     ///     10,
     ///     ("Success!", "Failure!"),
-    ///     Box::new(|_: &HashMap<String, String>| {
+    ///     Box::new(|_: &TestData| {
     ///         // Code to test criterion goes here,
     ///         // and should return false or...
     ///         true
@@ -199,14 +198,13 @@ impl Criterion {
     /// **A criterion with data**
     /// ```rust
     /// # #[macro_use] extern crate lab_grader;
-    /// # use lab_grader::criterion::Criterion;
-    /// # use std::collections::HashMap;
+    /// # use lab_grader::{Criterion, TestData};
     ///
     /// let mut c = Criterion::new(
     ///     "A test criterion with data!",
     ///     10,
     ///     ("Success!", "Failure!"),
-    ///     Box::new(|data: &HashMap<String, String>| {
+    ///     Box::new(|data: &TestData| {
     ///         return data["my_key"] == "my_value";
     ///     })
     /// );
@@ -223,7 +221,7 @@ impl Criterion {
         name: S,
         worth: i16,
         messages: (&'static str, &'static str),
-        test: Box<dyn Fn(&HashMap<String, String>) -> bool>,
+        test: Box<dyn Fn(&TestData) -> bool>,
     ) -> Self {
         Criterion {
             name: String::from(name.as_ref()),
@@ -272,14 +270,13 @@ impl Criterion {
     /// ## Example
     /// ```rust
     /// # #[macro_use] extern crate lab_grader;
-    /// # use lab_grader::criterion::Criterion;
-    /// # use std::collections::HashMap;
+    /// # use lab_grader::{Criterion, TestData};
     ///
     /// let mut c = Criterion::new(
     ///     "A test criterion with data!",
     ///     10,
     ///     ("Success!", "Failure!"),
-    ///     Box::new(|data: &HashMap<String, String>| {
+    ///     Box::new(|data: &TestData| {
     ///         return data["my_key"] == "my_value";
     ///     })
     /// );
@@ -292,28 +289,27 @@ impl Criterion {
     /// // It's either Some(true) or Some(false) since we've tested
     /// assert!(c.status.is_some());
     /// ```
-    pub fn test_with_data(&mut self, data: &HashMap<String, String>) -> bool {
+    pub fn test_with_data(&mut self, data: &TestData) -> bool {
         self.status = Some((self.test)(data));
         self.status.unwrap()
     }
 
     /// Runs the criterions test and assigns the result to `criterion.status`.
     ///
-    /// This is equivilent to running [`test_with_data`](Criterion::test_with_data) with
-    /// an empty `HashMap`.
+    /// This is equivilent to running [`test_with_data`](crate::criterion::Criterion::test_with_data) with
+    /// an empty `TestData`.
     ///
     /// Criterion must be mutable.
     ///
     /// ## Example
     /// ```rust
-    /// # use lab_grader::criterion::Criterion;
-    /// # use std::collections::HashMap;
+    /// # use lab_grader::{Criterion, TestData};
     ///
     /// let mut c = Criterion::new(
     ///     "A test criterion with data!",
     ///     10,
     ///     ("Success!", "Failure!"),
-    ///     Box::new(|_: &HashMap<String, String>| {
+    ///     Box::new(|_: &TestData| {
     ///         true
     ///     })
     /// );
@@ -322,7 +318,7 @@ impl Criterion {
     /// assert!(c.status.is_some());
     /// ```
     pub fn test(&mut self) -> bool {
-        self.test_with_data(&HashMap::new())
+        self.test_with_data(&TestData::new())
     }
 }
 
@@ -385,7 +381,7 @@ mod tests {
             "A test criterion",
             10,
             ("passed!", "failed!"),
-            Box::from(|_: &HashMap<String, String>| true),
+            Box::from(|_: &TestData| -> bool { true }),
         );
         assert_eq!(c.name, "A test criterion");
         assert_eq!(c.worth, 10);
@@ -400,7 +396,7 @@ mod tests {
             "A test criterion",
             10,
             ("succes!", "failure!"),
-            Box::from(|data: &HashMap<String, String>| {
+            Box::from(|data: &TestData| -> bool {
                 return data["my_var"] == "value";
             }),
         );
@@ -418,46 +414,16 @@ mod tests {
             "A test criterion",
             10,
             ("passed!", "failed!"),
-            Box::from(|_: &HashMap<String, String>| true),
+            Box::from(|_: &TestData| -> bool { true }),
         );
         assert_eq!(c.success_message(), "passed!");
         assert_eq!(c.failure_message(), "failed!");
     }
 
-    // #[test]
-    // fn test_display() {
-    //     // This criterion will always pass
-    //     let mut c = Criterion::new(
-    //         "Test criterion",
-    //         10,
-    //         ("passed!", "failed!"),
-    //         Box::from(|_: &HashMap<String, String>| true),
-    //     );
-
-    //     // Lots of hiddent characters following...
-    //     // You need to test it before it will print successfully
-    //     assert_eq!(format!("{}", c), "\u{1b}[37m                Test criterion\u{1b}[0m  +\u{1b}[37m**\u{1b}[0m  \u{1b}[37mnot tested\u{1b}[0m");
-
-    //     // Test it first
-    //     c.test();
-    //     assert_eq!(format!("{}", c), "\u{1b}[32m                Test criterion\u{1b}[0m  +\u{1b}[32m10\u{1b}[0m  \u{1b}[37mpassed!\u{1b}[0m");
-
-    //     // and this one will always fail
-    //     let mut c2 = Criterion::new(
-    //         "Test criterion",
-    //         10,
-    //         ("passed!", "failed!"),
-    //         Box::from(|_: &HashMap<String, String>| false),
-    //     );
-    //     // Test it first
-    //     c2.test();
-    //     assert_eq!(format!("{}", c2), "\u{1b}[31m                Test criterion\u{1b}[0m  +\u{1b}[31m 0\u{1b}[0m  \u{1b}[37mfailed!\u{1b}[0m");
-    // }
-
     #[test]
     fn test_data_macro() {
         // The long way
-        let mut map = HashMap::new();
+        let mut map = TestData::new();
         map.insert(String::from("key"), String::from("value"));
 
         // the macro way
