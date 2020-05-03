@@ -13,6 +13,12 @@ use crate::results_file::AsCsv;
 use crate::criterion::Criterion;
 use crate::server;
 
+/// A type alias to HashMap<String, String>
+///
+/// This is the data type that all criteria accept,
+/// and how data is stored in a submission
+// pub type TestData = HashMap<String, String>;
+
 /// A submission is a bundle of data that represents
 /// one student's submission. They will do some sort of work
 /// for a lab, then run a rust script that builds some criteria,
