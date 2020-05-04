@@ -20,6 +20,7 @@ reqwest = { version = "0.10", features = [ "blocking", "json" ] }
 rocket = "0.4.4"
 rocket_contrib = { version = "0.4.4", features = [ "json" ] }
 chrono = { version = "0.4", features = [ "serde" ] }
+rust-embed = "5.5.1"
 
 [dev-dependencies]
 tempdir = "0.3"

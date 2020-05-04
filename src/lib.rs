@@ -52,6 +52,7 @@ extern crate serde;
 extern crate serde_json;
 extern crate reqwest;
 extern crate chrono;
+extern crate rust_embed;
 
 // Testing external crates
 #[cfg(test)]
@@ -63,6 +64,7 @@ pub mod submission;
 pub mod criterion;
 pub mod criteria;
 pub mod helpers;
+pub mod batch;
 
 // Private modules
 mod server;
