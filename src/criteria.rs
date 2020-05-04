@@ -48,27 +48,22 @@ impl Criteria {
         self.0.push(criterion);
     }
 
-    /// Gets `Some(Criterion)` from the list at the index. Returns
+    /// Gets `Some(Criterion)` that has the given stub. Returns
     /// `None` if there isn't one at that index
     ///
     /// ## Example
     /// ```rust
     /// # use lab_grader::{Criteria, Criterion, TestData};
     /// #
-    /// let criteria = Criteria::from(vec![
-    ///     Criterion::new(
-    ///         "test criterion",
-    ///         1,
-    ///         ("passed", "failed"),
-    ///         Box::new(|_: &TestData| true)
-    ///     )
-    /// ]);
+    /// let mut crit = Criterion::new("test criterion", 1, ("passed", "failed"), Box::new(|_: &TestData| true));
+    /// crit.stub = String::from("test-crit-1");
+    /// let criteria = Criteria::from(vec![crit]);
     ///
-    /// assert!(criteria.get(0).is_some());
-    /// assert!(criteria.get(1).is_none());
+    /// assert!(criteria.get("test-crit-1").is_some());
+    /// assert!(criteria.get("doesnt-exist").is_none());
     /// ```
-    pub fn get(&self, index: usize) -> Option<&Criterion> {
-        self.0.get(index)
+    pub fn get(&self, stub: &str) -> Option<&Criterion> {
+        self.0.iter().find(|c| c.stub == stub )
     }
 
     /// Creates a `Criteria` collection from a `Vec<Criterion>`
@@ -191,10 +186,12 @@ mod tests {
     #[test]
     fn test_get_criterion() {
         let expected = "test 1";
-        let crit1 = Criterion::new("test 1", 10, ("p", "f"), Box::new(|_: &TestData| true));
-        let crit2 = Criterion::new("test 2", 25, ("p", "f"), Box::new(|_: &TestData| true));
+        let mut crit1 = Criterion::new("test 1", 10, ("p", "f"), Box::new(|_: &TestData| true));
+        crit1.stub = String::from("test1");
+        let mut crit2 = Criterion::new("test 2", 25, ("p", "f"), Box::new(|_: &TestData| true));
+        crit2.stub = String::from("test2");
         let criteria = Criteria::from(vec![crit1, crit2]);
-        if let Some(found) = criteria.get(0) {
+        if let Some(found) = criteria.get("test1") {
             assert_eq!(found.name, expected);
         }
     }

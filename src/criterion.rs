@@ -134,6 +134,8 @@ macro_rules! data(
 /// }
 /// ```
 pub struct Criterion {
+    /// An ID stub used to identify this criterion
+    pub stub: String,
     /// A short (< 30 characters), descriptive name
     pub name: String,
     /// Point value of this criterion. If it passes, this value
@@ -147,6 +149,8 @@ pub struct Criterion {
     /// When printing a criterion, the appropriate message
     /// will be printed. Not much use other than that.
     pub messages: (String, String),
+    /// An optional description
+    pub desc: Option<String>,
     /// The criterion's test
     ///
     /// Determines if the criterion passes or fails. This signature is
@@ -224,13 +228,20 @@ impl Criterion {
         test: Box<dyn Fn(&TestData) -> bool>,
     ) -> Self {
         Criterion {
+            stub: String::from("none"),
             name: String::from(name.as_ref()),
             worth,
             messages: (String::from(messages.0.as_ref()), String::from(messages.1.as_ref())),
+            desc: None,
             test,
             status: None,
             hide: false,
         }
+    }
+
+    /// Sets the description
+    pub fn set_desc<S: AsRef<str>>(&mut self, desc: S) {
+        self.desc = Some(desc.as_ref().to_string())
     }
 
     /// Returns the success message, ie. the first message in the [`messages`][msg] tuple
@@ -248,13 +259,18 @@ impl Criterion {
     }
 
 
-    /// Toggles the `hide` field on a criterion
+    /// Sets the `hide` field on a criterion
     ///
     /// If hide is true, printing the criterion with the default
     /// formatter will print nothing. Good if you want a secret criterion
     /// that the students don't know about
-    pub fn hide(&mut self) {
-        self.hide = !self.hide;
+    pub fn hide(&mut self, state: bool) {
+        self.hide = state;
+    }
+
+    /// Sets the test method of a criterion
+    pub fn set_test(&mut self, test: Box<dyn Fn(&TestData) -> bool>) {
+        self.test = test
     }
 
     /// Runs the criterion's test function with the data provided.
@@ -412,5 +428,23 @@ mod tests {
         // the macro way
         let data = data! { "key" => "value" };
         assert_eq!(map, data);
+    }
+
+    #[test]
+    fn test_set_description() {
+        let mut c = Criterion::new("test", 1, ("p", "f"), Box::new(|_: &TestData| false));
+        assert!(c.desc.is_none());
+        c.set_desc("short desc");
+        assert_eq!(c.desc.unwrap(), "short desc");
+    }
+
+    #[test]
+    fn test_set_test() {
+        let mut c = Criterion::new("test", 1, ("p", "f"), Box::new(|_: &TestData| false));
+        assert!(!c.test());
+
+        let new_func = Box::new(|_: &TestData| true);
+        c.set_test(new_func);
+        assert!(c.test());
     }
 }

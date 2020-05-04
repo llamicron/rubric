@@ -78,6 +78,7 @@ pub use criterion::Criterion;
 pub use criteria::Criteria;
 pub use results_file::AsCsv;
 pub use helpers::web;
+pub use batch::Batch;
 
 // private uses
 use results_file::ResultsFile;

@@ -25,7 +25,7 @@ macro_rules! yaml {
 pub struct Batch {
     pub name: String,
     pub desc: Option<String>,
-    criteria: Criteria,
+    pub criteria: Criteria,
 }
 
 impl Batch {
@@ -63,6 +63,7 @@ struct BatchYaml {
 /// A yaml representation of [`Criterion`](crate::criterion::Criterion)
 #[derive(Deserialize)]
 struct CriterionYaml {
+    stub: String,
     #[allow(dead_code)]
     index: Option<i64>,
     #[allow(dead_code)]
@@ -80,6 +81,7 @@ impl CriterionYaml {
             self.messages,
             Box::new(|_: &TestData| false)
         );
+        c.stub = self.stub;
 
         if let Some(h) = self.hide {
             c.hide = h;

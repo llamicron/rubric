@@ -5,6 +5,7 @@ desc: here's a short description
 criteria:
   # This criterion has all fields
   "First Criterion":
+    stub: first-crit,
     # Determines the run order, lowest first
     index: 0
     # Just a description
@@ -17,7 +18,8 @@ criteria:
     hide: false
 
   # This criterion has only required fields
-  "test 2":
+  "Second Criterion":
+    stub: second-crit
     desc: "Second criterion short desc"
     messages: ["success", "failure"]
     worth: 30

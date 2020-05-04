@@ -1,0 +1,17 @@
+name: My Example Batch
+desc: Here's an example of a batch with a list of criteria
+
+criteria:
+  First criterion:
+    stub: some-unique
+    index: 0
+    desc: This is the first criterion
+    worth: 10
+    messages: ["success", "failure"]
+    hide: false
+
+  Second Criterion:
+    stud: second-crit
+    desc: Here's another criterion
+    worth: 20
+    messages: ["success", "failure"]
