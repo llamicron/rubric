@@ -1,6 +1,5 @@
 extern crate lab_grader;
 
-use std::collections::HashMap;
 use lab_grader::*;
 
 // Note: Be sure the submission server is running.
@@ -11,7 +10,7 @@ use lab_grader::*;
 // The test of a criterion.
 // We can define it here just to keep it out of the way.
 // We'll use it in a second
-fn criterion_1_test(data: &HashMap<String, String>) -> bool {
+fn criterion_1_test(data: &TestData) -> bool {
     if let Some(v) = data.get("key") {
         return v == "value";
     } else {
@@ -22,7 +21,7 @@ fn criterion_1_test(data: &HashMap<String, String>) -> bool {
 // Every criterion test must have the same signature
 // ie. must accept the same parameter and return a bool
 // If you don't need the data, just name it `_` and ignore it
-fn criterion_2_test(data: &HashMap<String, String>) -> bool {
+fn criterion_2_test(data: &TestData) -> bool {
     !criterion_1_test(&data)
 }
 
@@ -63,7 +62,7 @@ fn main() {
             5,
             ("Passed", "Failed"),
             // Tests can also be defined in place as a closure
-            Box::new(|_: &HashMap<String, String>| -> bool {
+            Box::new(|_: &TestData| -> bool {
                 // Test code goes here
                 true
             })

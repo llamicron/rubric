@@ -7,7 +7,6 @@
 //! ```no_run
 //! extern crate lab_grader;
 //!
-//! use std::collections::HashMap;
 //! use lab_grader::*;
 //!
 //! fn main() {
@@ -29,7 +28,7 @@
 //!             // pass/fail messages
 //!             ("passed", "failed"),
 //!             // The test that determines if the criterion passes or not
-//!             Box::new(|data: &HashMap<String, String>| -> bool {
+//!             Box::new(|data: &TestData| -> bool {
 //!                 data["some_key"] == "some value"
 //!             })
 //!         )

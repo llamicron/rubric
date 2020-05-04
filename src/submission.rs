@@ -50,7 +50,7 @@ pub struct Submission {
 impl Submission {
     /// Creates a new submission with a name and id.
     ///
-    /// The `data` field is set to an empty HashMap, and `grade` is set to 0.
+    /// The `data` field is set to an empty TestData, and `grade` is set to 0.
     ///
     /// *Hint*: If you want to start with a grade and bring the grade
     /// down for every criterion not passed, set the grade manually here and
@@ -75,7 +75,7 @@ impl Submission {
             name: name.as_ref().to_string(),
             id,
             grade: 0,
-            data: HashMap::new(),
+            data: TestData::new(),
             passed: Vec::new(),
             failed: Vec::new()
         }
@@ -284,7 +284,7 @@ mod tests {
         sub.use_data(data! { "k" => "v", "k2" => "v2" });
 
         // We can't directly compare it because the order of the
-        // hashmap items will change arbitrarily
+        // TestData items will change arbitrarily
         assert!((&sub).as_csv().contains("Luke,1234,0,"));
 
         // Submission with no data, passes, or failures
@@ -317,11 +317,11 @@ mod tests {
 
         // Just one criterion here to save space
         let mut crits: Vec<Criterion> = vec![
-            Criterion::new("Test Criterion", 10, ("passed", "failed"), Box::new(
-                |data: &HashMap<String, String>| {
+            Criterion::new("Test Criterion", 10, ("passed", "failed"),
+            Box::new(|data: &TestData| {
                     data["key"] == "value"
-                }
-            ))
+                })
+            )
         ];
 
         sub.grade_against(&mut crits);

@@ -23,10 +23,10 @@ use crate::TestData;
 /// ## Example
 /// ```rust
 /// # #[macro_use] extern crate lab_grader;
-/// # use std::collections::HashMap;
+/// use lab_grader::TestData;
 ///
 /// // The long way
-/// let mut map = HashMap::new();
+/// let mut map = TestData::new();
 /// map.insert(String::from("key"), String::from("value"));
 ///
 /// // the macro way
@@ -59,7 +59,6 @@ macro_rules! data(
 ///
 ///
 /// ```rust
-/// use std::collections::HashMap;
 /// use lab_grader::*;
 ///
 /// let mut crit = Criterion::new(
@@ -105,7 +104,7 @@ macro_rules! data(
 /// ```
 ///
 ///
-/// We can also pass data to a criterion. This data *must* be a `&HashMap<String, String>`
+/// We can also pass data to a criterion. This data *must* be a `&TestData`
 /// ```rust
 /// # use lab_grader::*;
 ///
@@ -125,7 +124,7 @@ macro_rules! data(
 ///     );
 ///
 ///     // Now we need some data to pass to the criterion
-///     // this crate provides a data macro that builds a HashMap
+///     // this crate provides a data macro that builds TestData
 ///     let data = data! {
 ///         "key" => "value"
 ///     };
@@ -209,7 +208,7 @@ impl Criterion {
     ///     })
     /// );
     ///
-    /// // The above criterion takes a HashMap into it's closure,
+    /// // The above criterion takes a `&TestData` into it's closure,
     /// // so we must establish the data to send into the closure
     /// let my_data = data! {
     ///     "my_key" => "my_value"
