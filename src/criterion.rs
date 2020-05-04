@@ -354,7 +354,6 @@ impl fmt::Display for Criterion {
 }
 
 
-
 #[cfg(test)]
 mod tests {
     use super::*;

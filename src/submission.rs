@@ -15,7 +15,7 @@ use crate::server;
 
 
 
-/// A type alias to HashMap<String, String>
+/// A type alias to `HashMap<String, String>`
 ///
 /// This is the data type that all criteria accept,
 /// and how data is stored in a submission
