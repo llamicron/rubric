@@ -4,7 +4,7 @@ use rust_embed::RustEmbed;
 
 #[derive(Debug, RustEmbed)]
 #[folder = "criteria/"]
-struct YamlFile;
+pub struct YamlFile;
 
 impl YamlFile {
     /// Loads a `yaml` file
