@@ -157,7 +157,7 @@ pub struct Criterion {
     /// `None` if it hasn't been run, Some(`true`) or Some(`false`) otherwise.
     /// If this value is `Some`, the test has been run.
     pub status: Option<bool>,
-    /// Currently does nothing because i'm lazy
+    /// Renders the criterion unable to be printed
     pub hide: bool,
 }
 
@@ -325,28 +325,11 @@ impl Criterion {
 
 /// Displays the results of the criterion.
 /// You should test the criterion before printing it.
-///
-/// Output will be aligned, as you'll normally be printing
-/// a lot of these at once.
-///
-/// Given a configuration with the name `Test criterion`,
-/// success message `passed!`, and failure message `failed!`,
-/// this is what would print:
-///
-/// **Printed before testing**
-/// ```text
-/// My first criterion  +**  not tested
-/// ```
-/// **Printed after a successful test**
-/// ```text
-/// My first criterion  +10  passed!
-/// ```
-/// **Printed after a failed test**
-/// ```text
-/// My first criterion  + 0  failed!
-/// ```
 impl fmt::Display for Criterion {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if self.hide {
+            return write!(f, "");
+        }
         let mut buffer = String::new();
         if let Some(status) = self.status {
             if status {
