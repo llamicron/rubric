@@ -146,7 +146,7 @@ pub struct Criterion {
     ///
     /// When printing a criterion, the appropriate message
     /// will be printed. Not much use other than that.
-    pub messages: (&'static str, &'static str),
+    pub messages: (String, String),
     /// The criterion's test
     ///
     /// Determines if the criterion passes or fails. This signature is
@@ -220,13 +220,13 @@ impl Criterion {
     pub fn new<S: AsRef<str>>(
         name: S,
         worth: i16,
-        messages: (&'static str, &'static str),
+        messages: (S, S),
         test: Box<dyn Fn(&TestData) -> bool>,
     ) -> Self {
         Criterion {
             name: String::from(name.as_ref()),
             worth,
-            messages,
+            messages: (String::from(messages.0.as_ref()), String::from(messages.1.as_ref())),
             test,
             status: None,
             hide: false,
@@ -236,15 +236,15 @@ impl Criterion {
     /// Returns the success message, ie. the first message in the [`messages`][msg] tuple
     ///
     /// [msg]: Criterion::new
-    pub fn success_message(&self) -> &'static str {
-        self.messages.0
+    pub fn success_message(&self) -> &String {
+        &self.messages.0
     }
 
     /// Returns the failure message, ie. the second message in the [`messages`][msg] tuple
     ///
     /// [msg]: Criterion::new
-    pub fn failure_message(&self) -> &'static str {
-        self.messages.1
+    pub fn failure_message(&self) -> &String {
+        &self.messages.1
     }
 
 

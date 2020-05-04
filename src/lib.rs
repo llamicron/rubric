@@ -49,10 +49,10 @@
 extern crate rocket_contrib;
 extern crate ansi_term;
 extern crate serde;
+extern crate serde_yaml;
 extern crate serde_json;
 extern crate reqwest;
 extern crate chrono;
-extern crate rust_embed;
 
 // Testing external crates
 #[cfg(test)]
