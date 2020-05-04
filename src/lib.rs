@@ -63,6 +63,7 @@ extern crate chrono;
 pub mod results_file;
 pub mod submission;
 pub mod criterion;
+pub mod criteria;
 pub mod helpers;
 
 // Private modules
@@ -72,10 +73,11 @@ mod server;
 
 // Public uses
 pub use submission::Submission;
+pub use submission::TestData;
 pub use criterion::Criterion;
+pub use criteria::Criteria;
 pub use results_file::AsCsv;
 pub use helpers::web;
-pub use submission::TestData;
 
 // private uses
 use results_file::ResultsFile;

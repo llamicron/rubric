@@ -13,9 +13,8 @@ use lab_grader::*;
 fn criterion_1_test(data: &TestData) -> bool {
     if let Some(v) = data.get("key") {
         return v == "value";
-    } else {
-        return false;
     }
+    false
 }
 
 // Every criterion test must have the same signature
@@ -90,5 +89,5 @@ fn main() {
         eprintln!("Submission not accepted, something went wrong");
     }
 
-    // check submission.csv after you submit
+    // check submissions.csv after you submit
 }
