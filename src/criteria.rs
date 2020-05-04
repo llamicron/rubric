@@ -28,12 +28,13 @@
 //! assert!(criteria.len() == 2);
 //! ```
 
+use std::fmt;
 use std::iter::FromIterator;
 
 use crate::criterion::Criterion;
 
 /// The Criteria struct, just a collection of [`Criterion`](crate::criterion::Criterion)
-pub struct Criteria(Vec<Criterion>);
+pub struct Criteria(pub Vec<Criterion>);
 
 
 impl Criteria {
@@ -65,6 +66,18 @@ impl Criteria {
     pub fn len(&self) -> usize {
         self.0.len()
     }
+
+    /// Returns the total points value of all the criteria
+    ///
+    /// This is *not* a grade, but the maximum possible grade.
+    /// Only a [`Submission`](crate::submission::Submission) holds a grade.
+    pub fn total_points(&self) -> usize {
+        let mut total: usize = 0;
+        for crit in &self.0 {
+            total += crit.worth as usize;
+        }
+        total
+    }
 }
 
 impl FromIterator<Criterion> for Criteria {
@@ -76,6 +89,16 @@ impl FromIterator<Criterion> for Criteria {
         }
 
         criteria
+    }
+}
+
+
+impl fmt::Display for Criteria {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for crit in &self.0 {
+            writeln!(f, "{}", crit).unwrap();
+        }
+        write!(f, "")
     }
 }
 
@@ -131,5 +154,14 @@ mod tests {
         ));
 
         assert!(criteria.len() == 3);
+    }
+
+    #[test]
+    fn test_total_points() {
+        let criteria = Criteria::from(vec![
+            Criterion::new("test 1", 10, ("p", "f"), Box::new(|_: &TestData| true)),
+            Criterion::new("test 2", 25, ("p", "f"), Box::new(|_: &TestData| true)),
+        ]);
+        assert!(criteria.total_points() == 35);
     }
 }

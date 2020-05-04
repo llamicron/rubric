@@ -19,7 +19,7 @@
 //!     });
 //!
 //!     // Step 2: Establish Criteria
-//!     let mut criteria = vec![
+//!     let mut criteria = Criteria::from(vec![
 //!         Criterion::new(
 //!             // The criterion's name
 //!             "First criterion",
@@ -32,16 +32,14 @@
 //!                 data["some_key"] == "some value"
 //!             })
 //!         )
-//!     ];
+//!     ]);
 //!
 //!     // Grade the submission against the criteria.
 //!     // This will assign it a grade and fill it's `passed` and `failed` fields
 //!     sub.grade_against(&mut criteria);
 //!
 //!     // Print out all the criteria to the student
-//!     for crit in criteria {
-//!         println!("{}", crit);
-//!     }
+//!     println!("{}", criteria);
 //! }
 //! ```
 

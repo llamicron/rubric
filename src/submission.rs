@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 // internal uses
 use crate::prompt;
 use crate::results_file::AsCsv;
-use crate::criterion::Criterion;
+use crate::criteria::Criteria;
 use crate::server;
 
 
@@ -173,6 +173,7 @@ impl Submission {
     /// ```rust
     /// # use lab_grader::data;
     /// # use lab_grader::criterion::Criterion;
+    /// # use lab_grader::criteria::Criteria;
     /// # use lab_grader::submission::Submission;
     /// # use lab_grader::TestData;
     /// #
@@ -181,21 +182,20 @@ impl Submission {
     ///     "key" => "value"
     /// });
     /// // Just one criterion here to save space
-    /// let mut crits: Vec<Criterion> = vec![
+    /// let mut crits = Criteria::from(vec![
     ///     Criterion::new("Test Criterion", 10, ("passed", "failed"), Box::new(
     ///         |data: &TestData| -> bool {
     ///             data["key"] == "value"
     ///         }
     ///     ))
-    /// ];
+    /// ]);
     /// sub.grade_against(&mut crits);
-    /// assert_eq!(crits[0].status, Some(true));
     /// assert_eq!(sub.grade, 10);
     /// assert_eq!(sub.passed.len(), 1);
     /// assert_eq!(sub.failed.len(), 0);
     /// ```
-    pub fn grade_against(&mut self, criteria: &mut Vec<Criterion>) {
-        for crit in criteria {
+    pub fn grade_against(&mut self, criteria: &mut Criteria) {
+        for crit in &mut criteria.0 {
             crit.test_with_data(&self.data);
 
             if crit.status.unwrap() {
@@ -257,6 +257,7 @@ impl AsCsv for Submission {
 mod tests {
     use super::*;
     use crate::data;
+    use crate::Criterion;
 
 
     #[test]
@@ -316,16 +317,16 @@ mod tests {
         });
 
         // Just one criterion here to save space
-        let mut crits: Vec<Criterion> = vec![
+        let mut crits = Criteria::from(vec![
             Criterion::new("Test Criterion", 10, ("passed", "failed"),
-            Box::new(|data: &TestData| {
-                    data["key"] == "value"
-                })
+                Box::new(|data: &TestData| {
+                        data["key"] == "value"
+                    }
+                )
             )
-        ];
+        ]);
 
         sub.grade_against(&mut crits);
-        assert_eq!(crits[0].status, Some(true));
         assert_eq!(sub.grade, 10);
         assert_eq!(sub.passed.len(), 1);
         assert_eq!(sub.failed.len(), 0);

@@ -39,7 +39,7 @@ fn main() {
     });
 
     // Criteria is just a vector of Criterions
-    let mut criteria = vec![
+    let mut criteria = Criteria::from(vec![
         Criterion::new(
             // Criterion's name
             "First Criterion",
@@ -66,16 +66,14 @@ fn main() {
                 true
             })
         ),
-    ];
+    ]);
 
     // Grade the submission against the criteria
     // This will assign a numerical grade to the submission
     sub.grade_against(&mut criteria);
 
     // Print the criteria if you want to report them to the student
-    for crit in criteria {
-        println!("{}", crit);
-    }
+    println!("{}", criteria);
 
     // Send the submission to the submission server
     //

@@ -11,11 +11,12 @@
 //! You shouldn't have to worry about students submitting, or persisting results.
 //! Just define the criteria and distribute the program to your students.
 use std::fmt;
+use std::fmt::Write;
 
-use ansi_term::ANSIGenericString;
 use ansi_term::Color::{Green, Red, White};
 
 use crate::TestData;
+
 
 /// A macro to easily create a `TestData` struct, which is
 /// really just an alias to `HashMap<String, String>`
@@ -319,6 +320,7 @@ impl Criterion {
     pub fn test(&mut self) -> bool {
         self.test_with_data(&TestData::new())
     }
+
 }
 
 /// Displays the results of the criterion.
@@ -345,30 +347,30 @@ impl Criterion {
 /// ```
 impl fmt::Display for Criterion {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name: ANSIGenericString<str>;
-        let worth: ANSIGenericString<str>;
-        let reason: ANSIGenericString<str>;
+        let mut buffer = String::new();
         if let Some(status) = self.status {
             if status {
-                // success
-                name = Green.paint(format!("{:>30}", &self.name));
-                worth = Green.paint(format!("{:>2}", self.worth));
-                reason = White.paint(self.success_message().to_string());
+                // Success
+                writeln!(&mut buffer, "{}", Green.bold().paint(&self.name)).unwrap();
+                writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
+                writeln!(&mut buffer, "Status: {}", Green.paint(self.success_message())).unwrap();
             } else {
-                name = Red.paint(format!("{:>30}", &self.name));
-                worth = Red.paint(format!("{:>2}", 0));
-                reason = White.paint(self.failure_message().to_string());
-                // Error
+                // Failure
+                writeln!(&mut buffer, "{}", Red.bold().paint(&self.name)).unwrap();
+                writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
+                writeln!(&mut buffer, "Status: {}", Red.paint(self.failure_message())).unwrap();
             }
         } else {
-            // not yet run
-            name = White.paint(format!("{:>30}", &self.name));
-            worth = White.paint("**");
-            reason = White.paint(format!("not tested"));
+            // Neutral
+            writeln!(&mut buffer, "{}", White.bold().paint(&self.name)).unwrap();
+            writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
+            writeln!(&mut buffer, "Status: not tested").unwrap();
         }
-        write!(f, "{}  +{}/{:>2}  {}", name, worth, self.worth, reason)
+        write!(f, "{}", buffer)
     }
 }
+
+
 
 #[cfg(test)]
 mod tests {
