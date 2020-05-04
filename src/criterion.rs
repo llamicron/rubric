@@ -150,7 +150,7 @@ pub struct Criterion {
     /// will be printed. Not much use other than that.
     pub messages: (String, String),
     /// An optional description
-    pub desc: Option<String>,
+    pub desc: String,
     /// The criterion's test
     ///
     /// Determines if the criterion passes or fails. This signature is
@@ -232,7 +232,7 @@ impl Criterion {
             name: String::from(name.as_ref()),
             worth,
             messages: (String::from(messages.0.as_ref()), String::from(messages.1.as_ref())),
-            desc: None,
+            desc: String::new(),
             test,
             status: None,
             hide: false,
@@ -241,7 +241,7 @@ impl Criterion {
 
     /// Sets the description
     pub fn set_desc<S: AsRef<str>>(&mut self, desc: S) {
-        self.desc = Some(desc.as_ref().to_string())
+        self.desc = desc.as_ref().to_string()
     }
 
     /// Returns the success message, ie. the first message in the [`messages`][msg] tuple
@@ -433,9 +433,9 @@ mod tests {
     #[test]
     fn test_set_description() {
         let mut c = Criterion::new("test", 1, ("p", "f"), Box::new(|_: &TestData| false));
-        assert!(c.desc.is_none());
+        assert!(c.desc.len() == 0);
         c.set_desc("short desc");
-        assert_eq!(c.desc.unwrap(), "short desc");
+        assert_eq!(c.desc, "short desc");
     }
 
     #[test]
