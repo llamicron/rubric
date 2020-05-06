@@ -2,7 +2,7 @@
 use std::str::FromStr;
 use std::process::exit;
 
-use crate::Criteria;
+use crate::{Criteria, TestData};
 use crate::yaml::BatchYaml;
 
 
@@ -14,28 +14,6 @@ pub struct Batch {
     pub name: String,
     pub desc: Option<String>,
     pub criteria: Criteria,
-}
-
-impl FromStr for Batch {
-    type Err = serde_yaml::Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        // Construct BatchYaml from yaml data
-        let batch_yaml = serde_yaml::from_str::<BatchYaml>(s)?;
-
-        // Pull out the criteria
-        let mut criteria = Criteria::from(vec![]);
-        for (name, crit) in batch_yaml.criteria {
-            criteria.add(crit.into_criterion(name));
-        }
-
-        // Construct a batch
-        Ok(Batch {
-            name: batch_yaml.name,
-            desc: batch_yaml.desc,
-            criteria: criteria
-        })
-    }
 }
 
 impl Batch {
@@ -71,9 +49,36 @@ impl Batch {
             }
         }
     }
+
+
+    /// Gets a criterion by stub
+    pub fn attach(&mut self, stub: &str, func: Box<dyn Fn(&TestData) -> bool>) {
+        self.criteria.attach(stub, func);
+    }
 }
 
 
+impl FromStr for Batch {
+    type Err = serde_yaml::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Construct BatchYaml from yaml data
+        let batch_yaml = serde_yaml::from_str::<BatchYaml>(s)?;
+
+        // Pull out the criteria
+        let mut criteria = Criteria::from(vec![]);
+        for (name, crit) in batch_yaml.criteria {
+            criteria.add(crit.into_criterion(name));
+        }
+
+        // Construct a batch
+        Ok(Batch {
+            name: batch_yaml.name,
+            desc: batch_yaml.desc,
+            criteria: criteria
+        })
+    }
+}
 
 
 #[cfg(test)]
@@ -99,7 +104,7 @@ mod tests {
             desc: Here's an example of a batch with a list of criteria
             criteria:
                 First criterion:
-                    stub: some-unique
+                    stub: some-unique-stub
                     index: 0
                     desc: This is the first criterion
                     worth: 10

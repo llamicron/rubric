@@ -269,7 +269,7 @@ impl Criterion {
     }
 
     /// Sets the test method of a criterion
-    pub fn set_test(&mut self, test: Box<dyn Fn(&TestData) -> bool>) {
+    pub fn attach(&mut self, test: Box<dyn Fn(&TestData) -> bool>) {
         self.test = test
     }
 
@@ -444,7 +444,7 @@ mod tests {
         assert!(!c.test());
 
         let new_func = Box::new(|_: &TestData| true);
-        c.set_test(new_func);
+        c.attach(new_func);
         assert!(c.test());
     }
 }

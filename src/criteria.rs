@@ -29,9 +29,10 @@
 //! ```
 
 use std::fmt;
+use std::process::exit;
 use std::iter::FromIterator;
 
-use crate::criterion::Criterion;
+use crate::{Criterion, TestData};
 
 /// The Criteria struct, just a collection of [`Criterion`](crate::criterion::Criterion)
 pub struct Criteria(pub Vec<Criterion>);
@@ -57,13 +58,23 @@ impl Criteria {
     /// #
     /// let mut crit = Criterion::new("test criterion", 1, ("passed", "failed"), Box::new(|_: &TestData| true));
     /// crit.stub = String::from("test-crit-1");
-    /// let criteria = Criteria::from(vec![crit]);
+    /// let mut criteria = Criteria::from(vec![crit]);
     ///
     /// assert!(criteria.get("test-crit-1").is_some());
     /// assert!(criteria.get("doesnt-exist").is_none());
     /// ```
-    pub fn get(&self, stub: &str) -> Option<&Criterion> {
-        self.0.iter().find(|c| c.stub == stub )
+    pub fn get(&mut self, stub: &str) -> Option<&mut Criterion> {
+        self.0.iter_mut().find(|c| c.stub == stub )
+    }
+
+    pub fn attach(&mut self, stub: &str, func: Box<dyn Fn(&TestData) -> bool>) {
+        match self.get(stub) {
+            Some(crit) => crit.attach(func),
+            None => {
+                eprintln!("Couldn't find criterion with stub {}", stub);
+                exit(1);
+            }
+        }
     }
 
     /// Creates a `Criteria` collection from a `Vec<Criterion>`
@@ -190,7 +201,7 @@ mod tests {
         crit1.stub = String::from("test1");
         let mut crit2 = Criterion::new("test 2", 25, ("p", "f"), Box::new(|_: &TestData| true));
         crit2.stub = String::from("test2");
-        let criteria = Criteria::from(vec![crit1, crit2]);
+        let mut criteria = Criteria::from(vec![crit1, crit2]);
         if let Some(found) = criteria.get("test1") {
             assert_eq!(found.name, expected);
         }

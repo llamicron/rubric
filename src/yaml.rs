@@ -47,6 +47,8 @@ pub struct CriterionYaml {
 }
 
 impl CriterionYaml {
+    // Normally I would implement FromStr but I can't because i can't attach the `name`,
+    // just because of the yaml format
     pub fn into_criterion(self, name: String) -> Criterion {
         let mut c = Criterion::new(
             name,
@@ -67,7 +69,7 @@ impl CriterionYaml {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    // use super::*;
 
 
 }

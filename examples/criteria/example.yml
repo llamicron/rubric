@@ -3,15 +3,15 @@ desc: Here's an example of a batch with a list of criteria
 
 criteria:
   First criterion:
-    stub: some-unique
+    stub: some-unique-stub
     index: 0
     desc: This is the first criterion
-    worth: 10
+    worth: 5
     messages: ["success", "failure"]
     hide: false
 
   Second Criterion:
     stub: second-crit
     desc: Here's another criterion
-    worth: 20
+    worth: 25
     messages: ["success", "failure"]
