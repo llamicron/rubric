@@ -11,7 +11,7 @@ criteria:
     hide: false
 
   Second Criterion:
-    stud: second-crit
+    stub: second-crit
     desc: Here's another criterion
     worth: 20
     messages: ["success", "failure"]

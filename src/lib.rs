@@ -68,6 +68,7 @@ pub mod batch;
 
 // Private modules
 mod server;
+mod yaml;
 
 
 
