@@ -1,8 +1,11 @@
+//! YAML representations of some key structs
+//!
+//! Much bourbon went into the creation of this module.
 use serde::Deserialize;
 use std::collections::HashMap;
 
 
-use crate::{Criterion, Criteria, TestData, Batch};
+use crate::{Criterion, TestData};
 
 // Idea: custom implemention of serde's deserialize so we
 // don't need separate types for each struct
