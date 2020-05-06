@@ -42,7 +42,7 @@ pub trait AsCsv {
     fn filename(&self) -> String;
     /// The header for the csv file. Should match the fields
     /// in `as_csv()`
-    fn header(&self) -> &'static str;
+    fn header(&self) -> String;
 }
 
 /// A CSV results file containing the results of the grading process.
@@ -77,7 +77,7 @@ impl ResultsFile {
     /// # use std::fs::remove_file;
     /// # remove_file("my_results_file.csv").unwrap();
     /// ```
-    pub fn new<P: AsRef<Path>>(path: P, header: &str) -> Result<ResultsFile, io::Error> {
+    pub fn new<P: AsRef<Path>>(path: P, header: String) -> Result<ResultsFile, io::Error> {
         // Create the file if it doesn't already exist
         let handle = OpenOptions::new().append(true).create(true).open(&path)?;
         // Get the full canonical path to the file path provided
@@ -88,7 +88,7 @@ impl ResultsFile {
             handle
         };
         if rf.length() == 0 {
-            if let Err(e) = rf.append(header) {
+            if let Err(e) = rf.append(&header) {
                 return Err(io::Error::from(e));
             }
         }
@@ -197,13 +197,13 @@ mod tests {
             String::from("points.csv")
         }
 
-        fn header(&self) -> &'static str {
-            "x,y\n"
+        fn header(&self) -> String {
+            String::from("x,y\n")
         }
     }
 
-    fn header() -> &'static str {
-        "x,y"
+    fn header() -> String {
+        String::from("x,y\n")
     }
 
     fn test_dir() -> PathBuf {

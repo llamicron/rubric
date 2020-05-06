@@ -226,12 +226,28 @@ impl Submission {
     }
 }
 
+impl AsCsv for TestData {
+    fn as_csv(&self) -> String {
+        let values: Vec<&String> = self.values().collect();
+        let mut owned_values: Vec<String> = values.iter().map(|&k| k.to_owned() ).collect();
+        owned_values.sort_by(|a,b| a.cmp(&b) );
+        return owned_values.join(",");
+    }
+
+    fn filename(&self) -> String {
+        String::from("submission_data.csv")
+    }
+
+    fn header(&self) -> String {
+        let keys: Vec<&String> = self.keys().collect();
+        let mut owned_keys: Vec<String> = keys.iter().map(|&k| k.to_owned() ).collect();
+        owned_keys.sort_by(|a,b| a.cmp(&b) );
+        return format!("{}\n", owned_keys.join(","));
+    }
+}
+
 impl AsCsv for Submission {
     fn as_csv(&self) -> String {
-        let data_string = self.data.keys().map(|k| {
-            format!("{}=>{}", k, self.data[k])
-        }).collect::<Vec<String>>().join(";");
-
         format!(
             "{},{},{},{},{},{},{}",
             self.time.to_rfc3339(),
@@ -240,7 +256,7 @@ impl AsCsv for Submission {
             self.grade,
             self.passed.join(";"),
             self.failed.join(";"),
-            data_string
+            self.data.as_csv()
         )
     }
 
@@ -248,8 +264,8 @@ impl AsCsv for Submission {
         String::from("submissions.csv")
     }
 
-    fn header(&self) -> &'static str {
-        "time,name,id,grade,passed,failed,data\n"
+    fn header(&self) -> String {
+        String::from("time,name,id,grade,passed,failed,data\n")
     }
 }
 
@@ -330,5 +346,27 @@ mod tests {
         assert_eq!(sub.grade, 10);
         assert_eq!(sub.passed.len(), 1);
         assert_eq!(sub.failed.len(), 0);
+    }
+
+    #[test]
+    fn test_test_data_as_csv() {
+        let d = data! {
+            "key1" => "value1",
+            "key2" => "value2"
+        };
+
+        let expected_header = "key1,key2\n";
+        let expected_values = "value1,value2";
+        let expected_filename = "submission_data.csv";
+
+        assert_eq!(d.header(), expected_header);
+        assert_eq!(d.as_csv(), expected_values);
+        assert_eq!(d.filename(), expected_filename);
+
+        let to_sort = data! {
+            "bbb" => "value",
+            "aaa" => "other value"
+        };
+        assert_eq!(to_sort.header(), "aaa,bbb\n");
     }
 }
