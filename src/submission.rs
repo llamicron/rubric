@@ -242,7 +242,7 @@ impl AsCsv for TestData {
         let keys: Vec<&String> = self.keys().collect();
         let mut owned_keys: Vec<String> = keys.iter().map(|&k| k.to_owned() ).collect();
         owned_keys.sort_by(|a,b| a.cmp(&b) );
-        return format!("{}\n", owned_keys.join(","));
+        return format!("{}", owned_keys.join(","));
     }
 }
 
@@ -265,7 +265,7 @@ impl AsCsv for Submission {
     }
 
     fn header(&self) -> String {
-        String::from("time,name,id,grade,passed,failed,data\n")
+        format!("time,name,id,grade,passed,failed,{}", self.data.header())
     }
 }
 
@@ -355,7 +355,7 @@ mod tests {
             "key2" => "value2"
         };
 
-        let expected_header = "key1,key2\n";
+        let expected_header = "key1,key2";
         let expected_values = "value1,value2";
         let expected_filename = "submission_data.csv";
 
@@ -367,6 +367,6 @@ mod tests {
             "bbb" => "value",
             "aaa" => "other value"
         };
-        assert_eq!(to_sort.header(), "aaa,bbb\n");
+        assert_eq!(to_sort.header(), "aaa,bbb");
     }
 }

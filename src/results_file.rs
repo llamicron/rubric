@@ -5,6 +5,8 @@ use std::io::{self, Write};
 
 /// Trait to convert a struct to csv (comma separated values).
 ///
+/// You should not append a newline for any of these functions.
+///
 /// ## Example Implementation
 /// ```rust
 /// use lab_grader::results_file::AsCsv;
@@ -24,13 +26,13 @@ use std::io::{self, Write};
 ///         String::from("points.csv")
 ///     }
 ///
-///     fn header(&self) -> &'static str {
-///         "x,y\n"
+///     fn header(&self) -> String {
+///         String::from("x,y")
 ///     }
 /// }
 ///
 /// let p = Point { x: 4, y: 8 };
-/// assert_eq!(p.header(), "x,y\n");
+/// assert_eq!(p.header(), "x,y");
 /// assert_eq!(p.filename(), "points.csv");
 /// assert_eq!(p.as_csv(), "4,8");
 /// ```
@@ -77,7 +79,7 @@ impl ResultsFile {
     /// # use std::fs::remove_file;
     /// # remove_file("my_results_file.csv").unwrap();
     /// ```
-    pub fn new<P: AsRef<Path>>(path: P, header: String) -> Result<ResultsFile, io::Error> {
+    pub fn new<P: AsRef<Path>, S: AsRef<str>>(path: P, header: S) -> Result<ResultsFile, io::Error> {
         // Create the file if it doesn't already exist
         let handle = OpenOptions::new().append(true).create(true).open(&path)?;
         // Get the full canonical path to the file path provided
@@ -88,7 +90,7 @@ impl ResultsFile {
             handle
         };
         if rf.length() == 0 {
-            if let Err(e) = rf.append(&header) {
+            if let Err(e) = rf.append(&header.as_ref()) {
                 return Err(io::Error::from(e));
             }
         }
@@ -112,7 +114,7 @@ impl ResultsFile {
     /// # use lab_grader::results_file::ResultsFile;
     /// let rf = ResultsFile::new("file.csv", "123").unwrap();
     ///
-    /// assert!(rf.length() == 3);
+    /// assert_eq!(rf.length(), 4);
     /// # use std::fs::remove_file;
     /// # remove_file("file.csv").unwrap();
     /// ```
@@ -121,7 +123,7 @@ impl ResultsFile {
         m.len()
     }
 
-    /// Appends the given `&str` to the file, without a trailing newline.
+    /// Appends the given `&str` to the file, with a trailing newline.
     ///
     /// Returns an `io::Result` containing the size written.
     /// `ResultsFile` must be mutable.
@@ -131,8 +133,8 @@ impl ResultsFile {
     /// # use lab_grader::results_file::ResultsFile;
     /// let mut rf = ResultsFile::new("append.csv", "").unwrap();
     ///
-    /// assert!(rf.length() == 0);
-    /// if let Err(e) = rf.append("here's some content\n") {
+    /// assert_eq!(rf.length(), 1);
+    /// if let Err(e) = rf.append("here's some content") {
     ///     // Something went wrong, deal with it
     /// }
     /// assert!(rf.length() > 0);
@@ -140,7 +142,8 @@ impl ResultsFile {
     /// # remove_file("append.csv").unwrap();
     /// ```
     pub fn append(&mut self, record: &str) -> io::Result<usize> {
-        self.handle.write(record.as_bytes())
+        let to_write = format!("{}\n", record);
+        self.handle.write(to_write.as_bytes())
     }
 
     /// Writes an item to the csv file in csv format. This item must implement
@@ -157,13 +160,13 @@ impl ResultsFile {
     /// # impl AsCsv for Point {
     /// #     fn as_csv(&self) -> String { format!("{},{}", self.x, self.y) }
     /// #     fn filename(&self) -> String { String::from("points.csv") }
-    /// #     fn header(&self) -> &'static str { "x,y\n" }
+    /// #     fn header(&self) -> String { String::from("x,y") }
     /// # }
     /// // A custom struct that implements AsCsv
     /// let point = Point { x: 6, y: 19 };
     ///
     /// let mut rf = ResultsFile::for_item(&point).unwrap();
-    /// assert!(rf.length() == 4);
+    /// assert_eq!(rf.length(), 4);
     /// if let Err(e) = rf.write_csv(&point) {
     ///     // Something went wrong, deal with it
     /// }
@@ -198,12 +201,12 @@ mod tests {
         }
 
         fn header(&self) -> String {
-            String::from("x,y\n")
+            String::from("x,y")
         }
     }
 
     fn header() -> String {
-        String::from("x,y\n")
+        String::from("x,y")
     }
 
     fn test_dir() -> PathBuf {
@@ -270,7 +273,7 @@ mod tests {
         let mut file = test_dir();
         file.push("length.csv");
         let rf = ResultsFile::new(&file, header()).unwrap();
-        assert!(rf.length() == 3);
+        assert_eq!(rf.length(), 4);
         delete(&file);
     }
 
@@ -280,7 +283,7 @@ mod tests {
         let mut file = test_dir();
         file.push("append.csv");
         let mut rf = ResultsFile::new(&file, header()).unwrap();
-        assert!(rf.length() == 3);
+        assert_eq!(rf.length(), 4);
         rf.append(&content).expect("Couldn't write to results file");
         rf.append(&content).expect("Couldn't write to results file");
         rf.append(&content).expect("Couldn't write to results file");
@@ -297,7 +300,7 @@ mod tests {
         let point = Point { x: 5, y: 7 };
 
         let mut rf = ResultsFile::new(&file, header()).unwrap();
-        assert!(rf.length() == 3);
+        assert_eq!(rf.length(), 4);
 
         let result = rf.write_csv(&point);
 
