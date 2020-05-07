@@ -6,10 +6,12 @@ use crate::{Criteria, TestData};
 use crate::yaml::BatchYaml;
 
 
-/// A bundle of metadata with a set of criteria
+/// A bundle of metadata with a set of criteria.
 ///
 /// The main purpose of a `Batch` is to deserialize criteria from a yaml file. This
 /// struct provides a `from_yaml` method that takes yaml data and turns it into a batch.
+///
+/// [Specification for the yaml data](https://github.com/llamicron/lab_grader/blob/master/yaml_spec.md)
 pub struct Batch {
     pub name: String,
     pub desc: Option<String>,
