@@ -68,6 +68,25 @@ pub fn get(url: &str) -> Result<Response, reqwest::Error> {
 }
 
 
+/// Just calls [`get`](crate::helpers::web::get) and asserts that
+/// the response was successful. Just saves a few lines of code.
+///
+/// ```rust
+/// # use lab_grader::web;
+///
+/// let url = "https://postman-echo.com/get";
+/// assert!(web::site_responds(url));
+///
+/// let bad_url = "https://probablynotawebsite.com/";
+/// assert!(!web::site_responds(bad_url));
+/// ```
+pub fn site_responds(url: &str) -> bool {
+    if let Ok(resp) = get(url) {
+        return resp.status().is_success();
+    }
+    false
+}
+
 /// Sends a POST request to the url with the given body
 ///
 /// `body` must be JSON serializable with `serde`

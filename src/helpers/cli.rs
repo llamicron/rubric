@@ -1,7 +1,6 @@
 //! Functions and macros that deal with the terminal
 use std::io::{stdout, stdin, Write};
 
-
 fn flush() {
     stdout().flush().expect("Failed to flush output");
 }
@@ -19,6 +18,7 @@ fn flush() {
 /// ```no_run
 /// #[macro_use] extern crate lab_grader;
 /// use lab_grader::helpers;
+/// use std::net::Ipv4Addr;
 ///
 /// fn main() {
 ///     let string = prompt!("Enter a string: ", String);
@@ -27,7 +27,9 @@ fn flush() {
 ///     let number = prompt!("Enter a number: ", u32);
 ///     println!("{}", number);
 ///
-///     let another = prompt!("Enter another number: ", u32);
+///     // This will exit with an error message if they
+///     // don't enter a valid IP
+///     let another = prompt!("Enter an IP: ", Ipv4Addr);
 ///     println!("{}", another);
 /// }
 /// ```
