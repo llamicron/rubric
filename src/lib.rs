@@ -50,7 +50,7 @@
 //! ```
 
 // External crates
-#![feature(proc_macro_hygiene, decl_macro)]
+#![feature(proc_macro_hygiene, decl_macro, stmt_expr_attributes)]
 #[macro_use] extern crate rocket;
 extern crate rocket_contrib;
 extern crate ansi_term;

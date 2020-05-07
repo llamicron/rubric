@@ -43,7 +43,6 @@ pub struct CriterionYaml {
     stub: String,
     #[allow(dead_code)]
     index: Option<i64>,
-    #[allow(dead_code)]
     desc: Option<String>,
     worth: i16,
     messages: Option<(String, String)>,
@@ -76,6 +75,6 @@ impl CriterionYaml {
             c.set_desc(desc);
         }
 
-        c
+        return c;
     }
 }
