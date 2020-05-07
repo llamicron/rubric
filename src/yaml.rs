@@ -7,7 +7,7 @@ use std::collections::HashMap;
 
 use crate::{Criterion, TestData};
 
-// Idea: custom implemention of serde's deserialize so we
+// Idea: custom implemention of `serde_yaml`'s deserialize so we
 // don't need separate types for each struct
 
 
@@ -25,6 +25,10 @@ macro_rules! yaml {
 
 
 
+/// A yaml representation of a [`Batch`](crate::batch::Batch).
+///
+/// This struct is just used for deserializing yaml. [`Batch::from_str`](crate::batch::Batch::from_str)
+/// uses one of these puppies for deserializing then consumes it to build a Batch.
 #[derive(Deserialize)]
 pub struct BatchYaml {
     pub name: String,
@@ -34,26 +38,35 @@ pub struct BatchYaml {
 
 
 /// A yaml representation of [`Criterion`](crate::criterion::Criterion)
+///
+/// This can be deserialized from valid yaml, then converted into a
+/// Criterion with [`into_criterion`](crate::yaml::CriterionYaml::into_criterion).
 #[derive(Deserialize)]
 pub struct CriterionYaml {
     stub: String,
     #[allow(dead_code)]
     index: Option<i64>,
     #[allow(dead_code)]
-    desc: String,
+    desc: Option<String>,
     worth: i16,
-    messages: (String, String),
+    messages: Option<(String, String)>,
     hide: Option<bool>
 }
 
 impl CriterionYaml {
-    // Normally I would implement FromStr but I can't because i can't attach the `name`,
-    // just because of the yaml format
+    // Normally I would implement FromStr but I can't because I can't attach the `name`,
+    // just because of the yaml format. Kinda fucky, I know.
     pub fn into_criterion(self, name: String) -> Criterion {
+        let mut msgs = (String::from("passed"), String::from("failed"));
+
+        if self.messages.is_some() {
+            msgs = self.messages.unwrap();
+        }
+
         let mut c = Criterion::new(
             name,
             self.worth,
-            self.messages,
+            msgs,
             Box::new(|_: &TestData| false)
         );
         c.stub = self.stub;
@@ -62,14 +75,10 @@ impl CriterionYaml {
             c.hide = h;
         }
 
+        if let Some(desc) = self.desc {
+            c.set_desc(desc);
+        }
+
         c
     }
-}
-
-
-#[cfg(test)]
-mod tests {
-    // use super::*;
-
-
 }
