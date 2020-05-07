@@ -1,5 +1,5 @@
 # YAML Spec
-Here's the keys allowed when making yaml file for a batch. Not all fields are required, but it's better to be specific.
+Here's the keys allowed when making a yaml file for a batch. Not all fields are required, but it's better to be specific.
 
 Here's the [YAML syntax](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html) so you can learn how to write valid YAML. This isn't the official specification, but it's the easiest guide I found.
 
@@ -27,9 +27,11 @@ desc: A short description about your batch
 # Required
 # You need at least one criteria
 criteria:
+
   # Required
   # Quotes are not required
   Criterion name:
+
     # Required
     # This is like a human readable ID.
     # Must be unique.
