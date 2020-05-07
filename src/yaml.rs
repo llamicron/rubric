@@ -7,9 +7,6 @@ use std::collections::HashMap;
 
 use crate::{Criterion, TestData};
 
-// Idea: custom implemention of `serde_yaml`'s deserialize so we
-// don't need separate types for each struct
-
 
 /// This is an important macro. It reads data from a file using
 /// the include_bytes! macro. When compiling for debug, this will read
