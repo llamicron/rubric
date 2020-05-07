@@ -21,5 +21,5 @@ fn main() {
 
     sub.grade_against(&mut batch.criteria);
     print!("{}", batch.criteria);
-    web::post_json("url", sub);
+    web::post_json("url", sub).unwrap();
 }

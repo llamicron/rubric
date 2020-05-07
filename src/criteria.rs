@@ -96,7 +96,8 @@ impl Criteria {
         self.0.len()
     }
 
-    /// Returns the total points value of all the criteria
+    /// Returns the total points value of all the criteria, ie.
+    /// the maximum score possible for all criteria
     ///
     /// This is *not* a grade, but the maximum possible grade.
     /// Only a [`Submission`](crate::submission::Submission) holds a grade.
@@ -104,6 +105,24 @@ impl Criteria {
         let mut total: usize = 0;
         for crit in &self.0 {
             total += crit.worth as usize;
+        }
+        total
+    }
+
+    /// Returns the amount of points earned
+    ///
+    /// If you haven't graded a submission against these criteria,
+    /// then this will return 0.
+    pub fn points(&self) -> usize {
+        let mut total: usize = 0;
+        for crit in &self.0 {
+            if let Some(status) = crit.status {
+                if status {
+                    // Only add to the total if they've graded
+                    // and this criterion passed
+                    total += crit.worth as usize;
+                }
+            }
         }
         total
     }
@@ -127,6 +146,7 @@ impl fmt::Display for Criteria {
         for crit in &self.0 {
             writeln!(f, "{}", crit).unwrap();
         }
+        write!(f, "Grade: {}/{}", self.points(), self.total_points()).unwrap();
         write!(f, "")
     }
 }

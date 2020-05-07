@@ -10,7 +10,7 @@ use std::io::{self, Write};
 /// ## Example Implementation
 /// ```rust
 /// use lab_grader::results_file::AsCsv;
-
+///
 /// // A dummy struct so we can impl AsCsv
 /// pub struct Point {
 ///     x: i32,
