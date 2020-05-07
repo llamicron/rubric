@@ -1,4 +1,4 @@
-//! A bundle of data that represents a students work.
+//! A bundle of data that criteria are graded against, and is submitted for review
 
 // std uses
 use std::collections::HashMap;
@@ -8,7 +8,6 @@ use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 
 // internal uses
-use crate::prompt;
 use crate::results_file::AsCsv;
 use crate::criteria::Criteria;
 use crate::server;
@@ -31,10 +30,6 @@ pub type TestData = HashMap<String, String>;
 pub struct Submission {
     /// A local timestamp when the submission was created
     pub time: DateTime<Local>,
-    /// The students name
-    pub name: String,
-    /// The students institutional ID
-    pub id: u32,
     /// Numerical grade for the submission.
     /// Each criterion will add to this grade if it passes.
     pub grade: i16,
@@ -48,70 +43,27 @@ pub struct Submission {
 }
 
 impl Submission {
-    /// Creates a new submission with a name and id.
-    ///
-    /// The `data` field is set to an empty TestData, and `grade` is set to 0.
-    ///
-    /// *Hint*: If you want to start with a grade and bring the grade
-    /// down for every criterion not passed, set the grade manually here and
-    /// set the point value for each criterion to be a negative number.
+    /// Creates a new submission.
     ///
     /// ## Example
     /// ```rust
-    /// use lab_grader::submission::Submission;
+    /// use lab_grader::Submission;
     ///
     /// // You probably want it to be mutable so
     /// // you can attach data and change the grade
-    /// let mut sub = Submission::new("Luke", 1234);
+    /// let mut sub = Submission::new();
     ///
-    /// assert_eq!(sub.name, "Luke");
-    /// assert_eq!(sub.id, 1234);
     /// assert_eq!(sub.grade, 0);
     /// assert_eq!(sub.data.len(), 0);
     /// ```
-    pub fn new<S: AsRef<str>>(name: S, id: u32) -> Submission {
+    pub fn new() -> Submission {
         Submission {
             time: Local::now(),
-            name: name.as_ref().to_string(),
-            id,
             grade: 0,
             data: TestData::new(),
             passed: Vec::new(),
             failed: Vec::new()
         }
-    }
-
-
-    /// Prompts the user for a name and ID number
-    /// and returns a Submission. Equivalent to getting
-    /// a name and ID from the console and calling
-    /// `Submission::new()` with those values
-    ///
-    /// Warning: If the user doesn't enter valid values for name and id,
-    /// this will **terminate the program**. Be sure that's what you want to do
-    /// before using it.
-    ///
-    /// ## Example
-    /// **Rust:**
-    /// ```no_run
-    /// # use lab_grader::submission::Submission;
-    /// let mut sub = Submission::from_cli();
-    /// ```
-    /// **In the terminal:**
-    /// ```text
-    /// Name: Luke
-    /// ID: 123
-    /// ```
-    /// **With invalid input:**
-    /// ```text
-    /// Name: Luke
-    /// ID: not a number
-    /// Could not parse input
-    /// ```
-    pub fn from_cli() -> Submission {
-        let name = prompt!("Name: ", String);
-        let id = prompt!("ID: ", u32);
-        Submission::new(name, id)
     }
 
     /// Attaches data to a submission
@@ -120,17 +72,19 @@ impl Submission {
     /// You may want to use the [`data!`](../macro.data.html) macro to make it
     /// easier to establish your data.
     ///
+    /// You may be interested in [`Submission::from_data`](crate::submission::Submission::from_data).
+    ///
     /// ## Example
     /// ```rust
     /// # use lab_grader::data;
-    /// # use lab_grader::submission::Submission;
+    /// # use lab_grader::Submission;
     /// #
     /// let data = data! {
     ///     "key" => "value",
     ///     "key2" => "value2"
     /// };
     ///
-    /// let mut sub = Submission::new("Luke", 1234);
+    /// let mut sub = Submission::new();
     /// sub.use_data(data);
     ///
     /// assert_eq!(sub.data["key"], "value");
@@ -140,16 +94,36 @@ impl Submission {
         self.data = data;
     }
 
+    /// Creates a new submission and attaches data to it in one step
+    ///
+    /// ## Example
+    /// ```rust
+    /// # use lab_grader::{Submission, data};
+    ///
+    /// let sub = Submission::from_data(data! {
+    ///     "name" => "luke i guess",
+    ///     "id" => "1234"
+    /// });
+    ///
+    /// assert_eq!(sub.data["id"], "1234");
+    /// ```
+    pub fn from_data(data: TestData) -> Self {
+        let mut sub = Submission::new();
+        sub.use_data(data);
+        sub
+    }
+
     /// Marks a criterion as passed. Provide the name of the criterion.
     ///
     /// This struct does not include an actual [`Criterion`](crate::criterion::Criterion)
     /// struct in it's `passed` and `failed` fields, because it's impossible to
-    /// serialize a `Criterion`. `Submission`s must be serializable.
+    /// serialize a `Criterion`. `Submission`s must be serializable. Instead, only the
+    /// name and message of the criterion are stored on the submission
     ///
     /// ## Example
     /// ```rust
-    /// # use lab_grader::submission::Submission;
-    /// let mut sub = Submission::new("Luke", 1234);
+    /// # use lab_grader::Submission;
+    /// let mut sub = Submission::new();
     /// sub.pass("Some criterion name");
     ///
     /// assert!(sub.passed.contains(&"Some criterion name".to_string()));
@@ -158,29 +132,24 @@ impl Submission {
         self.passed.push(criterion.as_ref().to_string());
     }
 
-    /// Same as `pass`, but adds to the `failed` vector
+    /// Same as [`pass`](crate::submission::Submission::pass), but adds to the `failed` vector
     pub fn fail<C: AsRef<str>>(&mut self, criterion: C) {
         self.failed.push(criterion.as_ref().to_string());
     }
 
     /// Tests a submission against a list of criterion
     ///
-    /// The submissions grade will change for every passed criterion,
+    /// The submission's grade will change for every passed criterion,
     /// and every criterion will add it's name and message to the submissions
     /// `passed` or `failed` vectors.
     ///
     /// ## Example
     /// ```rust
-    /// # use lab_grader::data;
-    /// # use lab_grader::criterion::Criterion;
-    /// # use lab_grader::criteria::Criteria;
-    /// # use lab_grader::submission::Submission;
-    /// # use lab_grader::TestData;
-    /// #
-    /// let mut sub = Submission::new("Luke", 1234);
-    /// sub.use_data(data! {
+    /// # use lab_grader::*;
+    /// let mut sub = Submission::from_data(data! {
     ///     "key" => "value"
     /// });
+    ///
     /// // Just one criterion here to save space
     /// let mut crits = Criteria::from(vec![
     ///     Criterion::new("Test Criterion", 10, ("passed", "failed"), Box::new(
@@ -214,7 +183,12 @@ impl Submission {
     /// The web server will run on the provided port.
     ///
     /// The results file will be placed in the directory you execute the code in,
-    /// and be called `results.csv`.
+    /// and be called `submissions.csv`.
+    ///
+    /// The best way to submit a submission to the server that this function starts is
+    /// to call [`post_json`](crate::helpers::web::post_json) from the web helpers module and
+    /// pass it the url that this server is accessible on, and a submission. It will convert
+    /// it to json for you.
     ///
     /// Support for custom results file locations is coming...
     /// ```no_run
@@ -227,6 +201,8 @@ impl Submission {
 }
 
 impl AsCsv for TestData {
+    /// Returns the test data, serialized to a csv string. It will be
+    /// sorted alphabetically by key.
     fn as_csv(&self) -> String {
         let values: Vec<&String> = self.values().collect();
         let mut owned_values: Vec<String> = values.iter().map(|&k| k.to_owned() ).collect();
@@ -234,10 +210,16 @@ impl AsCsv for TestData {
         return owned_values.join(",");
     }
 
+    /// Returns the filename that the [`ResultsFile`](crate::results_file::ResultsFile)
+    /// uses as its output
+    ///
+    /// This probably shouldn't get used for test data, as it will be written as part
+    /// of a submission, not on it's own.
     fn filename(&self) -> String {
         String::from("submission_data.csv")
     }
 
+    /// Returns a header to write to a csv file. This should match the fields in `as_csv` above.
     fn header(&self) -> String {
         let keys: Vec<&String> = self.keys().collect();
         let mut owned_keys: Vec<String> = keys.iter().map(|&k| k.to_owned() ).collect();
@@ -247,12 +229,12 @@ impl AsCsv for TestData {
 }
 
 impl AsCsv for Submission {
+    /// Returns the submission's values in csv format. The `TestData` atttached will be
+    /// sorted alphabetically by key.
     fn as_csv(&self) -> String {
         format!(
-            "{},{},{},{},{},{},{}",
+            "{},{},{},{},{}",
             self.time.to_rfc3339(),
-            self.name,
-            self.id,
             self.grade,
             self.passed.join(";"),
             self.failed.join(";"),
@@ -260,12 +242,14 @@ impl AsCsv for Submission {
         )
     }
 
+    /// Returns the filename to use when writing submissions to disk
     fn filename(&self) -> String {
         String::from("submissions.csv")
     }
 
+    /// Returns a header of all the fields, matching the data in `as_csv`
     fn header(&self) -> String {
-        format!("time,name,id,grade,passed,failed,{}", self.data.header())
+        format!("time,grade,passed,failed,{}", self.data.header())
     }
 }
 
@@ -278,9 +262,7 @@ mod tests {
 
     #[test]
     fn test_new_submission() {
-        let sub = Submission::new("Luke", 1234);
-        assert_eq!(sub.name, "Luke");
-        assert_eq!(sub.id, 1234);
+        let sub = Submission::new();
         assert!(sub.data.len() == 0);
     }
 
@@ -289,46 +271,47 @@ mod tests {
         let data = data! {
             "key" => "value"
         };
-        let mut sub = Submission::new("Luke", 123);
+        let mut sub = Submission::new();
         sub.use_data(data);
         assert!(sub.data.len() == 1);
         assert_eq!(sub.data["key"], "value");
+
+        let sub2 = Submission::from_data(data! {
+            "key" => "value"
+        });
+        assert_eq!(sub2.data["key"], "value");
     }
 
     #[test]
     fn test_submission_as_csv() {
-        let mut sub = Submission::new("Luke", 1234);
-        sub.use_data(data! { "k" => "v", "k2" => "v2" });
+        let sub = Submission::from_data(data! { "a" => "v", "b" => "v2" });
 
-        // We can't directly compare it because the order of the
-        // TestData items will change arbitrarily
-        assert!((&sub).as_csv().contains("Luke,1234,0,"));
+        // TestData keys are sorted alphabetically when converting to csv
+        assert!((&sub).as_csv().contains("v,v2"));
 
         // Submission with no data, passes, or failures
-        let sub2 = Submission::new("Luke", 1234);
-        let expected = "Luke,1234,0,,,";
+        let sub2 = Submission::new();
+        let expected = "0,,,";
         assert!((&sub2).as_csv().contains(expected));
     }
 
     #[test]
     fn test_serialize_deserialize_json() {
-        let mut sub = Submission::new("Luke", 1234);
-        sub.use_data(data! { "k2" => "v2", "k" => "v" });
+        let mut sub = Submission::from_data(data! { "k2" => "v2", "k" => "v" });
         sub.pass("something");
         sub.fail("something");
 
-        let expected = r#"{"time":"2020-05-01T22:23:21.180875-05:00","name":"Luke","id":1234,"grade":0,"passed":["something"],"failed":["something"],"data":{"k2":"v2","k":"v"}}"#;
-        assert!(serde_json::to_string(&sub).unwrap().contains(r#""name":"Luke""#));
-        let built_sub: Submission = serde_json::from_str(expected).unwrap();
-        assert_eq!(built_sub.name, sub.name);
-        assert_eq!(built_sub.id, sub.id);
+        // Assert the
+        assert!(serde_json::to_string(&sub).unwrap().contains(r#""k2":"v2""#));
+
+        let data = r#"{"time":"2020-05-01T22:23:21.180875-05:00","grade":0,"passed":["something"],"failed":["something"],"data":{"k2":"v2","k":"v"}}"#;
+        let built_sub: Submission = serde_json::from_str(data).unwrap();
         assert_eq!(built_sub.grade, sub.grade);
     }
 
     #[test]
     fn test_grade_against_criteria() {
-        let mut sub = Submission::new("Luke", 1234);
-        sub.use_data(data! {
+        let mut sub = Submission::from_data(data! {
             "key" => "value"
         });
 
@@ -351,22 +334,16 @@ mod tests {
     #[test]
     fn test_test_data_as_csv() {
         let d = data! {
-            "key1" => "value1",
-            "key2" => "value2"
+            "b2" => "value2",
+            "a1" => "value1"
         };
 
-        let expected_header = "key1,key2";
+        let expected_header = "a1,b2";
         let expected_values = "value1,value2";
         let expected_filename = "submission_data.csv";
 
         assert_eq!(d.header(), expected_header);
         assert_eq!(d.as_csv(), expected_values);
         assert_eq!(d.filename(), expected_filename);
-
-        let to_sort = data! {
-            "bbb" => "value",
-            "aaa" => "other value"
-        };
-        assert_eq!(to_sort.header(), "aaa,bbb");
     }
 }

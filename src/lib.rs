@@ -11,11 +11,11 @@
 //!
 //! fn main() {
 //!     // Step 1: Build a Submission
-//!     // Collect name and ID from the command line
-//!     let mut sub = Submission::from_cli();
 //!     // Give the submission some data using the data! macro
-//!     sub.use_data(data! {
-//!         "some_key" => "some value"
+//!     // You can also prompt the user for some data, with type enforcement
+//!     let mut sub = Submission::from_data(data! {
+//!         "some_key" => "some value",
+//!         "other_data" => prompt!("Enter a number: ", String)
 //!     });
 //!
 //!     // Step 2: Establish Criteria
@@ -40,6 +40,12 @@
 //!
 //!     // Print out all the criteria to the student
 //!     println!("{}", criteria);
+//!
+//!     // Post the submission somewhere
+//!     // (this crates provides a server that accepts them)
+//!     // (i'm not gonna actually do it because i test against these docs)
+//!     // web::post_json("http://url.somewhere/submit", &sub);
+//!
 //! }
 //! ```
 

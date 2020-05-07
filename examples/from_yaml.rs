@@ -11,7 +11,7 @@ fn test2(_: &TestData) -> bool {
 }
 
 fn main() {
-    let mut sub = Submission::new("luke", 1234);
+    let mut sub = Submission::new();
 
     let yaml_data = yaml!("criteria/example.yml").expect("Couldn't read that file!");
     let mut batch = Batch::from_yaml(yaml_data);

@@ -93,7 +93,7 @@ mod tests {
     #[test]
     fn test_accept_submission() {
         let client = client();
-        let sub = Submission::new("test", 7777);
+        let sub = Submission::new();
         let req = client.post("/submit")
             .body(serde_json::to_string(&sub).unwrap())
             .header(Header::new("Content-Type", "application/json"))

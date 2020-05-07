@@ -27,7 +27,7 @@ fn criterion_2_test(data: &TestData) -> bool {
 
 fn main() {
     // Build a submission, asking the user for name and ID
-    let mut sub = Submission::from_cli();
+    let mut sub = Submission::new();
 
     // Add some arbitrary data
     //

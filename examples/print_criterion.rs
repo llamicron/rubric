@@ -47,7 +47,7 @@ fn main() {
     ]);
 
 
-    let mut sub = Submission::new("luke", 1234);
+    let mut sub = Submission::new();
     sub.grade_against(&mut criteria);
     println!("{}", criteria);
 }
