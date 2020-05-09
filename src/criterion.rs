@@ -447,4 +447,13 @@ mod tests {
         c.attach(new_func);
         assert!(c.test());
     }
+
+    #[test]
+    fn test_hide_criterion() {
+        let mut crit = Criterion::new("test", 1, ("p", "f"), Box::new(|_: &TestData| true));
+
+        assert!(format!("{}", crit).len() > 1);
+        crit.hide(true);
+        assert_eq!(format!("{}", crit).len(), 0);
+    }
 }

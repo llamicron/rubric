@@ -36,7 +36,7 @@ impl Batch {
     /// ```rust
     /// use lab_grader::*;
     ///
-    /// let yaml_data = yaml!("../criteria/test_batch.yml").expect("Couldn't open that file");
+    /// let yaml_data = yaml!("../test_data/test_batch.yml").expect("Couldn't open that file");
     /// let batch = Batch::from_yaml(yaml_data);
     ///
     /// // Now you've got a batch
