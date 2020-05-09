@@ -1,6 +1,9 @@
 //! A batch of criteria, with some extra metadata
 use std::str::FromStr;
 use std::process::exit;
+use std::fmt;
+
+use ansi_term::Color;
 
 use crate::{Criteria, TestData};
 use crate::yaml::BatchYaml;
@@ -79,6 +82,16 @@ impl FromStr for Batch {
             desc: batch_yaml.desc,
             criteria: criteria
         })
+    }
+}
+
+impl fmt::Display for Batch {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        writeln!(f, "\n-- {} --", Color::White.bold().paint(&self.name)).unwrap();
+        if let Some(desc) = &self.desc {
+            writeln!(f, "{}\n", desc).unwrap();
+        }
+        write!(f, "{}", self.criteria)
     }
 }
 

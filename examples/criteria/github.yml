@@ -1,0 +1,25 @@
+name: Batch 1
+desc: Here's our first (and only) batch
+
+criteria:
+  "Git installed":
+    stub: git-installed
+    worth: 25
+    desc: Git should be installed and accessible
+    messages: ["installed", "not installed"]
+
+  "Git initialized in repo":
+    stub: git-init
+    worth: 25
+    desc: Current directory should have git initialized
+    messages: ["initialized", "not initialized"]
+
+  "Commits present":
+    stub: commits
+    worth: 25
+    desc: Current git repository should have more than 2 commits
+
+  "Repo pushed":
+    stub: pushed
+    worth: 25
+    desc: Current git repository should be pushed to github
