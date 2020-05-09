@@ -351,17 +351,20 @@ impl fmt::Display for Criterion {
             if status {
                 // Success
                 writeln!(&mut buffer, "{}", Green.bold().paint(&self.name)).unwrap();
+                writeln!(&mut buffer, "{}", White.paint(&self.desc)).unwrap();
                 writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
                 writeln!(&mut buffer, "Status: {}", Green.paint(self.success_message())).unwrap();
             } else {
                 // Failure
                 writeln!(&mut buffer, "{}", Red.bold().paint(&self.name)).unwrap();
+                writeln!(&mut buffer, "{}", White.paint(&self.desc)).unwrap();
                 writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
                 writeln!(&mut buffer, "Status: {}", Red.paint(self.failure_message())).unwrap();
             }
         } else {
             // Neutral
             writeln!(&mut buffer, "{}", White.bold().paint(&self.name)).unwrap();
+            writeln!(&mut buffer, "{}", White.paint(&self.desc)).unwrap();
             writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
             writeln!(&mut buffer, "Status: not tested").unwrap();
         }

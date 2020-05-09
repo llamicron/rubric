@@ -3,6 +3,7 @@
 //! Much bourbon went into the creation of this module.
 use serde::Deserialize;
 use std::collections::HashMap;
+use std::process::exit;
 
 
 use crate::{Criterion, TestData};
@@ -19,8 +20,6 @@ macro_rules! yaml {
         ::std::str::from_utf8(include_bytes!($file))
     };
 }
-
-
 
 /// A yaml representation of a [`Batch`](crate::batch::Batch).
 ///
@@ -59,11 +58,12 @@ impl CriterionYaml {
             msgs = self.messages.unwrap();
         }
 
+
         let mut c = Criterion::new(
             name,
             self.worth,
             msgs,
-            Box::new(|_: &TestData| false)
+            Box::new(|_: &TestData| false )
         );
         c.stub = self.stub;
 

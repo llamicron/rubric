@@ -56,10 +56,12 @@ fn main() {
         "repo"    => prompt!("Repository name: ", String)
     });
 
+
     let mut batch = match yaml!("criteria/github.yml") {
         Ok(text) => Batch::from_yaml(text),
         Err(_) => panic!("Something went wrong! Couldn't read yaml data and build a batch")
     };
+
 
     batch.attach("git-installed", Box::new(confirm_git_installed));
     batch.attach("git-init", Box::new(confirm_git_init));
