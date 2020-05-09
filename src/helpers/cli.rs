@@ -119,10 +119,6 @@ pub enum Program {
 /// use lab_grader::helpers::cli::{installed, Program};
 ///
 /// assert!(installed(Program::Git));
-/// assert!(installed(Program::Docker));
-/// assert!(installed(Program::Python));
-/// assert!(installed(Program::Ruby));
-/// assert!(installed(Program::DockerCompose));
 /// ```
 pub fn installed(program: Program) -> bool {
     use Program::*;
