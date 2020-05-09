@@ -3,7 +3,7 @@
 //! Much bourbon went into the creation of this module.
 use serde::Deserialize;
 use std::collections::HashMap;
-use std::process::exit;
+// use std::process::exit;
 
 
 use crate::{Criterion, TestData};

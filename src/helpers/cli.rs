@@ -1,4 +1,6 @@
 //! Functions and macros that deal with the terminal
+
+use std::process::Command;
 use std::io::{stdout, stdin, Write};
 
 fn flush() {
@@ -90,3 +92,62 @@ pub fn prompt(msg: &str) -> String {
     }
 }
 
+
+pub enum Program {
+    Git,
+    Docker,
+    Python,
+    Ruby,
+    DockerCompose
+    // AzureCLI,
+}
+
+/// Returns true if the provided program is installed
+///
+/// Various programs return different exit codes when run.
+/// It's kind of a crap shoot knowing what's going on. For instance,
+/// running `git` prints the git help page and exits with a 1 (err) exit code
+/// if it is installed, and the same error code if it isn't installed.
+///
+/// On the other hand, `docker` prints the docker help page and responds with
+/// a 0 (ok) exit code. Intrestingly enough, `docker-compose` behaves the opposite way.
+/// For this reason, I've hard coded some command programs to deal with this problem.
+///
+/// See the [`Program`](crate::helpers::cli::Program) enum.
+///
+/// ```rust
+/// use lab_grader::helpers::cli::{installed, Program};
+///
+/// assert!(installed(Program::Git));
+/// assert!(installed(Program::Docker));
+/// assert!(installed(Program::Python));
+/// assert!(installed(Program::Ruby));
+/// assert!(installed(Program::DockerCompose));
+/// ```
+pub fn installed(program: Program) -> bool {
+    use Program::*;
+
+    let name = match program {
+        Git => "git --version",
+        Docker => "docker",
+        DockerCompose => "docker-compose --version",
+        Python => "python --version",
+        Ruby => "ruby -v"
+    };
+
+    let output = if cfg!(target_os = "windows") {
+        Command::new("cmd")
+                .args(&["/C", name])
+                .output()
+    } else {
+        Command::new("sh")
+                .arg("-c")
+                .arg(name)
+                .output()
+    };
+
+    if let Ok(resp) = output {
+        return resp.status.success();
+    }
+    false
+}

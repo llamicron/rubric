@@ -84,7 +84,7 @@ pub use submission::TestData;
 pub use criterion::Criterion;
 pub use criteria::Criteria;
 pub use results_file::AsCsv;
-pub use helpers::web;
+pub use helpers::{web, fs, cli};
 pub use batch::Batch;
 
 // private uses
