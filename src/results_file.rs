@@ -175,7 +175,7 @@ impl ResultsFile {
     /// # remove_file(point.filename()).unwrap()
     /// ```
     pub fn write_csv<R: AsCsv>(&mut self, record: &R) -> io::Result<usize> {
-        self.append(&format!("{}\n", record.as_csv()))
+        self.append(&format!("{}", record.as_csv()))
     }
 }
 
