@@ -64,6 +64,9 @@ impl CriterionYaml {
         if let Some(desc) = self.desc {
             builder = builder.desc(&desc)
         }
+        if let Some(index) = self.index {
+            builder = builder.index(index);
+        }
 
         return builder.build();
     }

@@ -2,14 +2,23 @@ name: My Example Batch
 desc: Here's an example of a batch with a list of criteria
 
 criteria:
-  First criterion:
+  First Criterion:
     stub: some-unique-stub
-    index: 0
-    desc: This is the first criterion
+    index: 1
     worth: 5
+    desc: This is the first criterion
     messages: ["success", "failure"]
     hide: false
 
   Second Criterion:
     stub: second-crit
+    index: 2
     worth: 25
+
+  Third Criterion:
+    index: 3
+    worth: 15
+
+  Fourth Criterion:
+    index: 4
+    worth: 10

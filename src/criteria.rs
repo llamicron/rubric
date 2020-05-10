@@ -111,6 +111,13 @@ impl Criteria {
         total
     }
 
+    /// Returns the criterion vector, sorted by index
+    pub fn sorted(&mut self) -> &mut Vec<Criterion> {
+        let sorted = &mut self.0;
+        sorted.sort_by(|a, b| a.index.cmp(&b.index) );
+        sorted
+    }
+
     /// Returns the amount of points earned
     ///
     /// If you haven't graded a submission against these criteria,

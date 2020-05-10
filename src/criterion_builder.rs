@@ -11,6 +11,7 @@ pub struct CriterionBuilder {
     messages: (String, String),
     desc: Option<String>,
     test: Option<Box<dyn Fn(&TestData) -> bool>>,
+    index: i64,
     hide: bool
 }
 
@@ -29,6 +30,7 @@ impl CriterionBuilder {
             messages: ("passed".to_string(), "failed".to_string()),
             desc: None,
             test: None,
+            index: 100,
             hide: false
         }
     }
@@ -46,6 +48,12 @@ impl CriterionBuilder {
     /// ```
     pub fn stub(mut self, stub: &str) -> Self {
         self.stub = Some(String::from(stub));
+        self
+    }
+
+    /// Sets the index
+    pub fn index(mut self, index: i64) -> Self {
+        self.index = index;
         self
     }
 
@@ -161,6 +169,7 @@ impl CriterionBuilder {
             messages: self.messages,
             desc: desc,
             test: test,
+            index: self.index,
             status: None,
             hide: self.hide
         }

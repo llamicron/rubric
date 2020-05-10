@@ -165,7 +165,7 @@ impl Submission {
     /// assert_eq!(sub.failed.len(), 0);
     /// ```
     pub fn grade_against(&mut self, criteria: &mut Criteria) {
-        for crit in &mut criteria.0 {
+        for crit in &mut criteria.sorted().into_iter() {
             crit.test_with_data(&self.data);
 
             if crit.status.unwrap() {
@@ -319,11 +319,11 @@ mod tests {
         // Just one criterion here to save space
         let mut crits = Criteria::from(vec![
             Criterion::new("test criterion")
-            .worth(10)
-            .test(Box::new(|data: &TestData| -> bool {
-                data["key"] == "value"
-            }))
-            .build()
+                .worth(10)
+                .test(Box::new(|data: &TestData| -> bool {
+                    data["key"] == "value"
+                }))
+                .build()
         ]);
 
         sub.grade_against(&mut crits);

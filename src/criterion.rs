@@ -61,6 +61,10 @@ pub struct Criterion {
     /// Can be negative if you wish to subtract points. Be sure to get your logic right.
     /// This value is added to the submission grade *if the test returns true*.
     pub worth: i16,
+    /// An index to sort by when running.
+    ///
+    /// Lowest first. Defaults to 100.
+    pub index: i64,
     /// Pass or fail messages, respectively
     ///
     /// When printing a criterion, the appropriate message
