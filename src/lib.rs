@@ -53,12 +53,13 @@
 #![feature(proc_macro_hygiene, decl_macro, stmt_expr_attributes)]
 #[macro_use] extern crate rocket;
 extern crate rocket_contrib;
-extern crate ansi_term;
-extern crate serde;
 extern crate serde_yaml;
 extern crate serde_json;
+extern crate ansi_term;
 extern crate reqwest;
 extern crate chrono;
+extern crate serde;
+extern crate regex;
 
 // Testing external crates
 #[cfg(test)]
@@ -79,12 +80,12 @@ mod yaml;
 
 
 // Public uses
+pub use helpers::{web, fs, cli};
 pub use submission::Submission;
 pub use submission::TestData;
 pub use criterion::Criterion;
-pub use criteria::Criteria;
 pub use results_file::AsCsv;
-pub use helpers::{web, fs, cli};
+pub use criteria::Criteria;
 pub use batch::Batch;
 
 // private uses

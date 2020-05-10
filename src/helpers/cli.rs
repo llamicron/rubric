@@ -1,5 +1,7 @@
 //! Functions and macros that deal with the terminal
 
+use regex::Regex;
+
 use std::process::Command;
 use std::io::{stdout, stdin, Write};
 
@@ -102,48 +104,58 @@ pub enum Program {
     // AzureCLI,
 }
 
-/// Returns true if the provided program is installed
+
+/// Returns the installed version of the program
 ///
-/// Various programs return different exit codes when run.
-/// It's kind of a crap shoot knowing what's going on. For instance,
-/// running `git` prints the git help page and exits with a 1 (err) exit code
-/// if it is installed, and the same error code if it isn't installed.
-///
-/// On the other hand, `docker` prints the docker help page and responds with
-/// a 0 (ok) exit code. Intrestingly enough, `docker-compose` behaves the opposite way.
-/// For this reason, I've hard coded some command programs to deal with this problem.
-///
-/// See the [`Program`](crate::helpers::cli::Program) enum.
+/// This has not been extensively tested on windows
 ///
 /// ```rust
-/// use lab_grader::helpers::cli::{installed, Program};
+/// use lab_grader::helpers::cli::{self, Program};
 ///
-/// assert!(installed(Program::Git));
+/// assert!(cli::version_of(Program::Git).is_some());
+/// assert!(cli::version_of(Program::Ruby).is_some());
+/// assert!(cli::version_of(Program::DockerCompose).is_some());
 /// ```
-pub fn installed(program: Program) -> bool {
+pub fn version_of(program: Program) -> Option<String> {
     use Program::*;
 
-    let name = match program {
-        Git => "git --version",
-        Docker => "docker",
-        DockerCompose => "docker-compose --version",
-        Python => "python --version",
-        Ruby => "ruby -v"
+    // Get command and regex pattern based on program
+    let (cmd, pattern) = match program {
+        Git => ("git --version", r"([\d\.]+)"),
+        Docker => ("docker -v", r"([\d\.]+)"),
+        DockerCompose => ("docker-compose -v", r"([\d\.]+)"),
+        Python => ("python --version", r"([\d\.]+)"),
+        Ruby => ("ruby -v", r"([\d\.]+)")
     };
 
+    // Get the output of running the command
     let output = if cfg!(target_os = "windows") {
-        Command::new("cmd")
-                .args(&["/C", name])
-                .output()
+        // Run on windows
+        Command::new("cmd").args(&["/C", cmd]).output()
     } else {
-        Command::new("sh")
-                .arg("-c")
-                .arg(name)
-                .output()
+        // Run on anything else
+        Command::new("sh").arg("-c").arg(cmd).output()
     };
 
+
+    // If there's output
     if let Ok(resp) = output {
-        return resp.status.success();
+        // Build a regex pattern
+        let re: Regex = pattern.parse().expect("Couldn't compile regex pattern");
+        // If we can get valid text
+        let text = match String::from_utf8(resp.stdout) {
+            Ok(t)  => t,
+            Err(_) => return None,
+        };
+        // If there's a version match
+        if let Some(cap) = re.captures(&text) {
+            if let Some(version) = cap.get(1) {
+                // Return the version
+                return Some(version.as_str().to_owned());
+            }
+        }
+
     }
-    false
+
+    None
 }
