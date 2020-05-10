@@ -6,10 +6,10 @@
 //! or false. A final grade can be calculated by adding up all the values
 //! of the criteria, if they passed.
 //!
-//! The aim of this application is the make the definition of Criteria
-//! as easy as possible, and the make that definition most of the work involved.
-//! You shouldn't have to worry about students submitting, or persisting results.
-//! Just define the criteria and distribute the program to your students.
+//! You **probably shouldn't** create criteria individually through this module,
+//! but you can if you want. Instead, you should define your criteria in `YAML` then
+//! build that into a [`Batch`](crate::batch::Batch).
+
 use std::fmt;
 use std::fmt::Write;
 
@@ -18,6 +18,7 @@ use ansi_term::Color::{Green, Red, White};
 use crate::TestData;
 
 
+// TODO: Move this to submission.rs
 /// A macro to easily create a `TestData` struct, which is
 /// really just an alias to `HashMap<String, String>`
 ///
@@ -47,92 +48,7 @@ macro_rules! data(
      };
 );
 
-/// A criterion
-///
-/// This is the heart of the application. Each criterion is responsible for
-/// checking one thing, and *one thing only*. You should build a list of criteria.
-///
-/// ## A lone `Criterion`
-/// A Criterion has some informational fields (`name`, `messages`), a point value (`worth`),
-/// a `status`, and most importantly a `test`. The test takes in a reference to
-/// [`TestData`](crate::submission::TestData) and returns a `bool`. The signature of every
-/// criterion's test is always the same.
-///
-///
-/// ```rust
-/// use lab_grader::*;
-///
-/// let mut crit = Criterion::new(
-///     // Name
-///     "My First Criterion",
-///     // Worth
-///     10,
-///     // Pass/Fail messages, a tuple
-///     ("passed", "failed"),
-///     // Test function, contained in a Box
-///     Box::new(|_: &TestData| -> bool {
-///         // test code goes here
-///         // determine if this should pass or fail
-///         true
-///     })
-/// );
-///
-/// assert!(crit.status.is_none());
-/// crit.test();
-/// assert_eq!(crit.status, Some(true));
-/// ```
-///
-///
-/// We can also extract the test into a function defined elsewhere. This just helps with organization.
-/// ```rust
-/// # use lab_grader::*;
-/// fn my_test(_: &TestData) -> bool {
-///     // code here...
-///     true
-/// }
-///
-/// fn main() {
-///     let mut crit = Criterion::new(
-///         "My Second Criterion",
-///         10,
-///         ("passed", "failed"),
-///         Box::new(my_test)
-///     );
-///
-///     crit.test();
-///     // ...
-/// }
-/// ```
-///
-///
-/// We can also pass data to a criterion. This data *must* be a `&TestData`
-/// ```rust
-/// # use lab_grader::*;
-///
-/// fn my_test(data: &TestData) -> bool {
-///     if let Some(value) = data.get("key") {
-///         return value == "value"
-///     }
-///     false
-/// }
-///
-/// fn main() {
-///     let mut crit = Criterion::new(
-///         "My Third Criterion",
-///         10,
-///         ("passed", "failed"),
-///         Box::new(my_test)
-///     );
-///
-///     // Now we need some data to pass to the criterion
-///     // this crate provides a data macro that builds TestData
-///     let data = data! {
-///         "key" => "value"
-///     };
-///     crit.test_with_data(&data);
-///     assert_eq!(crit.status, Some(true));
-/// }
-/// ```
+/// A single Criterion
 pub struct Criterion {
     /// An ID stub used to identify this criterion
     pub stub: String,
