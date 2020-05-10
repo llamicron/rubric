@@ -49,6 +49,25 @@ impl CriterionBuilder {
         self
     }
 
+    /// Attaches a test.
+    ///
+    /// ```rust
+    /// # use lab_grader::criterion_builder::CriterionBuilder;
+    /// # use lab_grader::TestData;
+    /// fn my_test(_: &TestData) -> bool {
+    ///     true
+    /// }
+    ///
+    /// let crit = CriterionBuilder::new("my crit")
+    ///     .test(Box::new(my_test))
+    ///     .build();
+    /// ```
+    pub fn test(mut self,
+        test: Box<dyn Fn(&TestData) -> bool>) -> Self {
+        self.test = Some(test);
+        self
+    }
+
     /// Sets the messages of a criterion.
     ///
     /// ```rust
@@ -76,6 +95,12 @@ impl CriterionBuilder {
     /// ```
     pub fn desc(mut self, desc: &str) -> Self {
         self.desc = Some(String::from(desc));
+        self
+    }
+
+    /// Sets the worth on a Criterion
+    pub fn worth(mut self, worth: i16) -> Self {
+        self.worth = worth;
         self
     }
 

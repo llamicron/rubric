@@ -16,6 +16,7 @@ use std::fmt::Write;
 use ansi_term::Color::{Green, Red, White};
 
 use crate::TestData;
+use crate::criterion_builder::CriterionBuilder;
 
 
 // TODO: Move this to submission.rs
@@ -82,106 +83,30 @@ pub struct Criterion {
 }
 
 impl Criterion {
-    /// Creates a new Criterion with the given parameters.
-    ///
-    /// The `messages` parameter should be a tuple of
-    /// `&str` containing a success then failure message, respectively.
-    /// These messages will be printed when printing the criterion.
-    ///
-    /// The `test` parameter is a [`Box`][box] around a closure accepting
-    /// a reference to [TestData][testdata] returning a bool. This can get a bit confusing.
-    /// The `test` closure should return true if the criterion passes, otherwise false.
-    /// The `&TestData` parameter allows data from outside the closure to be passed in. `TestData` is
-    /// just an alias to `HashMap<String, String>`, so all keys and values must be `String`s.
-    ///
-    /// [testdata]: crate::submission::TestData
-    /// [box]: std::boxed::Box
-    ///
+    /// Returns a [`CriterionBuilder`](crate::criterion_builder::CriterionBuilder),
+    /// which can be `built()`.
     /// ## Example
     /// **A basic criterion**
     /// ```rust
-    /// use lab_grader::{Criterion, TestData};
+    /// use lab_grader::Criterion;
     ///
-    /// let mut c = Criterion::new(
-    ///     "A test criterion",
-    ///     10,
-    ///     ("Success!", "Failure!"),
-    ///     Box::new(|_: &TestData| {
-    ///         // Code to test criterion goes here,
-    ///         // and should return false or...
-    ///         true
-    ///     })
-    /// );
-    /// assert!(c.test());
+    /// let c = Criterion::new("my crit").build();
+    /// assert_eq!(c.name, "my crit");
     /// ```
-    ///
-    /// **A criterion with data**
-    /// ```rust
-    /// # #[macro_use] extern crate lab_grader;
-    /// # use lab_grader::{Criterion, TestData};
-    ///
-    /// let mut c = Criterion::new(
-    ///     "A test criterion with data!",
-    ///     10,
-    ///     ("Success!", "Failure!"),
-    ///     Box::new(|data: &TestData| {
-    ///         return data["my_key"] == "my_value";
-    ///     })
-    /// );
-    ///
-    /// // The above criterion takes a `&TestData` into it's closure,
-    /// // so we must establish the data to send into the closure
-    /// let my_data = data! {
-    ///     "my_key" => "my_value"
-    /// };
-    ///
-    /// assert!(c.test_with_data(&my_data));
-    /// ```
-    pub fn new<S: AsRef<str>>(
-        name: S,
-        worth: i16,
-        messages: (S, S),
-        test: Box<dyn Fn(&TestData) -> bool>,
-    ) -> Self {
-        Criterion {
-            stub: String::from("none"),
-            name: String::from(name.as_ref()),
-            worth,
-            messages: (String::from(messages.0.as_ref()), String::from(messages.1.as_ref())),
-            desc: String::new(),
-            test,
-            status: None,
-            hide: false,
-        }
+    pub fn new(name: &str) -> CriterionBuilder {
+        CriterionBuilder::new(name)
     }
 
-    /// Sets the description
-    pub fn set_desc<S: AsRef<str>>(&mut self, desc: S) {
-        self.desc = desc.as_ref().to_string()
-    }
-
-    /// Returns the success message, ie. the first message in the [`messages`][msg] tuple
-    ///
-    /// [msg]: Criterion::new
+    /// Returns the success message, ie. the first message in the
+    /// [`messages`](crate::criterion::Criterion::messages) tuple.
     pub fn success_message(&self) -> &String {
         &self.messages.0
     }
 
-    /// Returns the failure message, ie. the second message in the [`messages`][msg] tuple
-    ///
-    /// [msg]: Criterion::new
+    /// Returns the failure message, ie. the second message in the
+    /// [`messages`](crate::criterion::Criterion::messages) tuple.
     pub fn failure_message(&self) -> &String {
         &self.messages.1
-    }
-
-
-    /// Sets the `hide` field on a criterion
-    ///
-    /// If hide is true, printing the criterion with the default
-    /// formatter will print nothing. Good if you want a secret criterion
-    /// that the students don't know about
-    pub fn hide(&mut self, state: bool) {
-        self.hide = state;
     }
 
     /// Sets the test method of a criterion
@@ -199,28 +124,8 @@ impl Criterion {
     /// The criterion must be mutable to call this method, as the status is changed
     /// to the result of the test.
     ///
-    /// ## Example
-    /// ```rust
-    /// # #[macro_use] extern crate lab_grader;
-    /// # use lab_grader::{Criterion, TestData};
-    ///
-    /// let mut c = Criterion::new(
-    ///     "A test criterion with data!",
-    ///     10,
-    ///     ("Success!", "Failure!"),
-    ///     Box::new(|data: &TestData| {
-    ///         return data["my_key"] == "my_value";
-    ///     })
-    /// );
-    ///
-    /// let my_data = data! {
-    ///     "my_key" => "my_value"
-    /// };
-    ///
-    /// c.test_with_data(&my_data);
-    /// // It's either Some(true) or Some(false) since we've tested
-    /// assert!(c.status.is_some());
-    /// ```
+    /// You shouldn't call this method directly, instead grade an entire
+    /// [`Batch`](crate::batch::Batch).
     pub fn test_with_data(&mut self, data: &TestData) -> bool {
         self.status = Some((self.test)(data));
         self.status.unwrap()
@@ -231,24 +136,8 @@ impl Criterion {
     /// This is equivilent to running [`test_with_data`](crate::criterion::Criterion::test_with_data) with
     /// an empty `TestData`.
     ///
-    /// Criterion must be mutable.
-    ///
-    /// ## Example
-    /// ```rust
-    /// # use lab_grader::{Criterion, TestData};
-    ///
-    /// let mut c = Criterion::new(
-    ///     "A test criterion with data!",
-    ///     10,
-    ///     ("Success!", "Failure!"),
-    ///     Box::new(|_: &TestData| {
-    ///         true
-    ///     })
-    /// );
-    ///
-    /// assert!(c.test());
-    /// assert!(c.status.is_some());
-    /// ```
+    /// You shouldn't call this method directly, instead grade an entire
+    /// [`Batch`](crate::batch::Batch).
     pub fn test(&mut self) -> bool {
         self.test_with_data(&TestData::new())
     }
@@ -293,49 +182,31 @@ impl fmt::Display for Criterion {
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_new_criterion() {
-        let mut c = Criterion::new(
-            "A test criterion",
-            10,
-            ("passed!", "failed!"),
-            Box::from(|_: &TestData| -> bool { true }),
-        );
-        assert_eq!(c.name, "A test criterion");
-        assert_eq!(c.worth, 10);
-        assert!(c.status.is_none());
-        assert!(c.test());
-        assert!(c.status.is_some());
+    fn test_crit() -> Criterion {
+        Criterion::new("test")
+            .stub("test-stub")
+            .worth(10)
+            .messages("success", "failure")
+            .desc("short desc")
+            .hide(false)
+            .test(Box::new(|_: &TestData| true ))
+            .build()
     }
 
     #[test]
     fn test_a_criterion_with_data_passes() {
-        let mut c = Criterion::new(
-            "A test criterion",
-            10,
-            ("succes!", "failure!"),
-            Box::from(|data: &TestData| -> bool {
-                return data["my_var"] == "value";
-            }),
-        );
-
+        let mut crit = test_crit();
         let data = data! {
-            "my_var" => "value"
+            "key" => "value"
         };
-
-        assert!(c.test_with_data(&data));
+        assert!(crit.test_with_data(&data));
     }
 
     #[test]
     fn test_success_and_failure_messages() {
-        let c = Criterion::new(
-            "A test criterion",
-            10,
-            ("passed!", "failed!"),
-            Box::from(|_: &TestData| -> bool { true }),
-        );
-        assert_eq!(c.success_message(), "passed!");
-        assert_eq!(c.failure_message(), "failed!");
+        let c = test_crit();
+        assert_eq!(c.success_message(), "success");
+        assert_eq!(c.failure_message(), "failure");
     }
 
     #[test]
@@ -347,32 +218,5 @@ mod tests {
         // the macro way
         let data = data! { "key" => "value" };
         assert_eq!(map, data);
-    }
-
-    #[test]
-    fn test_set_description() {
-        let mut c = Criterion::new("test", 1, ("p", "f"), Box::new(|_: &TestData| false));
-        assert!(c.desc.len() == 0);
-        c.set_desc("short desc");
-        assert_eq!(c.desc, "short desc");
-    }
-
-    #[test]
-    fn test_set_test() {
-        let mut c = Criterion::new("test", 1, ("p", "f"), Box::new(|_: &TestData| false));
-        assert!(!c.test());
-
-        let new_func = Box::new(|_: &TestData| true);
-        c.attach(new_func);
-        assert!(c.test());
-    }
-
-    #[test]
-    fn test_hide_criterion() {
-        let mut crit = Criterion::new("test", 1, ("p", "f"), Box::new(|_: &TestData| true));
-
-        assert!(format!("{}", crit).len() > 1);
-        crit.hide(true);
-        assert_eq!(format!("{}", crit).len(), 0);
     }
 }

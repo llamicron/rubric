@@ -58,23 +58,21 @@ impl CriterionYaml {
             msgs = self.messages.unwrap();
         }
 
+        let mut builder = Criterion::new(&name)
+            .worth(self.worth)
+            .messages(&msgs.0, &msgs.1)
+            .test(Box::new(|_: &TestData| false ))
+            .stub(&self.stub);
 
-        let mut c = Criterion::new(
-            name,
-            self.worth,
-            msgs,
-            Box::new(|_: &TestData| false )
-        );
-        c.stub = self.stub;
 
         if let Some(h) = self.hide {
-            c.hide = h;
+            builder = builder.hide(h);
         }
 
         if let Some(desc) = self.desc {
-            c.set_desc(desc);
+            builder = builder.desc(&desc);
         }
 
-        return c;
+        return builder.build();
     }
 }

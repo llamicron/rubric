@@ -40,32 +40,23 @@ fn main() {
 
     // Criteria is just a vector of Criterions
     let mut criteria = Criteria::from(vec![
-        Criterion::new(
-            // Criterion's name
-            "First Criterion",
-            // Point value
-            10,
-            // pass/fail messages
-            ("Passed", "Failed"),
-            // The test function, wrapped in a Box
-            Box::new(criterion_1_test)
-        ),
-        Criterion::new(
-            "Second Criterion",
-            15,
-            ("Passed", "Failed"),
-            Box::new(criterion_2_test)
-        ),
-        Criterion::new(
-            "Third Criterion",
-            5,
-            ("Passed", "Failed"),
-            // Tests can also be defined in place as a closure
-            Box::new(|_: &TestData| -> bool {
-                // Test code goes here
+        Criterion::new("First criterion")
+            .worth(10)
+            .messages("Passed", "Failed")
+            .test(Box::new(criterion_1_test))
+            .build(),
+        Criterion::new("Second Criterion")
+            .worth(15)
+            .messages("Passed", "Failed")
+            .test(Box::new(criterion_2_test))
+            .build(),
+        Criterion::new("Third Criterion")
+            .worth(5)
+            .messages("Passed", "Failed")
+            .test(Box::new(|_: &TestData| -> bool {
                 true
-            })
-        ),
+            }))
+            .build()
     ]);
 
     // Grade the submission against the criteria

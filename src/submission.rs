@@ -152,11 +152,12 @@ impl Submission {
     ///
     /// // Just one criterion here to save space
     /// let mut crits = Criteria::from(vec![
-    ///     Criterion::new("Test Criterion", 10, ("passed", "failed"), Box::new(
-    ///         |data: &TestData| -> bool {
+    ///     Criterion::new("test criterion")
+    ///         .worth(10)
+    ///         .test(Box::new(|data: &TestData| -> bool {
     ///             data["key"] == "value"
-    ///         }
-    ///     ))
+    ///         }))
+    ///         .build()
     /// ]);
     /// sub.grade_against(&mut crits);
     /// assert_eq!(sub.grade, 10);
@@ -317,12 +318,12 @@ mod tests {
 
         // Just one criterion here to save space
         let mut crits = Criteria::from(vec![
-            Criterion::new("Test Criterion", 10, ("passed", "failed"),
-                Box::new(|data: &TestData| {
-                        data["key"] == "value"
-                    }
-                )
-            )
+            Criterion::new("test criterion")
+            .worth(10)
+            .test(Box::new(|data: &TestData| -> bool {
+                data["key"] == "value"
+            }))
+            .build()
         ]);
 
         sub.grade_against(&mut crits);

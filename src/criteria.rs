@@ -8,8 +8,8 @@
 //! use lab_grader::*;
 //!
 //! let criteria = Criteria::from(vec! [
-//!     Criterion::new("test 1", 15, ("p", "f"), Box::new(|_: &TestData| true)),
-//!     Criterion::new("test 2", 10, ("p", "f"), Box::new(|_: &TestData| false)),
+//!     Criterion::new("crit 1").build(),
+//!     Criterion::new("crit 2").build(),
 //! ]);
 //!
 //! assert!(criteria.len() == 2);
@@ -20,8 +20,8 @@
 //! # use lab_grader::*;
 //! #
 //! # let loose = vec! [
-//! #     Criterion::new("test 1", 15, ("p", "f"), Box::new(|_: &TestData| true)),
-//! #     Criterion::new("test 2", 10, ("p", "f"), Box::new(|_: &TestData| false)),
+//!     Criterion::new("crit 1").build(),
+//!     Criterion::new("crit 2").build(),
 //! # ];
 //!
 //! let criteria: Criteria = loose.into_iter().collect();
@@ -56,7 +56,7 @@ impl Criteria {
     /// ```rust
     /// # use lab_grader::{Criteria, Criterion, TestData};
     /// #
-    /// let mut crit = Criterion::new("test criterion", 1, ("passed", "failed"), Box::new(|_: &TestData| true));
+    /// let mut crit = Criterion::new("test criterion").build();
     /// crit.stub = String::from("test-crit-1");
     /// let mut criteria = Criteria::from(vec![crit]);
     ///
@@ -67,6 +67,8 @@ impl Criteria {
         self.0.iter_mut().find(|c| c.stub == stub )
     }
 
+    // TODO: Add better docs for this
+    /// Attached a function onto the criterion with the given stub
     pub fn attach(&mut self, stub: &str, func: Box<dyn Fn(&TestData) -> bool>) {
         match self.get(stub) {
             Some(crit) => crit.attach(func),
@@ -84,7 +86,7 @@ impl Criteria {
     /// use lab_grader::*;
     ///
     /// let critiera = Criteria::from(vec![
-    ///     Criterion::new("name", 1, ("p", "f"), Box::new(|_: &TestData| true))
+    ///     Criterion::new("name").build()
     /// ]);
     /// ```
     pub fn from(criteria: Vec<Criterion>) -> Self {
@@ -163,8 +165,8 @@ mod tests {
     #[test]
     fn test_build_criteria() {
         let loose = vec![
-            Criterion::new("test 1", 1, ("p", "f"), Box::new(|_: &TestData| true)),
-            Criterion::new("test 2", 1, ("p", "f"), Box::new(|_: &TestData| true)),
+            Criterion::new("test 1").build(),
+            Criterion::new("test 2").build(),
         ].into_iter();
         let criteria: Criteria = loose.collect();
         assert!(criteria.0.len() == 2);
@@ -173,8 +175,8 @@ mod tests {
     #[test]
     fn test_build_from_vec() {
         let criteria = Criteria::from(vec![
-            Criterion::new("test 1", 1, ("p", "f"), Box::new(|_: &TestData| true)),
-            Criterion::new("test 2", 1, ("p", "f"), Box::new(|_: &TestData| true)),
+            Criterion::new("test 1").build(),
+            Criterion::new("test 2").build(),
         ]);
         assert!(criteria.0.len() == 2);
     }
@@ -182,8 +184,8 @@ mod tests {
     #[test]
     fn test_len() {
         let criteria = Criteria::from(vec![
-            Criterion::new("test 1", 1, ("p", "f"), Box::new(|_: &TestData| true)),
-            Criterion::new("test 2", 1, ("p", "f"), Box::new(|_: &TestData| true)),
+            Criterion::new("test 1").build(),
+            Criterion::new("test 2").build(),
         ]);
         assert!(criteria.len() == 2);
         assert!(criteria.0.len() == criteria.len());
@@ -192,15 +194,13 @@ mod tests {
     #[test]
     fn test_add_criterion() {
         let mut criteria = Criteria::from(vec![
-            Criterion::new("test 1", 1, ("p", "f"), Box::new(|_: &TestData| true)),
-            Criterion::new("test 2", 1, ("p", "f"), Box::new(|_: &TestData| true)),
+            Criterion::new("test 1").build(),
+            Criterion::new("test 2").build(),
         ]);
 
         assert!(criteria.len() == 2);
 
-        criteria.add(Criterion::new(
-            "test 3", 1, ("p", "f"), Box::new(|_: &TestData| false)
-        ));
+        criteria.add(Criterion::new("test 3").build());
 
         assert!(criteria.len() == 3);
     }
@@ -208,19 +208,17 @@ mod tests {
     #[test]
     fn test_total_points() {
         let criteria = Criteria::from(vec![
-            Criterion::new("test 1", 10, ("p", "f"), Box::new(|_: &TestData| true)),
-            Criterion::new("test 2", 25, ("p", "f"), Box::new(|_: &TestData| true)),
+            Criterion::new("test 1").worth(15).build(),
+            Criterion::new("test 2").worth(5).build(),
         ]);
-        assert!(criteria.total_points() == 35);
+        assert!(criteria.total_points() == 20);
     }
 
     #[test]
     fn test_get_criterion() {
         let expected = "test 1";
-        let mut crit1 = Criterion::new("test 1", 10, ("p", "f"), Box::new(|_: &TestData| true));
-        crit1.stub = String::from("test1");
-        let mut crit2 = Criterion::new("test 2", 25, ("p", "f"), Box::new(|_: &TestData| true));
-        crit2.stub = String::from("test2");
+        let mut crit1 = Criterion::new("test 1").stub("test1").build();
+        let mut crit2 = Criterion::new("test 2").stub("test2").build();
         let mut criteria = Criteria::from(vec![crit1, crit2]);
         if let Some(found) = criteria.get("test1") {
             assert_eq!(found.name, expected);

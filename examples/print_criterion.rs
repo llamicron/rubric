@@ -3,14 +3,13 @@ extern crate lab_grader;
 use lab_grader::*;
 
 fn main() {
-    let mut c = Criterion::new(
-        "My First Criterion",
-        15,
-        ("passed", "failed"),
-        Box::new(|_: &TestData| -> bool {
+    let mut c = Criterion::new("Single Criterion")
+        .worth(15)
+        .messages("passed", "failed")
+        .test(Box::new(|_: &TestData| -> bool {
             true
-        })
-    );
+        }))
+        .build();
 
     println!("Individual criterion:\n");
     println!("{}", c);
@@ -20,30 +19,21 @@ fn main() {
     println!("{}", c);
 
     let mut criteria = Criteria::from(vec![
-        Criterion::new(
-            "First of three",
-            15,
-            ("passed", "failed"),
-            Box::new(|_: &TestData| -> bool {
-                true
-            })
-        ),
-        Criterion::new(
-            "Second of three",
-            25,
-            ("passed", "failed"),
-            Box::new(|_: &TestData| -> bool {
-                false
-            })
-        ),
-        Criterion::new(
-            "Third of three with a longer name",
-            25,
-            ("passed", "failed"),
-            Box::new(|_: &TestData| -> bool {
-                true
-            })
-        ),
+        Criterion::new("First criterion")
+            .worth(10)
+            .messages("Passed", "Failed")
+            .test(Box::new(|_: &TestData| true ))
+            .build(),
+        Criterion::new("Second Criterion")
+            .worth(15)
+            .messages("Passed", "Failed")
+            .test(Box::new(|_: &TestData| true ))
+            .build(),
+        Criterion::new("Third Criterion")
+            .worth(5)
+            .messages("Passed", "Failed")
+            .test(Box::new(|_: &TestData| false ))
+            .build()
     ]);
 
 
