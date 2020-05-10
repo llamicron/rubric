@@ -6,19 +6,14 @@ use lab_grader::*;
 
 // Naming the data parameter "_" because we don't need it in this case
 fn confirm_git_installed(_: &TestData) -> bool {
-    let out = Command::new("sh")
-        .arg("-c")
-        .arg("git --version")
-        .output()
-        .expect("Couldn't run subcommand");
-
-    out.stdout.len() > 0
+    cli::Program::Git.version().is_some()
 }
 
 fn confirm_git_init(_: &TestData) -> bool {
     // This is a filesystem helper that this crate provides
     // also works on directories
-    helpers::fs::file_exists(".git/")
+    // This is *not* std::fs
+    fs::file_exists(".git/")
 }
 
 fn confirm_enough_commits(_: &TestData) -> bool {
