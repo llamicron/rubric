@@ -102,29 +102,33 @@ mod tests {
     use crate::yaml;
 
     fn yaml_data() -> &'static str {
-        yaml!("../examples/criteria/example.yml").unwrap()
+        yaml!("../test_data/test_batch.yml").unwrap()
     }
 
     #[test]
     fn test_from_yaml() {
         let batch = Batch::from_yaml(yaml_data());
-        assert_eq!(batch.name, "My Example Batch");
+        assert_eq!(batch.name, "Test batch");
         assert!(batch.desc.is_some());
     }
 
     #[test]
     fn test_parse_yaml() {
         let raw = r#"
-            name: My Example Batch
-            desc: Here's an example of a batch with a list of criteria
+            name: Test batch
+            desc: here's a short description
             criteria:
-                First criterion:
-                    stub: some-unique-stub
+                First Criterion:
+                    stub: first-crit,
                     index: 0
-                    desc: This is the first criterion
-                    worth: 10
+                    desc: "First criterion short desc"
+                    worth: 50
                     messages: ["success", "failure"]
                     hide: false
+
+                Second Criterion:
+                    stub: second-crit
+                    worth: 30
         "#;
 
         assert!(raw.parse::<Batch>().is_ok());

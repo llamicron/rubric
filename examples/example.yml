@@ -12,6 +12,4 @@ criteria:
 
   Second Criterion:
     stub: second-crit
-    desc: Here's another criterion
     worth: 25
-    messages: ["success", "failure"]

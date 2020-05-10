@@ -73,7 +73,7 @@ impl Criteria {
         match self.get(stub) {
             Some(crit) => crit.attach(func),
             None => {
-                eprintln!("Couldn't find criterion with stub {}", stub);
+                eprintln!("Couldn't find criterion with stub '{}'", stub);
                 exit(1);
             }
         }
@@ -160,7 +160,6 @@ impl fmt::Display for Criteria {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::TestData;
 
     #[test]
     fn test_build_criteria() {
@@ -217,8 +216,8 @@ mod tests {
     #[test]
     fn test_get_criterion() {
         let expected = "test 1";
-        let mut crit1 = Criterion::new("test 1").stub("test1").build();
-        let mut crit2 = Criterion::new("test 2").stub("test2").build();
+        let crit1 = Criterion::new("test 1").stub("test1").build();
+        let crit2 = Criterion::new("test 2").stub("test2").build();
         let mut criteria = Criteria::from(vec![crit1, crit2]);
         if let Some(found) = criteria.get("test1") {
             assert_eq!(found.name, expected);

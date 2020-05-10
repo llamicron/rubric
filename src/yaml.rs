@@ -5,9 +5,7 @@ use serde::Deserialize;
 use std::collections::HashMap;
 // use std::process::exit;
 
-
-use crate::{Criterion, TestData};
-
+use crate::Criterion;
 
 /// This is an important macro. It reads data from a file using
 /// the include_bytes! macro. When compiling for debug, this will read
@@ -32,45 +30,39 @@ pub struct BatchYaml {
     pub criteria: HashMap<String, CriterionYaml>,
 }
 
-
 /// A yaml representation of [`Criterion`](crate::criterion::Criterion)
 ///
 /// This can be deserialized from valid yaml, then converted into a
 /// Criterion with [`into_criterion`](crate::yaml::CriterionYaml::into_criterion).
 #[derive(Deserialize)]
 pub struct CriterionYaml {
-    stub: String,
+    stub: Option<String>,
     #[allow(dead_code)]
     index: Option<i64>,
     desc: Option<String>,
     worth: i16,
     messages: Option<(String, String)>,
-    hide: Option<bool>
+    hide: Option<bool>,
 }
 
 impl CriterionYaml {
     // Normally I would implement FromStr but I can't because I can't attach the `name`,
     // just because of the yaml format. Kinda fucky, I know.
     pub fn into_criterion(self, name: String) -> Criterion {
-        let mut msgs = (String::from("passed"), String::from("failed"));
+        // The two required fields
+        let mut builder = Criterion::new(&name).worth(self.worth);
 
-        if self.messages.is_some() {
-            msgs = self.messages.unwrap();
+        if let Some(msg) = self.messages {
+            builder = builder.messages(&msg.0, &msg.1)
         }
-
-        let mut builder = Criterion::new(&name)
-            .worth(self.worth)
-            .messages(&msgs.0, &msgs.1)
-            .test(Box::new(|_: &TestData| false ))
-            .stub(&self.stub);
-
-
+        if let Some(stub) = self.stub {
+            builder = builder.stub(&stub)
+        }
         if let Some(h) = self.hide {
-            builder = builder.hide(h);
+            builder = builder.hide(h)
         }
-
         if let Some(desc) = self.desc {
-            builder = builder.desc(&desc);
+            builder = builder.desc(&desc)
         }
 
         return builder.build();
