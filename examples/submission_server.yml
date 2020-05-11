@@ -1,9 +1,9 @@
 name: My Example Batch
-desc: Here's an example of a batch with a list of criteria
+desc: This batch will be graded and sent to the submission server
 
 criteria:
   First Criterion:
-    stub: some-unique-stub
+    stub: first
     index: 1
     worth: 5
     desc: This is the first criterion
@@ -11,7 +11,7 @@ criteria:
     hide: false
 
   Second Criterion:
-    stub: second-crit
+    stub: second
     index: 2
     worth: 25
 
