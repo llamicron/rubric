@@ -123,3 +123,18 @@ pub fn post_json<B: Serialize>(url: &str, body: B) -> Result<Response, reqwest::
         .json(&body)
         .send()
 }
+
+
+/// Posts arbitrary data. This is like [`post_json`](crate::helpers::web::post_json) but
+/// it doesn't set the 'application/json' header.
+pub fn post(url: &str, body: &'static str) -> Result<Response, reqwest::Error> {
+    let client = Client::builder()
+        .user_agent(APP_USER_AGENT)
+        .build()
+        .expect("Couldn't build reqwest client");
+
+    client.post(url)
+        .header(USER_AGENT, APP_USER_AGENT)
+        .body(body)
+        .send()
+}
