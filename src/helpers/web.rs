@@ -2,11 +2,13 @@
 //!
 //! These use the [`reqwest`](https://docs.rs/reqwest/0.10.4/reqwest/) crate
 //! to make requests.
+use std::net::Ipv4Addr;
+use std::time::Duration;
+
 use serde::Serialize;
 use reqwest::blocking::{Client, Response};
 use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE, USER_AGENT};
 
-use std::time::Duration;
 
 static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"));
 
@@ -137,4 +139,33 @@ pub fn post(url: &str, body: &'static str) -> Result<Response, reqwest::Error> {
         .header(USER_AGENT, APP_USER_AGENT)
         .body(body)
         .send()
+}
+
+
+/// Gets the public IPv4 address of the machine,
+/// if there is one.
+///
+/// Warning: this makes a web request, meaning it will take time.
+/// Use this as little as possible to speed up your program.
+///
+/// ## Example
+/// ```rust
+/// # use lab_grader::helpers::web;
+///
+/// let ip = web::get_ip();
+/// assert!(ip.is_some());
+/// ```
+pub fn get_ip() -> Option<Ipv4Addr> {
+    let url = "https://api.ipify.org/";
+
+    if let Ok(resp) = get(url) {
+        if let Ok(cont) = resp.text() {
+            if let Ok(ip) = cont.parse() {
+                return Some(ip);
+            }
+        }
+    }
+
+    None
+
 }
