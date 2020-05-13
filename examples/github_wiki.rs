@@ -58,10 +58,13 @@ fn main() {
     };
 
 
-    batch.attach("git-installed", Box::new(confirm_git_installed));
-    batch.attach("git-init", Box::new(confirm_git_init));
-    batch.attach("commits", Box::new(confirm_enough_commits));
-    batch.attach("pushed", Box::new(confirm_repo_pushed));
+    attach! {
+        batch,
+        "git-installed" => confirm_git_installed,
+        "git-init" => confirm_git_init,
+        "commits" => confirm_enough_commits,
+        "pushed" => confirm_repo_pushed
+    }
 
     sub.grade_against(&mut batch.criteria);
     println!("{}", batch);

@@ -5,7 +5,7 @@ total: 80
 
 criteria:
   First Criterion:
-    stub: first-crit,
+    stub: first-crit
     index: 0
     desc: "First criterion short desc"
     worth: 50

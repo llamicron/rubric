@@ -38,7 +38,7 @@ pub type TestData = HashMap<String, String>;
 /// assert_eq!(map, data);
 /// ```
 #[macro_export]
-macro_rules! data(
+macro_rules! data (
     { $($key:expr => $value:expr),+ } => {
         {
             let mut m = ::std::collections::HashMap::new();

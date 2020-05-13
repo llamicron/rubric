@@ -12,6 +12,33 @@ use ansi_term::Color;
 use crate::{Criteria, TestData};
 use crate::yaml::BatchYaml;
 
+/// Attaches multiple functions to a batch
+///
+/// ## Example
+/// ```no_run
+/// use lab_grader::*;
+/// fn my_test_func(data: &TestData) -> bool {
+///     true
+/// }
+///
+/// fn main() {
+///     // Assume this has a criterion with the stub "my-stub"
+///     let mut batch = Batch::from_yaml(/* ... */);
+///     attach! {
+///         batch,
+///         "my-stub" => my_test_func
+///     }
+/// }
+///
+/// ```
+#[macro_export]
+macro_rules! attach {
+    ( $batch:ident, $($stub:literal => $func:ident),* ) => {
+        $(
+            $batch.attach($stub, Box::new($func));
+        )+
+    };
+}
 
 /// A bundle of metadata with a set of criteria.
 ///
@@ -137,6 +164,22 @@ mod tests {
         let batch = Batch::from_yaml(yaml_data());
         assert_eq!(batch.name, "Test batch");
         assert!(batch.desc.is_some());
+    }
+
+    #[test]
+    fn test_attach_macro() {
+        fn test_fn(_: &TestData) -> bool { true };
+
+        let mut batch = Batch::from_yaml(yaml_data());
+        assert!(!batch.criteria.get("first-crit").unwrap().test());
+
+        attach! {
+            batch,
+            "first-crit" => test_fn
+        };
+
+        assert!(batch.criteria.get("first-crit").unwrap().test());
+
     }
 
     #[test]
