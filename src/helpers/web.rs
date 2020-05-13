@@ -137,6 +137,7 @@ pub fn post(url: &str, body: &'static str) -> Result<Response, reqwest::Error> {
 
     client.post(url)
         .header(USER_AGENT, APP_USER_AGENT)
+        .header(CONTENT_TYPE, "text/plain")
         .body(body)
         .send()
 }
@@ -167,5 +168,54 @@ pub fn get_ip() -> Option<Ipv4Addr> {
     }
 
     None
+
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::submission::Submission;
+    use crate::data;
+
+
+    #[test]
+    fn test_get_request() {
+        let url = "https://postman-echo.com/get";
+        let res = get(url);
+        assert!(res.is_ok());
+
+        let resp = res.unwrap();
+        let text = resp.text().unwrap();
+
+        assert!(text.contains("postman-echo.com"));
+    }
+
+    #[test]
+    fn test_post_json() {
+        let sub = Submission::from_data(data! {
+            "name" => "luke"
+        });
+        let url = "https://postman-echo.com/post";
+        let res = post_json(url, &sub);
+
+        assert!(res.is_ok());
+
+        let text = res.unwrap().text().unwrap();
+        assert!(text.contains(r#""name":"luke""#));
+    }
+
+    #[test]
+    fn test_post_arbitrary() {
+        let data = r#"something"#;
+        let url = "https://postman-echo.com/post";
+
+        let res = post(url, data);
+
+        assert!(res.is_ok());
+
+        let text = res.unwrap().text().unwrap();
+        assert!(text.contains(r#""data":"something""#));
+    }
 
 }
