@@ -3,9 +3,10 @@
 [![Latest Version](https://img.shields.io/crates/v/lab_grader?style=for-the-badge)](https://crates.io/crates/lab_grader)
 [![License](https://img.shields.io/crates/l/lab_grader?style=for-the-badge)](https://crates.io/crates/lab_grader)
 
-[Repository](https://github.com/llamicron/lab_grader) |
-[User Documentation](https://github.com/llamicron/lab_grader/wiki) |
-[Rust Documentation](https://docs.rs/crate/lab_grader)
+
+[![Repostiroy](https://img.shields.io/badge/%20-Repository-informational?style=for-the-badge)](https://github.com/llamicron/lab_grader)
+[![User Documentation](https://img.shields.io/badge/%20-User%20Documentation-informational?style=for-the-badge)](https://github.com/llamicron/lab_grader/wiki)
+[![Rust Documentation](https://img.shields.io/badge/%20-Rust%20Documentation-informational?style=for-the-badge)](https://docs.rs/crate/lab_grader)
 
 This is a Rust package ("crate") that automates a lot of the necessary steps for testing criteria, originally created to grade labs in technology management classes.
 
