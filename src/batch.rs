@@ -15,7 +15,7 @@ use crate::yaml::BatchYaml;
 /// Attaches multiple functions to a batch
 ///
 /// ## Example
-/// ```no_run
+/// ```no_compile
 /// use lab_grader::*;
 /// fn my_test_func(data: &TestData) -> bool {
 ///     true

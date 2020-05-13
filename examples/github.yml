@@ -6,14 +6,14 @@ total: 100
 criteria:
   "Git installed":
     stub: git-installed
-    worth: 25
     desc: Git should be installed and accessible
+    worth: 25
     messages: ["installed", "not installed"]
 
   "Git initialized in repo":
     stub: git-init
-    worth: 25
     desc: Current directory should have git initialized
+    worth: 25
     messages: ["initialized", "not initialized"]
 
   "Commits present":
