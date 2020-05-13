@@ -180,6 +180,7 @@ mod tests {
 
 
     #[test]
+    #[ignore]
     fn test_get_request() {
         let url = "https://postman-echo.com/get";
         let res = get(url);
@@ -192,6 +193,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_post_json() {
         let sub = Submission::from_data(data! {
             "name" => "luke"
@@ -206,6 +208,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_post_arbitrary() {
         let data = r#"something"#;
         let url = "https://postman-echo.com/post";
