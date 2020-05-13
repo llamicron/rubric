@@ -221,4 +221,20 @@ mod tests {
         assert!(text.contains(r#""data":"something""#));
     }
 
+    #[test]
+    #[ignore]
+    fn test_site_responds() {
+        let url = "https://postman-echo.com/get";
+        assert!(site_responds(url));
+        let bad_url = "https://somethingthatdoesntexist.com/hmm";
+        assert!(!site_responds(bad_url));
+    }
+
+    #[test]
+    #[ignore]
+    fn test_get_ip() {
+        let ip = get_ip();
+        assert!(ip.is_some());
+    }
+
 }
