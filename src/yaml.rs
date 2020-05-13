@@ -28,6 +28,7 @@ pub struct BatchYaml {
     pub name: String,
     pub desc: Option<String>,
     pub criteria: HashMap<String, CriterionYaml>,
+    pub total: Option<isize>
 }
 
 /// A yaml representation of [`Criterion`](crate::criterion::Criterion)

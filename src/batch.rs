@@ -19,6 +19,7 @@ pub struct Batch {
     pub name: String,
     pub desc: Option<String>,
     pub criteria: Criteria,
+    pub total: isize
 }
 
 impl Batch {
@@ -87,11 +88,22 @@ impl FromStr for Batch {
             criteria.add(crit.into_criterion(name));
         }
 
+        let criteria_total = criteria.total_points();
+        if let Some(t) = batch_yaml.total {
+            if criteria_total != t {
+                eprint!("{}", Color::Red.paint("Warning: "));
+                eprintln!("Batch total does not match criteria total: batch = {}, criteria = {}",
+                    t, criteria_total);
+            }
+        }
+
+
         // Construct a batch
         Ok(Batch {
             name: batch_yaml.name,
             desc: batch_yaml.desc,
-            criteria: criteria
+            criteria: criteria,
+            total: criteria_total
         })
     }
 }

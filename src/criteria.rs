@@ -103,10 +103,10 @@ impl Criteria {
     ///
     /// This is *not* a grade, but the maximum possible grade.
     /// Only a [`Submission`](crate::submission::Submission) holds a grade.
-    pub fn total_points(&self) -> usize {
-        let mut total: usize = 0;
+    pub fn total_points(&self) -> isize {
+        let mut total: isize = 0;
         for crit in &self.0 {
-            total += crit.worth as usize;
+            total += crit.worth as isize;
         }
         total
     }

@@ -1,6 +1,7 @@
 # Don't delete this file!
 name: Test batch
 desc: here's a short description
+total: 80
 
 criteria:
   First Criterion:
