@@ -1,3 +1,5 @@
+use ansi_term::Color;
+
 use crate::{TestData, Criterion};
 
 
@@ -149,6 +151,8 @@ impl CriterionBuilder {
 
         let test: Box<dyn Fn(&TestData) -> bool>;
         if self.test.is_none() {
+            eprint!("{}", Color::Red.paint("Warning: "));
+            eprintln!("unfulfilled criterion '{}' with stub '{}'. All criterion must have a test.", self.name, stub);
             test = Box::new(|_: &TestData| false );
         } else {
             test = self.test.unwrap();

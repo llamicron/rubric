@@ -10,7 +10,7 @@ homepage = "https://github.com/llamicron/lab_grader"
 repository = "https://github.com/llamicron/lab_grader"
 license = "MIT"
 keywords = [ "grade", "academia", "automation", ]
-categories = [ "command-line-utilities", ]
+categories = [ "command-line-utilities" ]
 
 [dependencies]
 ansi_term = "0.12"
