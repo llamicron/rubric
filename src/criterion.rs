@@ -146,6 +146,22 @@ impl Criterion {
         self.test_with_data(&TestData::new())
     }
 
+    /// Prints the essential criterion information in one line.
+    pub fn print_short(&self) {
+        if let Some(s) = self.status {
+            if s {
+                println!("{} {}",
+                    self.name,
+                    Green.paint(self.success_message()));
+            } else {
+                println!("{} {}",
+                    self.name,
+                    Red.paint(self.failure_message()));
+            }
+        } else {
+            println!("{} not tested", self.name);
+        }
+    }
 }
 
 /// Displays the results of the criterion.

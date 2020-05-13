@@ -60,6 +60,17 @@ impl Batch {
     pub fn attach(&mut self, stub: &str, func: Box<dyn Fn(&TestData) -> bool>) {
         self.criteria.attach(stub, func);
     }
+
+    /// An alternative to printing through `println!("{}", batch)`.
+    ///
+    /// This prints a shorted report where each criterion is on it's own line,
+    /// and only the criterion name and status is printed. The batch description
+    /// is also hidden.
+    pub fn print_short(&self) {
+        println!("{}", Color::White.bold().paint(&self.name));
+        self.criteria.print_short();
+        println!("{}/{}", self.criteria.points(), self.criteria.total_points());
+    }
 }
 
 

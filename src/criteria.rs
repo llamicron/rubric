@@ -135,6 +135,14 @@ impl Criteria {
         }
         total
     }
+
+    /// Prints only the criterion name and status. An
+    /// alternative to `println!("{}", criteria)`
+    pub fn print_short(&self) {
+        for crit in &self.0 {
+            crit.print_short();
+        }
+    }
 }
 
 impl FromIterator<Criterion> for Criteria {
