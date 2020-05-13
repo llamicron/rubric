@@ -17,6 +17,9 @@ fn return_ok() -> Status {
 #[post("/submit", format = "application/json", data = "<submission>")]
 fn accept_submission(submission: Json<Submission>) -> Status {
     let sub = submission.into_inner();
+    // We can't have a globally managed results file
+    // because the header for this file is generated based on the
+    // data in the submission
     let mut rf = ResultsFile::for_item(&sub).expect("Could not open results file");
 
     if rf.write_csv(&sub).is_ok() {
@@ -45,7 +48,11 @@ pub fn run(port: u16) {
         .port(port)
         .finalize()
         .expect("Could not build submission server");
-    rocket::custom(config).mount("/", routes![return_ok, accept_submission]).launch();
+
+
+    rocket::custom(config)
+        .mount("/", routes![return_ok, accept_submission])
+        .launch();
 }
 
 

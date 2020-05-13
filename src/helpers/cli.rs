@@ -221,8 +221,8 @@ impl Version {
 impl FromStr for Version {
     type Err = std::num::ParseIntError;
 
+    /// This splits by ".". Any values not found are set to 0.
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        // let re = Regex::new(r"(\d+)\.?").unwrap();
         let parts: Vec<&str> = s.split(".").collect();
 
         let major_str = parts.get(0).unwrap_or(&"0");

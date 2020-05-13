@@ -66,8 +66,8 @@ fn main() {
     sub.grade_against(&mut batch.criteria);
     println!("{}", batch);
 
-    // let url = format!("http://myurl.whatever/submit");
-    // if web::post_json(&url, &sub).is_ok() {
+    // let url = "http://myurl.whatever/submit";
+    // if web::post_json(url, &sub).is_ok() {
     //     println!("Submission sent and recieved!");
     // } else {
     //     println!("Submission could not be sent.");
