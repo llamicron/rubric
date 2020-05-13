@@ -1,4 +1,4 @@
-# Lab Grader [![Testing Suite](https://github.com/llamicron/lab_grader/workflows/Testing%20Suite/badge.svg)](https://github.com/llamicron/lab_grader/actions?query=workflow%3A%22Testing+Suite%22)
+# Lab Grader [![Testing Suite](https://github.com/llamicron/lab_grader/workflows/Testing%20Suite/badge.svg)](https://github.com/llamicron/lab_grader/actions?query=workflow%3A%22Testing+Suite%22) [![Latest Version](https://img.shields.io/crates/v/lab_grader)](https://crates.io/crates/lab_grader)
 
 [Repository](https://github.com/llamicron/lab_grader) |
 [User Documentation](https://github.com/llamicron/lab_grader/wiki) |
