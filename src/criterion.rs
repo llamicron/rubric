@@ -18,37 +18,6 @@ use ansi_term::Color::{Green, Red, White};
 use crate::TestData;
 use crate::criterion_builder::CriterionBuilder;
 
-
-// TODO: Move this to submission.rs
-/// A macro to easily create a `TestData` struct, which is
-/// really just an alias to `HashMap<String, String>`
-///
-/// ## Example
-/// ```rust
-/// # #[macro_use] extern crate lab_grader;
-/// use lab_grader::TestData;
-///
-/// // The long way
-/// let mut map = TestData::new();
-/// map.insert(String::from("key"), String::from("value"));
-///
-/// // the macro way
-/// let data = data! { "key" => "value" };
-/// assert_eq!(map, data);
-/// ```
-#[macro_export]
-macro_rules! data(
-    { $($key:expr => $value:expr),+ } => {
-        {
-            let mut m = ::std::collections::HashMap::new();
-            $(
-                m.insert(String::from($key), String::from($value));
-            )+
-            m
-        }
-     };
-);
-
 /// A single Criterion
 pub struct Criterion {
     /// An ID stub used to identify this criterion
@@ -207,6 +176,7 @@ impl fmt::Display for Criterion {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::data;
 
     fn test_crit() -> Criterion {
         Criterion::new("test")

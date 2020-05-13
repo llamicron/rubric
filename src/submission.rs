@@ -20,6 +20,37 @@ use crate::server;
 /// and how data is stored in a submission
 pub type TestData = HashMap<String, String>;
 
+
+/// A macro to easily create a [`TestData`](crate::submission::TestData)
+/// struct, which is really just an alias to `HashMap<String, String>`.
+///
+/// ## Example
+/// ```rust
+/// # extern crate lab_grader;
+/// use lab_grader::{TestData, data};
+///
+/// // The long way
+/// let mut map = TestData::new();
+/// map.insert(String::from("key"), String::from("value"));
+///
+/// // the macro way
+/// let data = data! { "key" => "value" };
+/// assert_eq!(map, data);
+/// ```
+#[macro_export]
+macro_rules! data(
+    { $($key:expr => $value:expr),+ } => {
+        {
+            let mut m = ::std::collections::HashMap::new();
+            $(
+                m.insert(String::from($key), String::from($value));
+            )+
+            m
+        }
+     };
+);
+
+
 /// A submission is a bundle of data that represents
 /// one student's submission. They will do some sort of work
 /// for a lab, then run a rust script that builds some criteria,
