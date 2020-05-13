@@ -1,8 +1,10 @@
+// external uses
 use rocket::Config;
 use rocket::http::Status;
 use rocket::config::Environment;
 use rocket_contrib::json::Json;
 
+// internal uses
 use crate::submission::Submission;
 use crate::ResultsFile;
 

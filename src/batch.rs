@@ -1,10 +1,14 @@
 //! A batch of criteria, with some extra metadata
+
+// std uses
 use std::str::FromStr;
 use std::process::exit;
 use std::fmt;
 
+// external uses
 use ansi_term::Color;
 
+// internal uses
 use crate::{Criteria, TestData};
 use crate::yaml::BatchYaml;
 

@@ -10,13 +10,17 @@
 //! but you can if you want. Instead, you should define your criteria in `YAML` then
 //! build that into a [`Batch`](crate::batch::Batch).
 
+// std uses
 use std::fmt;
 use std::fmt::Write;
 
+// external uses
 use ansi_term::Color::{Green, Red, White};
 
+// internal uses
 use crate::TestData;
 use crate::criterion_builder::CriterionBuilder;
+
 
 /// A single Criterion
 pub struct Criterion {

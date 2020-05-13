@@ -2,9 +2,12 @@
 //!
 //! These use the [`reqwest`](https://docs.rs/reqwest/0.10.4/reqwest/) crate
 //! to make requests.
+
+// std uses
 use std::net::Ipv4Addr;
 use std::time::Duration;
 
+// external uses
 use serde::Serialize;
 use reqwest::blocking::{Client, Response};
 use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE, USER_AGENT};

@@ -1,10 +1,14 @@
 //! YAML representations of some key structs
 //!
 //! Much bourbon went into the creation of this module.
-use serde::Deserialize;
-use std::collections::HashMap;
-// use std::process::exit;
 
+// std uses
+use std::collections::HashMap;
+
+// external uses
+use serde::Deserialize;
+
+// internal uses
 use crate::Criterion;
 
 /// This is an important macro. It reads data from a file using

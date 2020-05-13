@@ -28,11 +28,14 @@
 //! assert!(criteria.len() == 2);
 //! ```
 
+// std uses
 use std::fmt;
 use std::process::exit;
 use std::iter::FromIterator;
 
+// internal uses
 use crate::{Criterion, TestData};
+
 
 /// The Criteria struct, just a collection of [`Criterion`](crate::criterion::Criterion)
 pub struct Criteria(pub Vec<Criterion>);

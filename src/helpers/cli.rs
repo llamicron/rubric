@@ -1,10 +1,12 @@
 //! Functions and macros that deal with the terminal
 
+// std uses
 use std::fmt;
 use std::io::{stdin, stdout, Write};
 use std::process::Command;
 use std::str::FromStr;
 
+// external uses
 use regex::Regex;
 
 fn flush() {
