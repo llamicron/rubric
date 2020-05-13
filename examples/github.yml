@@ -1,5 +1,7 @@
 name: Batch 1
 desc: Here's our first (and only) batch
+total: 100
+
 
 criteria:
   "Git installed":

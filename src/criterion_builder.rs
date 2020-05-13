@@ -1,5 +1,3 @@
-use ansi_term::Color;
-
 use crate::{TestData, Criterion};
 
 
