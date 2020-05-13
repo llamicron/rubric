@@ -71,7 +71,7 @@ pub struct Criterion {
     /// will be printed. Not much use other than that.
     pub messages: (String, String),
     /// An optional description
-    pub desc: String,
+    pub desc: Option<String>,
     /// The criterion's test
     ///
     /// Determines if the criterion passes or fails. This signature is
@@ -160,16 +160,16 @@ impl fmt::Display for Criterion {
             if status {
                 // Success
                 writeln!(&mut buffer, "{}", Green.bold().paint(&self.name)).unwrap();
-                if self.desc.len() > 0 {
-                    writeln!(&mut buffer, "{}", White.paint(&self.desc)).unwrap();
+                if let Some(d) = &self.desc {
+                    writeln!(&mut buffer, "{}", White.paint(d)).unwrap();
                 }
                 writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
                 writeln!(&mut buffer, "Status: {}", Green.paint(self.success_message())).unwrap();
             } else {
                 // Failure
                 writeln!(&mut buffer, "{}", Red.bold().paint(&self.name)).unwrap();
-                if self.desc.len() > 0 {
-                    writeln!(&mut buffer, "{}", White.paint(&self.desc)).unwrap();
+                if let Some(d) = &self.desc {
+                    writeln!(&mut buffer, "{}", White.paint(d)).unwrap();
                 }
                 writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
                 writeln!(&mut buffer, "Status: {}", Red.paint(self.failure_message())).unwrap();
@@ -177,8 +177,8 @@ impl fmt::Display for Criterion {
         } else {
             // Neutral
             writeln!(&mut buffer, "{}", White.bold().paint(&self.name)).unwrap();
-            if self.desc.len() > 0 {
-                writeln!(&mut buffer, "{}", White.paint(&self.desc)).unwrap();
+            if let Some(d) = &self.desc {
+                writeln!(&mut buffer, "{}", White.paint(d)).unwrap();
             }
             writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
             writeln!(&mut buffer, "Status: not tested").unwrap();

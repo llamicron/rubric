@@ -147,14 +147,6 @@ impl CriterionBuilder {
             stub = self.stub.unwrap();
         }
 
-        // TODO: change desc on Criterion to be an Option<String>
-        let desc;
-        if self.desc.is_none() {
-            desc = String::from("")
-        } else {
-            desc = self.desc.unwrap();
-        }
-
         let test: Box<dyn Fn(&TestData) -> bool>;
         if self.test.is_none() {
             test = Box::new(|_: &TestData| false );
@@ -167,7 +159,7 @@ impl CriterionBuilder {
             name: self.name,
             worth: self.worth,
             messages: self.messages,
-            desc: desc,
+            desc: self.desc,
             test: test,
             index: self.index,
             status: None,
@@ -207,7 +199,7 @@ mod tests {
         assert_eq!(crit.stub, "my-crit");
         assert_eq!(crit.messages.0, "passed");
         assert_eq!(crit.messages.1, "failed");
-        assert_eq!(crit.desc, "");
+        assert!(crit.desc.is_none());
         assert!(!crit.hide);
     }
 
@@ -226,7 +218,7 @@ mod tests {
             "success".to_string(),
             "failed :(".to_string()
         ));
-        assert_eq!(crit.desc, "Here's my desc");
+        assert_eq!(crit.desc.unwrap(), "Here's my desc");
         assert!(crit.hide);
 
     }
