@@ -26,7 +26,7 @@ fn main() {
 
 
     let yaml_data = yaml!("submission_server.yml").expect("Couldn't read yaml file");
-    let mut batch = Batch::from_yaml(yaml_data);
+    let mut batch = Batch::from_yaml(yaml_data).expect("Bad yaml");
 
     // We're not going to attach a test to the criteria,
     // meaning they'll all fail. We don't really care,

@@ -30,16 +30,14 @@
 
 // std uses
 use std::fmt;
-use std::process::exit;
 use std::iter::FromIterator;
 
 // internal uses
+use crate::error::{Error, Result};
 use crate::{Criterion, TestData};
-
 
 /// The Criteria struct, just a collection of [`Criterion`](crate::criterion::Criterion)
 pub struct Criteria(pub Vec<Criterion>);
-
 
 impl Criteria {
     // Creates a new empty criteria
@@ -67,18 +65,19 @@ impl Criteria {
     /// assert!(criteria.get("doesnt-exist").is_none());
     /// ```
     pub fn get(&mut self, stub: &str) -> Option<&mut Criterion> {
-        self.0.iter_mut().find(|c| c.stub == stub )
+        self.0.iter_mut().find(|c| c.stub == stub)
     }
 
-    // TODO: Add better docs for this
     /// Attached a function onto the criterion with the given stub
-    pub fn attach(&mut self, stub: &str, func: Box<dyn Fn(&TestData) -> bool>) {
+    pub fn attach(&mut self, stub: &str,
+        func: Box<dyn Fn(&TestData) -> bool>) -> Result<()> {
+
         match self.get(stub) {
-            Some(crit) => crit.attach(func),
-            None => {
-                eprintln!("Couldn't find criterion with stub '{}'", stub);
-                exit(1);
+            Some(crit) => {
+                crit.attach(func);
+                return Ok(());
             }
+            None => return Err(Error::stub_not_found(stub)),
         }
     }
 
@@ -117,7 +116,7 @@ impl Criteria {
     /// Returns the criterion vector, sorted by index
     pub fn sorted(&mut self) -> &mut Vec<Criterion> {
         let sorted = &mut self.0;
-        sorted.sort_by(|a, b| a.index.cmp(&b.index) );
+        sorted.sort_by(|a, b| a.index.cmp(&b.index));
         sorted
     }
 
@@ -149,7 +148,7 @@ impl Criteria {
 }
 
 impl FromIterator<Criterion> for Criteria {
-    fn from_iter<I: IntoIterator<Item=Criterion>>(iter: I) -> Self {
+    fn from_iter<I: IntoIterator<Item = Criterion>>(iter: I) -> Self {
         let mut criteria = Criteria::new();
 
         for i in iter {
@@ -159,7 +158,6 @@ impl FromIterator<Criterion> for Criteria {
         criteria
     }
 }
-
 
 impl fmt::Display for Criteria {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -171,10 +169,6 @@ impl fmt::Display for Criteria {
     }
 }
 
-
-
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -184,7 +178,8 @@ mod tests {
         let loose = vec![
             Criterion::new("test 1").build(),
             Criterion::new("test 2").build(),
-        ].into_iter();
+        ]
+        .into_iter();
         let criteria: Criteria = loose.collect();
         assert!(criteria.0.len() == 2);
     }

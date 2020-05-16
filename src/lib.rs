@@ -27,6 +27,7 @@ pub mod batch;
 
 // Private modules
 mod server;
+mod error;
 mod yaml;
 
 

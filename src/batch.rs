@@ -2,7 +2,6 @@
 
 // std uses
 use std::str::FromStr;
-use std::process::exit;
 use std::fmt;
 
 // external uses
@@ -11,8 +10,10 @@ use ansi_term::Color;
 // internal uses
 use crate::{Criteria, TestData};
 use crate::yaml::BatchYaml;
+use crate::error::{Result, Error};
 
-/// Attaches multiple functions to a batch
+/// Attaches multiple functions to a batch. Will panic if
+/// any criterion with the given stub isn't found.
 ///
 /// ## Example
 /// ```no_compile
@@ -23,7 +24,7 @@ use crate::yaml::BatchYaml;
 ///
 /// fn main() {
 ///     // Assume this has a criterion with the stub "my-stub"
-///     let mut batch = Batch::from_yaml(/* ... */);
+///     let mut batch = Batch::from_yaml(/* ... */).unwrap();
 ///     attach! {
 ///         batch,
 ///         "my-stub" => my_test_func
@@ -35,7 +36,7 @@ use crate::yaml::BatchYaml;
 macro_rules! attach {
     ( $batch:ident, $($stub:literal => $func:ident),* ) => {
         $(
-            $batch.attach($stub, Box::new($func));
+            $batch.attach($stub, Box::new($func)).expect("criterion not found");
         )+
     };
 }
@@ -54,43 +55,32 @@ pub struct Batch {
 }
 
 impl Batch {
-    /// Builds a Batch from yaml data
-    ///
-    /// This method calls `parse()` from the [`FromStr`](std::str::FromStr). `parse()`
-    /// returns a `Result`, and this method just prints the result in a clean way and exits
-    /// with [`exit`](std::process::exit). It's just one less thing to `unwrap`.
-    ///
-    /// `exit`ing from within a library function is usually bad practice, but this will only
-    /// exit if the yaml passed in has an error. The yaml you'll write to form a Batch is written
-    /// during development, and is embedded in the executable. This means that if you're code compiles,
-    /// it can be distributed and this will never `exit`.
-    ///
-    /// If you want to deal with the result yourself, call `parse` instead of this.
+    /// Builds a batch from yaml data.
     ///
     /// ## Example
     /// ```rust
-    /// use lab_grader::*;
-    ///
-    /// let yaml_data = yaml!("../test_data/test_batch.yml").expect("Couldn't open that file");
-    /// let batch = Batch::from_yaml(yaml_data);
-    ///
-    /// // Now you've got a batch
-    /// assert!(batch.name.len() > 1);
+    /// # use lab_grader::batch::Batch;
+    /// # use lab_grader::yaml;
+    /// let yaml = yaml!("../test_data/test_batch.yml").unwrap();
+    /// let batch = Batch::from_yaml(yaml).expect("Bad yaml!");
     /// ```
-    pub fn from_yaml(yaml: &str) -> Self {
+    pub fn from_yaml(yaml: &str) -> Result<Self> {
         match yaml.parse::<Self>() {
-            Ok(b) => return b,
+            Ok(batch) => Ok(batch),
             Err(e) => {
-                eprintln!("{}", e);
-                exit(1);
+                match e.location() {
+                    Some(loc) => return Err(Error::bad_yaml(loc.line(), loc.column())),
+                    None => return Err(Error::bad_yaml(0, 0)),
+                }
             }
         }
     }
 
 
     /// Gets a criterion by stub
-    pub fn attach(&mut self, stub: &str, func: Box<dyn Fn(&TestData) -> bool>) {
-        self.criteria.attach(stub, func);
+    pub fn attach(&mut self, stub: &str,
+        func: Box<dyn Fn(&TestData) -> bool>) -> Result<()> {
+        self.criteria.attach(stub, func)
     }
 
     /// An alternative to printing through `println!("{}", batch)`.
@@ -109,7 +99,7 @@ impl Batch {
 impl FromStr for Batch {
     type Err = serde_yaml::Error;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
         // Construct BatchYaml from yaml data
         let batch_yaml = serde_yaml::from_str::<BatchYaml>(s)?;
 
@@ -161,7 +151,7 @@ mod tests {
 
     #[test]
     fn test_from_yaml() {
-        let batch = Batch::from_yaml(yaml_data());
+        let batch = Batch::from_yaml(yaml_data()).expect("Bad yaml");
         assert_eq!(batch.name, "Test batch");
         assert!(batch.desc.is_some());
     }
@@ -170,7 +160,7 @@ mod tests {
     fn test_attach_macro() {
         fn test_fn(_: &TestData) -> bool { true };
 
-        let mut batch = Batch::from_yaml(yaml_data());
+        let mut batch = Batch::from_yaml(yaml_data()).expect("Bad yaml");
         assert!(!batch.criteria.get("first-crit").unwrap().test());
 
         attach! {
