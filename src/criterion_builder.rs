@@ -140,19 +140,17 @@ impl CriterionBuilder {
     /// ```
     pub fn build(self) -> Criterion {
 
-        let stub: String;
-        if self.stub.is_none() {
-            stub = self.name.split_whitespace()
-                .collect::<Vec<&str>>()
+        let name = self.name;
+        let stub = self.stub.unwrap_or_else(|| {
+            name.to_lowercase()
+                .split_whitespace()
+                .collect::<Vec<_>>()
                 .join("-")
-                .to_lowercase();
-        } else {
-            stub = self.stub.unwrap();
-        }
+        });
 
         Criterion {
             stub: stub,
-            name: self.name,
+            name: name,
             worth: self.worth,
             messages: self.messages,
             desc: self.desc,
