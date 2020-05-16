@@ -15,10 +15,6 @@ extern crate chrono;
 extern crate serde;
 extern crate regex;
 
-// Testing external crates
-#[cfg(test)]
-#[macro_use] extern crate pretty_assertions;
-
 // Public modules
 pub mod criterion_builder;
 pub mod results_file;
@@ -33,7 +29,6 @@ mod server;
 mod yaml;
 
 
-
 // Public uses
 pub use helpers::{web, fs, cli};
 pub use submission::Submission;
@@ -46,3 +41,8 @@ pub use batch::Batch;
 
 // private uses
 use results_file::ResultsFile;
+
+
+// Testing external crates
+#[cfg(test)]
+#[macro_use] extern crate pretty_assertions;
