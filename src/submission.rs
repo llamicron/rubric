@@ -237,7 +237,7 @@ impl AsCsv for TestData {
     /// sorted alphabetically by key.
     fn as_csv(&self) -> String {
         let values: Vec<&String> = self.values().collect();
-        let mut owned_values: Vec<String> = values.iter().map(|&k| k.to_owned() ).collect();
+        let mut owned_values: Vec<String> = values.iter().map(|&k| k.replace(",", ";").to_owned() ).collect();
         owned_values.sort_by(|a,b| a.cmp(&b) );
         return owned_values.join(",");
     }
@@ -377,5 +377,14 @@ mod tests {
         assert_eq!(d.header(), expected_header);
         assert_eq!(d.as_csv(), expected_values);
         assert_eq!(d.filename(), expected_filename);
+    }
+
+    #[test]
+    fn test_as_csv_replaces_commas() {
+        let sub = Submission::from_data(data! {
+            "key" => "value with, comma"
+        });
+
+        assert!(sub.as_csv().contains("value with; comma"));
     }
 }
