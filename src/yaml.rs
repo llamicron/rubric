@@ -42,7 +42,6 @@ pub struct BatchYaml {
 #[derive(Deserialize)]
 pub struct CriterionYaml {
     stub: Option<String>,
-    #[allow(dead_code)]
     index: Option<i64>,
     desc: Option<String>,
     worth: i16,

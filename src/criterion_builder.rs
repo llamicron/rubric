@@ -139,20 +139,15 @@ impl CriterionBuilder {
     ///     .build();
     /// ```
     pub fn build(self) -> Criterion {
-        // Build stub
-        let stub;
+
+        let stub: String;
         if self.stub.is_none() {
-            let re = regex::Regex::new(r" +").unwrap();
-            stub = re.replace_all(self.name.trim(), "-").to_lowercase();
+            stub = self.name.split_whitespace()
+                .collect::<Vec<&str>>()
+                .join("-")
+                .to_lowercase();
         } else {
             stub = self.stub.unwrap();
-        }
-
-        let test: Box<dyn Fn(&TestData) -> bool>;
-        if self.test.is_none() {
-            test = Box::new(|_: &TestData| false );
-        } else {
-            test = self.test.unwrap();
         }
 
         Criterion {
@@ -161,7 +156,7 @@ impl CriterionBuilder {
             worth: self.worth,
             messages: self.messages,
             desc: self.desc,
-            test: test,
+            test: self.test.unwrap_or(Box::new(|_: &TestData| false)),
             index: self.index,
             status: None,
             hide: self.hide
@@ -206,14 +201,14 @@ mod tests {
 
     #[test]
     fn test_build_parameters() {
-        let crit = CriterionBuilder::new("my crit")
+        let crit = CriterionBuilder::new("My crit")
             .stub("my-stub")
             .messages("success", "failed :(")
             .desc("Here's my desc")
             .hide(true)
             .build();
 
-        assert_eq!(crit.name, "my crit");
+        assert_eq!(crit.name, "My crit");
         assert_eq!(crit.stub, "my-stub");
         assert_eq!(crit.messages, (
             "success".to_string(),
@@ -229,5 +224,14 @@ mod tests {
         let cb = CriterionBuilder::new("my crit");
         let crit = cb.build();
         assert_eq!(crit.name, "my crit");
+    }
+
+    #[test]
+    fn test_default_stub() {
+        let crit = CriterionBuilder::new("My crit 1").build();
+        assert_eq!(crit.stub, "my-crit-1");
+
+        let crit2 = CriterionBuilder::new("MY CRIT    2").build();
+        assert_eq!(crit2.stub, "my-crit-2");
     }
 }

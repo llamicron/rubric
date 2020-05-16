@@ -52,6 +52,7 @@ fn main() {
     });
 
 
+
     let mut batch = match yaml!("github.yml") {
         Ok(text) => Batch::from_yaml(text),
         Err(_) => panic!("Something went wrong! Couldn't read yaml data and build a batch")

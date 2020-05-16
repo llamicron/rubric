@@ -1,6 +1,7 @@
 // external uses
 use rocket::Config;
 use rocket::http::Status;
+use rocket::error::LaunchError;
 use rocket::config::Environment;
 use rocket_contrib::json::Json;
 
@@ -37,7 +38,7 @@ fn accept_submission(submission: Json<Submission>) -> Status {
 ///
 /// You probably shouldn't call this directly, instead call
 /// the `server` method on [`Submission`](crate::submission::Submission).
-pub fn run(port: u16) {
+pub fn run(port: u16) -> LaunchError {
     // If debug
     #[cfg(debug_assertions)]
     let builder = Config::build(Environment::Development);
@@ -52,7 +53,7 @@ pub fn run(port: u16) {
         .expect("Could not build submission server");
 
 
-    rocket::custom(config)
+    return rocket::custom(config)
         .mount("/", routes![return_ok, accept_submission])
         .launch();
 }

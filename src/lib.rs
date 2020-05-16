@@ -10,6 +10,7 @@ extern crate rocket_contrib;
 extern crate serde_yaml;
 extern crate serde_json;
 extern crate ansi_term;
+extern crate failure;
 extern crate reqwest;
 extern crate chrono;
 extern crate serde;
