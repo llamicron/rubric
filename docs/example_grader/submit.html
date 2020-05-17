@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="../example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="../example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="../example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="../example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="../example_grader/submit.html" class="active"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="../example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="../criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="../example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="../example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="../example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="../example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="../example_grader/submit.html" class="active"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="../example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="../criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li><li class="chapter-item expanded "><a href="../helpers/home.html"><strong aria-hidden="true">3.</strong> Helpers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../helpers/fs.html"><strong aria-hidden="true">3.1.</strong> File System</a></li><li class="chapter-item expanded "><a href="../helpers/web.html"><strong aria-hidden="true">3.2.</strong> Web</a></li><li class="chapter-item expanded "><a href="../helpers/cli.html"><strong aria-hidden="true">3.3.</strong> CLI</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -153,7 +153,7 @@
 <p>The submission server is simply a web server with a single route: it accepts POST requests on the <code>/submit</code> route. You can run it with a single function.</p>
 <p>You'll want to set up a publicly accessible server to run this server. I use a Microsoft Azure VM because they're pretty easy to set up and provide DNS services.</p>
 <p>Let's add a little bit of code to the <em>beginning</em> of our <code>main</code> function. It will read the command line arguments and run the server if you run the program with the &quot;<code>server</code>&quot; argument.</p>
-<pre><pre class="playpen"><code class="language-rust">fn main() {
+<pre><code class="language-rust noplaypen">fn main() {
     // Get command line arguments
     let args: Vec&lt;String&gt; = std::env::args().collect();
 
@@ -165,11 +165,11 @@
 
     // ...
 }
-</code></pre></pre>
+</code></pre>
 <p>Now you can run the program with the &quot;<code>server</code>&quot; argument to start up your web server. Open another terminal and run this server in the background while we finish the grader.</p>
 <h2><a class="header" href="#submitting-1" id="submitting-1">Submitting</a></h2>
 <p>Now that the submission server is running, we can submit. Let's add this to the end of the <code>main</code> function.</p>
-<pre><pre class="playpen"><code class="language-rust">fn main() {
+<pre><code class="language-rust noplaypen">fn main() {
     // ...
     let url = &quot;http://localhost:8080/submit&quot;;
     let res = web::post_json(url, &amp;sub);
@@ -179,7 +179,7 @@
         println!(&quot;Error sending submission! {}&quot;, res.unwrap_err());
     }
 }
-</code></pre></pre>
+</code></pre>
 <p>This will submit the submission to the server that you should have running, and print a success or error message. Of course, you'll want to put the url for your server instead of <code>localhost</code>.</p>
 
                     </main>

@@ -15,14 +15,14 @@ This macro is very important for one reason. When you compile in debug mode (def
 
 We can go ahead and add this to the end of our `main` function
 
-```rust
+```rust ,noplaypen
 let yaml = yaml!("../criteria/batch.yml").expect("Couldn't read file");
 ```
 
 ## Building a Batch
 Now that we have our yaml data, we can build a `Batch` from it.
 
-```rust
+```rust ,noplaypen
 let mut batch = Batch::from_yaml(yaml).expect("Bad yaml!");
 ```
 
@@ -30,7 +30,7 @@ Here we're using the `expect` method again, but it's probably a good idea in thi
 
 That's all there is to building a batch. Here's the complete `main.rs` file so far
 
-```rust
+```rust ,noplaypen
 extern crate lab_grader;
 
 use lab_grader::*;

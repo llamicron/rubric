@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="../example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="../example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="../example_grader/tests.html" class="active"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="../example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="../example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="../example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="../criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="../example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="../example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="../example_grader/tests.html" class="active"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="../example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="../example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="../example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="../criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li><li class="chapter-item expanded "><a href="../helpers/home.html"><strong aria-hidden="true">3.</strong> Helpers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../helpers/fs.html"><strong aria-hidden="true">3.1.</strong> File System</a></li><li class="chapter-item expanded "><a href="../helpers/web.html"><strong aria-hidden="true">3.2.</strong> Web</a></li><li class="chapter-item expanded "><a href="../helpers/cli.html"><strong aria-hidden="true">3.3.</strong> CLI</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -158,19 +158,15 @@
 <p>Before we write any tests, you should know about the <a href="">helpers</a> modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.</p>
 <h2><a class="header" href="#the-first-test" id="the-first-test">The First Test</a></h2>
 <p>Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature. I'll add this outside our <code>main</code> function.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>fn confirm_git_installed(_: &amp;TestData) -&gt; bool {
+<pre><code class="language-rust noplaypen">fn confirm_git_installed(_: &amp;TestData) -&gt; bool {
     cli::Program::Git.version().is_some()
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>We added a function called <code>confirm_git_installed</code>. It takes in a parameter of type <code>&amp;TestData</code>, but in this case we don't need it so we'll name the parameter <code>_</code>. In the function body, we used the <code>cli</code> helper module to get the version of Git, and returned true if it's a <code>Some</code> value (this is an <code>Option</code> type, it would be <code>None</code> if Git wasn't installed).</p>
 <p>And that's it for the first test. There's still one step to go, but we'll do that after the other tests.</p>
 <h2><a class="header" href="#the-rest-of-the-tests" id="the-rest-of-the-tests">The Rest of the Tests</a></h2>
 <p>I'm going to write some functions to serve as the tests for the remaining criteria. I won't explain what each one is doing in detail, but it should be pretty self explanatory. I'll put the entire <code>main.rs</code> file here.</p>
-<pre><pre class="playpen"><code class="language-rust">extern crate lab_grader;
+<pre><code class="language-rust noplaypen">extern crate lab_grader;
 
 use std::process::Command;
 use lab_grader::*;
@@ -233,11 +229,11 @@ fn main() {
     let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
     let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
 }
-</code></pre></pre>
+</code></pre>
 <p>In the <code>confirm_repo_pushed</code>, we're actually using the data attached to the submission. We can do that with bracket syntax (<code>data[&quot;key&quot;]</code>) or through the <a href="https://doc.rust-lang.org/beta/std/collections/struct.HashMap.html#method.get"><code>get</code></a> method. Using <code>get</code> is recommended over bracket syntax.</p>
 <h2><a class="header" href="#attaching-the-tests" id="attaching-the-tests">Attaching the Tests</a></h2>
 <p>Now that we have our tests, we need to attach them to the appropriate criteria. We can do that with the <code>attach!</code> macro.</p>
-<pre><pre class="playpen"><code class="language-rust">fn main() {
+<pre><code class="language-rust noplaypen">fn main() {
     // ...
     attach! {
         batch,
@@ -247,7 +243,7 @@ fn main() {
         &quot;repo-pushed&quot; =&gt; confirm_repo_pushed
     };
 }
-</code></pre></pre>
+</code></pre>
 <p>This attached each of our functions to the criteria with the given stub. This is why we needed to specify a stub in yaml.</p>
 <blockquote>
 <p>Note: If you don't provide the stub in yaml, it will be created by lowercasing the name and replacing whitespace with a dash. ie. <code>My First Criterion =&gt; my-first-criterion</code>.</p>

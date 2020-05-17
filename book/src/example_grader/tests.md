@@ -15,7 +15,7 @@ Before we write any tests, you should know about the [helpers]() modules. These 
 ## The First Test
 Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature. I'll add this outside our `main` function.
 
-```rust
+```rust ,noplaypen
 fn confirm_git_installed(_: &TestData) -> bool {
     cli::Program::Git.version().is_some()
 }
@@ -30,7 +30,7 @@ And that's it for the first test. There's still one step to go, but we'll do tha
 I'm going to write some functions to serve as the tests for the remaining criteria. I won't explain what each one is doing in detail, but it should be pretty self explanatory. I'll put the entire `main.rs` file here.
 
 
-```rust
+```rust ,noplaypen
 extern crate lab_grader;
 
 use std::process::Command;
@@ -102,7 +102,7 @@ In the `confirm_repo_pushed`, we're actually using the data attached to the subm
 ## Attaching the Tests
 Now that we have our tests, we need to attach them to the appropriate criteria. We can do that with the `attach!` macro.
 
-```rust
+```rust ,noplaypen
 fn main() {
     // ...
     attach! {

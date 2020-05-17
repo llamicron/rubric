@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>YAML Specification - Lab Grader</title>
+        <title>Web - Lab Grader</title>
         
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="../example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="../example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="../example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="../example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="../example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="../example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="../criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../criteria/yaml_spec.html" class="active"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li><li class="chapter-item expanded "><a href="../helpers/home.html"><strong aria-hidden="true">3.</strong> Helpers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../helpers/fs.html"><strong aria-hidden="true">3.1.</strong> File System</a></li><li class="chapter-item expanded "><a href="../helpers/web.html"><strong aria-hidden="true">3.2.</strong> Web</a></li><li class="chapter-item expanded "><a href="../helpers/cli.html"><strong aria-hidden="true">3.3.</strong> CLI</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="../example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="../example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="../example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="../example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="../example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="../example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="../criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li><li class="chapter-item expanded "><a href="../helpers/home.html"><strong aria-hidden="true">3.</strong> Helpers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../helpers/fs.html"><strong aria-hidden="true">3.1.</strong> File System</a></li><li class="chapter-item expanded "><a href="../helpers/web.html" class="active"><strong aria-hidden="true">3.2.</strong> Web</a></li><li class="chapter-item expanded "><a href="../helpers/cli.html"><strong aria-hidden="true">3.3.</strong> CLI</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -147,78 +147,59 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#yaml-specification" id="yaml-specification">YAML Specification</a></h1>
-<p>Here's the keys allowed when making a yaml file for a batch. Not all fields are required, but it's better to be specific.</p>
-<p>Here's the <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">YAML syntax</a> so you can learn how to write valid YAML. This isn't the official specification, but it's the easiest guide I found.</p>
-<p>When naming your yaml files, you can use <code>.yml</code> or <code>.yaml</code>. Honestly you can use whatever extension, I don't care, but I use <code>.yml</code> for mine.</p>
-<p>Quotes around strings are usually not required.</p>
-<hr />
-<h2><a class="header" href="#minimum-required" id="minimum-required">Minimum Required</a></h2>
-<pre><code class="language-yaml">name: Minimum Batch
-criteria:
-  Only criterion:
-    worth: 10
+                        <h1><a class="header" href="#web---helpersweb" id="web---helpersweb">Web - <code>helpers::web</code></a></h1>
+<p>These functions relate to making web requests. They use the <a href="https://docs.rs/reqwest/0.10.4/reqwest/"><code>reqwest</code></a> crate.</p>
+<p>All of these functions use the <code>blocking</code> feature of reqwest, meaning they'll block until the request returns. You can make asynchronous requests with the reqwests crate, but that would involve more complicated code. I'm trying to keep it simple.</p>
+<h2><a class="header" href="#get" id="get"><code>get</code></a></h2>
+<p>Makes a GET request to the given URL, returning a <a href="https://docs.rs/reqwest/0.10.4/reqwest/blocking/struct.Response.html"><code>Result&lt;Response&gt;</code></a>.</p>
+<p>URL has to be valid or this will fail immediately.</p>
+<p>Be cautious when making web requests; they take quite a bit of time. Only use them when necessary.</p>
+<pre><code class="language-rust noplaypen">let url = &quot;https://postman-echo.com/get&quot;;
+let result = web::get(url);
+
+assert!( result.is_ok() );
+
+if let Ok(response) = result {
+    // Get the body from the response
+    if let Ok(body) = response.text() {
+        assert!( body.contains(&quot;postman-echo.com&quot;) );
+    }
+}
 </code></pre>
-<h2><a class="header" href="#everything" id="everything">Everything</a></h2>
-<pre><code class="language-yaml"># Required
-name: Batch Name
-# Optional
-desc: A short description about your batch
-# Optional
-# This is just an extra check to make sure
-# all criteria add to the correct total
-# If they don't, it will print an error message when running.
-total: 25
+<h2><a class="header" href="#site_responds" id="site_responds"><code>site_responds</code></a></h2>
+<p>Returns true if a site responds with a success message. This will return false on 404 codes and other error codes.</p>
+<pre><code class="language-rust noplaypen">let url = &quot;https://postman-echo.com/get&quot;;
 
+assert!( web::site_responds(url) );
+</code></pre>
+<h2><a class="header" href="#post_json" id="post_json"><code>post_json</code></a></h2>
+<p>This posts data in JSON format to the given URL. The parameter you pass in must implement the <a href="https://serde.rs/derive.html"><code>Serialize</code></a> trait from <a href="https://serde.rs/"><code>serde</code></a>.</p>
+<pre><code class="language-rust noplaypen">let url = &quot;https://postman-echo.com/post&quot;;
 
-# Required
-# You need at least one criteria
-criteria:
+// Submission is serializable
+let sub = Submission::new();
 
-  # Required
-  # Quotes are not required
-  Criterion name:
+let result = web::post_json(url, &amp;sub);
 
-    # Optional but recommended
-    # This will be inferred from the name (lowercased, whitespace =&gt; '-')
-    # This is like a human readable ID.
-    # Must be unique.
-    # This can really be any string, but it's best to keep it short and whitespace-free
-    stub: a-unique-stub
+assert!( result.is_ok() );
+</code></pre>
+<h2><a class="header" href="#post" id="post"><code>post</code></a></h2>
+<p>This is just like <code>post_json</code>, except it posts arbitrary string data. It sets the <code>CONTENT_TYPE</code> header to be <code>text/plain</code>.</p>
+<pre><code class="language-rust noplaypen">let url = &quot;https://postman-echo.com/post&quot;;
 
-    # Required
-    # Point value of the criterion
-    # This is completely subjective, you give it worth
-    # Can be negative
-    worth: 15
+let data = &quot;here's some data to post, wonder where it will go&quot;;
 
-    # Optional
-    # Controls the order the criteria are run
-    # Lowest first
-    # Can be negative
-    index: 5
+let result = web::post(url, data);
+assert!( result.is_ok() );
+</code></pre>
+<h2><a class="header" href="#get_ip" id="get_ip"><code>get_ip</code></a></h2>
+<p>This retrieves the public IP of the machine. This makes a web request, so it may take more time than you would expect. Returns <code>None</code> if it couldn't be retrieved or doesn't exist.</p>
+<pre><code class="language-rust noplaypen">let IpAddr = web::get_ip();
 
-    # Optional
-    desc: More information about this criterion
-
-    # Optional
-    # Printed to the console when a criterion passes or fails
-    # Defaults to these values
-    messages: [&quot;passed&quot;, &quot;failed&quot;]
-
-    # Optional
-    # if this is true, criterion cannot be printed
-    # Defaults to false
-    hide: false
-
-  # Here's all the fields without the comments
-  Second criterion:
-    stub: second-criterion
-    worth: 10
-    index: 1
-    desc: Here's some more about this criterion
-    messages: [&quot;passed&quot;, &quot;failed&quot;]
-    hide: false
+assert!( IpAddr.is_some() );
+if let Some(ip) = IpAddr {
+    println!(&quot;My ip is: {}&quot;, ip);
+}
 </code></pre>
 
                     </main>
@@ -226,13 +207,13 @@ criteria:
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="../criteria/home.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../helpers/fs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="../helpers/home.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../helpers/cli.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -244,13 +225,13 @@ criteria:
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="../criteria/home.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../helpers/fs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="../helpers/home.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../helpers/cli.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

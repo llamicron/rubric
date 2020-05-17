@@ -8,7 +8,7 @@ You'll want to set up a publicly accessible server to run this server. I use a M
 
 Let's add a little bit of code to the *beginning* of our `main` function. It will read the command line arguments and run the server if you run the program with the "`server`" argument.
 
-```rust
+```rust ,noplaypen
 fn main() {
     // Get command line arguments
     let args: Vec<String> = std::env::args().collect();
@@ -28,7 +28,7 @@ Now you can run the program with the "`server`" argument to start up your web se
 ## Submitting
 Now that the submission server is running, we can submit. Let's add this to the end of the `main` function.
 
-```rust
+```rust ,noplaypen
 fn main() {
     // ...
     let url = "http://localhost:8080/submit";

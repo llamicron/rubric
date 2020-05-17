@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li><li class="chapter-item expanded "><a href="helpers/home.html"><strong aria-hidden="true">3.</strong> Helpers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="helpers/fs.html"><strong aria-hidden="true">3.1.</strong> File System</a></li><li class="chapter-item expanded "><a href="helpers/web.html"><strong aria-hidden="true">3.2.</strong> Web</a></li><li class="chapter-item expanded "><a href="helpers/cli.html"><strong aria-hidden="true">3.3.</strong> CLI</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -287,23 +287,19 @@ criteria:
 <p>Any data that is needed from inside a criteria test should also be here. This will make more sense when we write the criteria tests.</p>
 <h2><a class="header" href="#some-housekeeping" id="some-housekeeping">Some Housekeeping</a></h2>
 <p>We need to do some housekeeping in our <code>main.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust">extern crate lab_grader;
+<pre><code class="language-rust noplaypen">extern crate lab_grader;
 
 use lab_grader::*;
 
 fn main() {
     // code will go here
 }
-</code></pre></pre>
+</code></pre>
 <p>We added an import to the top to bring in all the items we'll need from <code>lab_grader</code>. Then we just cleared our <code>main</code> function. In the next section, we'll add code into the <code>main</code> function.</p>
 <h2><a class="header" href="#build-a-submission" id="build-a-submission">Build a Submission</a></h2>
 <p>Now we can build a submission, which the <code>Submission::new</code> function. Add the following to the beginning of your <code>main</code> function.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>let mut sub = Submission::new();
-<span class="boring">}
-</span></code></pre></pre>
+<pre><code class="language-rust noplaypen">let mut sub = Submission::new();
+</code></pre>
 <p>We make it mutable to we can attach data later.</p>
 <h2><a class="header" href="#attach-data" id="attach-data">Attach Data</a></h2>
 <p>We want some data to attach to the submission. In this case, we're going to want the student's name and ID, as well as their Github username and the name of the repository they create for the lab. We'll use this data a little later.</p>
@@ -312,7 +308,7 @@ fn main() {
 <li><code>data!</code> - creates a bundle of key/value pairs</li>
 <li><code>prompt!</code> - asks the user for input from the terminal</li>
 </ul>
-<pre><pre class="playpen"><code class="language-rust">fn main() {
+<pre><code class="language-rust noplaypen">fn main() {
     let mut sub = Submission::new();
 
     // Create data
@@ -326,10 +322,10 @@ fn main() {
     // Attach data to submission
     sub.use_data(data);
 }
-</code></pre></pre>
+</code></pre>
 <h2><a class="header" href="#refactor" id="refactor">Refactor</a></h2>
 <p>We can refactor the code above into this, using the <code>Submission::from_data</code> function.</p>
-<pre><pre class="playpen"><code class="language-rust">fn main() {
+<pre><code class="language-rust noplaypen">fn main() {
     let mut sub = Submission::from_data(data! {
         &quot;name&quot; =&gt; prompt!(&quot;Name: &quot;, String),
         &quot;id&quot; =&gt; prompt!(&quot;ID: &quot;, String),
@@ -338,15 +334,11 @@ fn main() {
     });
 }
 
-</code></pre></pre>
+</code></pre>
 <h2><a class="header" href="#test" id="test">Test</a></h2>
 <p>Add the following line to the end of main and run the program with <code>cargo run</code> to see what it does so far.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>println!(&quot;{:#?}&quot;, sub);
-<span class="boring">}
-</span></code></pre></pre>
+<pre><code class="language-rust noplaypen">println!(&quot;{:#?}&quot;, sub);
+</code></pre>
 <p>Now we can move on to <a href="example_grader/batch.html">building the batch</a>.</p>
 <h1><a class="header" href="#building-the-batch" id="building-the-batch">Building the Batch</a></h1>
 <p>In <a href="example_grader/criteria.html">the first section</a> we defined our criteria in a <code>yaml</code> file. Now we need to load the <code>yaml</code> data into Rust and build a <code>Batch</code> from it.</p>
@@ -358,23 +350,15 @@ fn main() {
 <p>We can read YAML data with the <code>yaml!</code> macro. <code>yaml!</code> takes in a relative file path and returns the YAML data as a <code>String</code>.</p>
 <p>This macro is very important for one reason. When you compile in debug mode (default), this macro will read from the file system as expected. However, when you compile for release (with the <code>--release</code> flag), it will read the file contents and embed the contents in the created executable. This means when you distribute the grader to your students, you don't need to provide the <code>yaml</code> file. The executable will run on it's own. Just be sure to compile in release mode before distributing.</p>
 <p>We can go ahead and add this to the end of our <code>main</code> function</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
-<span class="boring">}
-</span></code></pre></pre>
+<pre><code class="language-rust noplaypen">let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
+</code></pre>
 <h2><a class="header" href="#building-a-batch" id="building-a-batch">Building a Batch</a></h2>
 <p>Now that we have our yaml data, we can build a <code>Batch</code> from it.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
-<span class="boring">}
-</span></code></pre></pre>
+<pre><code class="language-rust noplaypen">let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
+</code></pre>
 <p>Here we're using the <code>expect</code> method again, but it's probably a good idea in this case. This will crash if we have invalid YAML or missing items. Once you're done developing and compile for release, the YAML will be embedded and won't change, so it won't crash after that.</p>
 <p>That's all there is to building a batch. Here's the complete <code>main.rs</code> file so far</p>
-<pre><pre class="playpen"><code class="language-rust">extern crate lab_grader;
+<pre><code class="language-rust noplaypen">extern crate lab_grader;
 
 use lab_grader::*;
 
@@ -389,7 +373,7 @@ fn main() {
     let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
     let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
 }
-</code></pre></pre>
+</code></pre>
 <p>Now we can move on to <a href="example_grader/tests.html">writing the criteria tests</a>.</p>
 <h1><a class="header" href="#writing-the-tests" id="writing-the-tests">Writing the Tests</a></h1>
 <p>Now comes the most important part of writing the application. We've build our batch of criteria, but they currently don't have a way to be tested. How do we know if they actually have Git installed or not?</p>
@@ -402,19 +386,15 @@ fn main() {
 <p>Before we write any tests, you should know about the <a href="example_grader/">helpers</a> modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.</p>
 <h2><a class="header" href="#the-first-test" id="the-first-test">The First Test</a></h2>
 <p>Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature. I'll add this outside our <code>main</code> function.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>fn confirm_git_installed(_: &amp;TestData) -&gt; bool {
+<pre><code class="language-rust noplaypen">fn confirm_git_installed(_: &amp;TestData) -&gt; bool {
     cli::Program::Git.version().is_some()
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>We added a function called <code>confirm_git_installed</code>. It takes in a parameter of type <code>&amp;TestData</code>, but in this case we don't need it so we'll name the parameter <code>_</code>. In the function body, we used the <code>cli</code> helper module to get the version of Git, and returned true if it's a <code>Some</code> value (this is an <code>Option</code> type, it would be <code>None</code> if Git wasn't installed).</p>
 <p>And that's it for the first test. There's still one step to go, but we'll do that after the other tests.</p>
 <h2><a class="header" href="#the-rest-of-the-tests" id="the-rest-of-the-tests">The Rest of the Tests</a></h2>
 <p>I'm going to write some functions to serve as the tests for the remaining criteria. I won't explain what each one is doing in detail, but it should be pretty self explanatory. I'll put the entire <code>main.rs</code> file here.</p>
-<pre><pre class="playpen"><code class="language-rust">extern crate lab_grader;
+<pre><code class="language-rust noplaypen">extern crate lab_grader;
 
 use std::process::Command;
 use lab_grader::*;
@@ -477,11 +457,11 @@ fn main() {
     let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
     let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
 }
-</code></pre></pre>
+</code></pre>
 <p>In the <code>confirm_repo_pushed</code>, we're actually using the data attached to the submission. We can do that with bracket syntax (<code>data[&quot;key&quot;]</code>) or through the <a href="https://doc.rust-lang.org/beta/std/collections/struct.HashMap.html#method.get"><code>get</code></a> method. Using <code>get</code> is recommended over bracket syntax.</p>
 <h2><a class="header" href="#attaching-the-tests" id="attaching-the-tests">Attaching the Tests</a></h2>
 <p>Now that we have our tests, we need to attach them to the appropriate criteria. We can do that with the <code>attach!</code> macro.</p>
-<pre><pre class="playpen"><code class="language-rust">fn main() {
+<pre><code class="language-rust noplaypen">fn main() {
     // ...
     attach! {
         batch,
@@ -491,7 +471,7 @@ fn main() {
         &quot;repo-pushed&quot; =&gt; confirm_repo_pushed
     };
 }
-</code></pre></pre>
+</code></pre>
 <p>This attached each of our functions to the criteria with the given stub. This is why we needed to specify a stub in yaml.</p>
 <blockquote>
 <p>Note: If you don't provide the stub in yaml, it will be created by lowercasing the name and replacing whitespace with a dash. ie. <code>My First Criterion =&gt; my-first-criterion</code>.</p>
@@ -500,7 +480,7 @@ fn main() {
 <h1><a class="header" href="#grading" id="grading">Grading</a></h1>
 <p>We now have a complete <code>Batch</code> and a <code>Submission</code>, which is all we need to grade.</p>
 <p>When we grade the submission, we'll run each criteria test in the batch. The submission's data will be passed into each of the tests. If the test passes, the submissions <code>grade</code> field will increase by the worth of the criterion.</p>
-<pre><pre class="playpen"><code class="language-rust">fn main() {
+<pre><code class="language-rust noplaypen">fn main() {
     // ...
     // Grade the submission
     sub.grade_against(&amp;mut batch);
@@ -508,7 +488,7 @@ fn main() {
     // Print the batch results
     println(&quot;{}&quot;, batch);
 }
-</code></pre></pre>
+</code></pre>
 <p>We've graded the submission and then printed the batch. Printing the batch will show the student all the criteria and let them know what they passed or failed. Of course, you don't have to do this. You may want to keep one or all of your criteria private. You can hide individual criteria with the <code>hide</code> field in yaml, and you can always just not print the batch.</p>
 <p>That's all there is to grading. The next step is to submit to a submission server, which we'll do in the <a href="example_grader/submit.html">next section</a>.</p>
 <h1><a class="header" href="#submitting" id="submitting">Submitting</a></h1>
@@ -517,7 +497,7 @@ fn main() {
 <p>The submission server is simply a web server with a single route: it accepts POST requests on the <code>/submit</code> route. You can run it with a single function.</p>
 <p>You'll want to set up a publicly accessible server to run this server. I use a Microsoft Azure VM because they're pretty easy to set up and provide DNS services.</p>
 <p>Let's add a little bit of code to the <em>beginning</em> of our <code>main</code> function. It will read the command line arguments and run the server if you run the program with the &quot;<code>server</code>&quot; argument.</p>
-<pre><pre class="playpen"><code class="language-rust">fn main() {
+<pre><code class="language-rust noplaypen">fn main() {
     // Get command line arguments
     let args: Vec&lt;String&gt; = std::env::args().collect();
 
@@ -529,11 +509,11 @@ fn main() {
 
     // ...
 }
-</code></pre></pre>
+</code></pre>
 <p>Now you can run the program with the &quot;<code>server</code>&quot; argument to start up your web server. Open another terminal and run this server in the background while we finish the grader.</p>
 <h2><a class="header" href="#submitting-1" id="submitting-1">Submitting</a></h2>
 <p>Now that the submission server is running, we can submit. Let's add this to the end of the <code>main</code> function.</p>
-<pre><pre class="playpen"><code class="language-rust">fn main() {
+<pre><code class="language-rust noplaypen">fn main() {
     // ...
     let url = &quot;http://localhost:8080/submit&quot;;
     let res = web::post_json(url, &amp;sub);
@@ -543,7 +523,7 @@ fn main() {
         println!(&quot;Error sending submission! {}&quot;, res.unwrap_err());
     }
 }
-</code></pre></pre>
+</code></pre>
 <p>This will submit the submission to the server that you should have running, and print a success or error message. Of course, you'll want to put the url for your server instead of <code>localhost</code>.</p>
 <h1><a class="header" href="#the-results" id="the-results">The Results</a></h1>
 <p>Once a submission is accepted by the submission server, it will create a file called <code>submissions.csv</code>. Every submission accepted will be written to this file. This is a simple csv file, and you can open it in Excel or another program to process the data in any way you see fit.</p>
@@ -632,6 +612,115 @@ criteria:
     desc: Here's some more about this criterion
     messages: [&quot;passed&quot;, &quot;failed&quot;]
     hide: false
+</code></pre>
+<h1><a class="header" href="#helpers-1" id="helpers-1">Helpers</a></h1>
+<p>This chapter contains examples of all the helper functions. If you need more specific documentation, look on <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/helpers/index.html">docs.rs</a>.</p>
+<h2><a class="header" href="#importing" id="importing">Importing</a></h2>
+<p>You can import all the helper modules like this</p>
+<pre><code class="language-rust noplaypen">use lab_grader::helpers::*;
+</code></pre>
+<p>Or import any specific helper module with</p>
+<pre><code class="language-rust noplaypen">use lab_grader::[module_name];
+</code></pre>
+<h1><a class="header" href="#file-system---helpersfs" id="file-system---helpersfs">File System - <code>helpers::fs</code></a></h1>
+<p>File system operations. Don't get this confused with <code>std::fs</code>. It's not the same.</p>
+<h2><a class="header" href="#file_exists" id="file_exists"><code>file_exists</code></a></h2>
+<p>Returns true if the file (or directory!) exists. Relative to the file that the compiled executable is being run in. If you're paranoid, use <a href="https://doc.rust-lang.org/std/fs/fn.canonicalize.html"><code>std::fs::canonicalize</code></a> to get a full path.</p>
+<pre><code class="language-rust noplaypen">assert!( fs::file_exists(&quot;Cargo.toml&quot;) );
+</code></pre>
+<h2><a class="header" href="#file_contains" id="file_contains"><code>file_contains</code></a></h2>
+<p>Returns true if a file contains the provided string. Case sensitive.</p>
+<pre><code class="language-rust noplaypen">assert!( fs::file_contains(&quot;Cargo.toml&quot;, &quot;version&quot;) );
+</code></pre>
+<h1><a class="header" href="#web---helpersweb" id="web---helpersweb">Web - <code>helpers::web</code></a></h1>
+<p>These functions relate to making web requests. They use the <a href="https://docs.rs/reqwest/0.10.4/reqwest/"><code>reqwest</code></a> crate.</p>
+<p>All of these functions use the <code>blocking</code> feature of reqwest, meaning they'll block until the request returns. You can make asynchronous requests with the reqwests crate, but that would involve more complicated code. I'm trying to keep it simple.</p>
+<h2><a class="header" href="#get" id="get"><code>get</code></a></h2>
+<p>Makes a GET request to the given URL, returning a <a href="https://docs.rs/reqwest/0.10.4/reqwest/blocking/struct.Response.html"><code>Result&lt;Response&gt;</code></a>.</p>
+<p>URL has to be valid or this will fail immediately.</p>
+<p>Be cautious when making web requests; they take quite a bit of time. Only use them when necessary.</p>
+<pre><code class="language-rust noplaypen">let url = &quot;https://postman-echo.com/get&quot;;
+let result = web::get(url);
+
+assert!( result.is_ok() );
+
+if let Ok(response) = result {
+    // Get the body from the response
+    if let Ok(body) = response.text() {
+        assert!( body.contains(&quot;postman-echo.com&quot;) );
+    }
+}
+</code></pre>
+<h2><a class="header" href="#site_responds" id="site_responds"><code>site_responds</code></a></h2>
+<p>Returns true if a site responds with a success message. This will return false on 404 codes and other error codes.</p>
+<pre><code class="language-rust noplaypen">let url = &quot;https://postman-echo.com/get&quot;;
+
+assert!( web::site_responds(url) );
+</code></pre>
+<h2><a class="header" href="#post_json" id="post_json"><code>post_json</code></a></h2>
+<p>This posts data in JSON format to the given URL. The parameter you pass in must implement the <a href="https://serde.rs/derive.html"><code>Serialize</code></a> trait from <a href="https://serde.rs/"><code>serde</code></a>.</p>
+<pre><code class="language-rust noplaypen">let url = &quot;https://postman-echo.com/post&quot;;
+
+// Submission is serializable
+let sub = Submission::new();
+
+let result = web::post_json(url, &amp;sub);
+
+assert!( result.is_ok() );
+</code></pre>
+<h2><a class="header" href="#post" id="post"><code>post</code></a></h2>
+<p>This is just like <code>post_json</code>, except it posts arbitrary string data. It sets the <code>CONTENT_TYPE</code> header to be <code>text/plain</code>.</p>
+<pre><code class="language-rust noplaypen">let url = &quot;https://postman-echo.com/post&quot;;
+
+let data = &quot;here's some data to post, wonder where it will go&quot;;
+
+let result = web::post(url, data);
+assert!( result.is_ok() );
+</code></pre>
+<h2><a class="header" href="#get_ip" id="get_ip"><code>get_ip</code></a></h2>
+<p>This retrieves the public IP of the machine. This makes a web request, so it may take more time than you would expect. Returns <code>None</code> if it couldn't be retrieved or doesn't exist.</p>
+<pre><code class="language-rust noplaypen">let IpAddr = web::get_ip();
+
+assert!( IpAddr.is_some() );
+if let Some(ip) = IpAddr {
+    println!(&quot;My ip is: {}&quot;, ip);
+}
+</code></pre>
+<h1><a class="header" href="#command-lineprograms---helperscli" id="command-lineprograms---helperscli">Command Line/Programs - <code>helpers::cli</code></a></h1>
+<p>Functions and macros for command line interaction</p>
+<h2><a class="header" href="#prompt-macro" id="prompt-macro"><code>prompt!</code> (macro)</a></h2>
+<p>This macro will prompt the user for input and try to cast it to the given type.</p>
+<p>Whitespace around string ends will be trimmed.</p>
+<blockquote>
+<p>Warning! if the user enters something that can't be parsed into the type you specify, this will print an error message and <em>exit the current process</em></p>
+</blockquote>
+<pre><code class="language-rust noplaypen">use std::net::Ipv4Addr;
+
+let string: String = prompt!(&quot;Enter a string: &quot;, String);
+let number: i64 = prompt!(&quot;Enter a number: &quot;, i64);
+let ip: Ipv4Addr = prompt!(&quot;Enter an IPv4 address: &quot;, Ipv4Addr);
+</code></pre>
+<h2><a class="header" href="#prompt-function" id="prompt-function"><code>prompt</code> (function)</a></h2>
+<p>This is similar to the macro <code>prompt!</code>, but if the user enter invalid input it will print an error message and run again. This ensures you always get <em>something</em> from the user. However, it won't automatically cast to a type. It just returns a <code>String</code>, which you should cast manually.</p>
+<p>Whitespace around the ends will be trimmed.</p>
+<pre><code class="language-rust noplaypen">let input: String = prompt(&quot;Enter something: &quot;);
+</code></pre>
+<h2><a class="header" href="#program" id="program"><code>Program</code></a></h2>
+<p>Currently, this enum allows you to get the installed version of a program. The current programs supported are:</p>
+<ul>
+<li>Git</li>
+<li>Docker</li>
+<li>Docker-Compose</li>
+<li>Python</li>
+<li>Ruby</li>
+</ul>
+<pre><code class="language-rust noplaypen">let version: Version = cli::Program::Git.version();
+
+// If the program isn't installed, this will be None
+assert!( version.is_some() );
+
+// You can get the major, minor, and patch numbers of the version
+assert!( version.unwrap().major() &gt;= 1 );
 </code></pre>
 
                     </main>

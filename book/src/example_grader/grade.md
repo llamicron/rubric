@@ -3,7 +3,7 @@ We now have a complete `Batch` and a `Submission`, which is all we need to grade
 
 When we grade the submission, we'll run each criteria test in the batch. The submission's data will be passed into each of the tests. If the test passes, the submissions `grade` field will increase by the worth of the criterion.
 
-```rust
+```rust ,noplaypen
 fn main() {
     // ...
     // Grade the submission

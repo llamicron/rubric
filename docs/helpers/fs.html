@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>YAML Specification - Lab Grader</title>
+        <title>File System - Lab Grader</title>
         
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="../example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="../example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="../example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="../example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="../example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="../example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="../criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../criteria/yaml_spec.html" class="active"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li><li class="chapter-item expanded "><a href="../helpers/home.html"><strong aria-hidden="true">3.</strong> Helpers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../helpers/fs.html"><strong aria-hidden="true">3.1.</strong> File System</a></li><li class="chapter-item expanded "><a href="../helpers/web.html"><strong aria-hidden="true">3.2.</strong> Web</a></li><li class="chapter-item expanded "><a href="../helpers/cli.html"><strong aria-hidden="true">3.3.</strong> CLI</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="../example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="../example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="../example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="../example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="../example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="../example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="../criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li><li class="chapter-item expanded "><a href="../helpers/home.html"><strong aria-hidden="true">3.</strong> Helpers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../helpers/fs.html" class="active"><strong aria-hidden="true">3.1.</strong> File System</a></li><li class="chapter-item expanded "><a href="../helpers/web.html"><strong aria-hidden="true">3.2.</strong> Web</a></li><li class="chapter-item expanded "><a href="../helpers/cli.html"><strong aria-hidden="true">3.3.</strong> CLI</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -147,78 +147,15 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#yaml-specification" id="yaml-specification">YAML Specification</a></h1>
-<p>Here's the keys allowed when making a yaml file for a batch. Not all fields are required, but it's better to be specific.</p>
-<p>Here's the <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">YAML syntax</a> so you can learn how to write valid YAML. This isn't the official specification, but it's the easiest guide I found.</p>
-<p>When naming your yaml files, you can use <code>.yml</code> or <code>.yaml</code>. Honestly you can use whatever extension, I don't care, but I use <code>.yml</code> for mine.</p>
-<p>Quotes around strings are usually not required.</p>
-<hr />
-<h2><a class="header" href="#minimum-required" id="minimum-required">Minimum Required</a></h2>
-<pre><code class="language-yaml">name: Minimum Batch
-criteria:
-  Only criterion:
-    worth: 10
+                        <h1><a class="header" href="#file-system---helpersfs" id="file-system---helpersfs">File System - <code>helpers::fs</code></a></h1>
+<p>File system operations. Don't get this confused with <code>std::fs</code>. It's not the same.</p>
+<h2><a class="header" href="#file_exists" id="file_exists"><code>file_exists</code></a></h2>
+<p>Returns true if the file (or directory!) exists. Relative to the file that the compiled executable is being run in. If you're paranoid, use <a href="https://doc.rust-lang.org/std/fs/fn.canonicalize.html"><code>std::fs::canonicalize</code></a> to get a full path.</p>
+<pre><code class="language-rust noplaypen">assert!( fs::file_exists(&quot;Cargo.toml&quot;) );
 </code></pre>
-<h2><a class="header" href="#everything" id="everything">Everything</a></h2>
-<pre><code class="language-yaml"># Required
-name: Batch Name
-# Optional
-desc: A short description about your batch
-# Optional
-# This is just an extra check to make sure
-# all criteria add to the correct total
-# If they don't, it will print an error message when running.
-total: 25
-
-
-# Required
-# You need at least one criteria
-criteria:
-
-  # Required
-  # Quotes are not required
-  Criterion name:
-
-    # Optional but recommended
-    # This will be inferred from the name (lowercased, whitespace =&gt; '-')
-    # This is like a human readable ID.
-    # Must be unique.
-    # This can really be any string, but it's best to keep it short and whitespace-free
-    stub: a-unique-stub
-
-    # Required
-    # Point value of the criterion
-    # This is completely subjective, you give it worth
-    # Can be negative
-    worth: 15
-
-    # Optional
-    # Controls the order the criteria are run
-    # Lowest first
-    # Can be negative
-    index: 5
-
-    # Optional
-    desc: More information about this criterion
-
-    # Optional
-    # Printed to the console when a criterion passes or fails
-    # Defaults to these values
-    messages: [&quot;passed&quot;, &quot;failed&quot;]
-
-    # Optional
-    # if this is true, criterion cannot be printed
-    # Defaults to false
-    hide: false
-
-  # Here's all the fields without the comments
-  Second criterion:
-    stub: second-criterion
-    worth: 10
-    index: 1
-    desc: Here's some more about this criterion
-    messages: [&quot;passed&quot;, &quot;failed&quot;]
-    hide: false
+<h2><a class="header" href="#file_contains" id="file_contains"><code>file_contains</code></a></h2>
+<p>Returns true if a file contains the provided string. Case sensitive.</p>
+<pre><code class="language-rust noplaypen">assert!( fs::file_contains(&quot;Cargo.toml&quot;, &quot;version&quot;) );
 </code></pre>
 
                     </main>
@@ -226,13 +163,13 @@ criteria:
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="../criteria/home.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../helpers/home.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="../helpers/home.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../helpers/web.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -244,13 +181,13 @@ criteria:
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="../criteria/home.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../helpers/home.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="../helpers/home.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../helpers/web.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

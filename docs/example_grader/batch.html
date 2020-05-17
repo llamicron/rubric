@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="../example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="../example_grader/batch.html" class="active"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="../example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="../example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="../example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="../example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="../criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="../example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="../example_grader/batch.html" class="active"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="../example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="../example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="../example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="../example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="../criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li><li class="chapter-item expanded "><a href="../helpers/home.html"><strong aria-hidden="true">3.</strong> Helpers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../helpers/fs.html"><strong aria-hidden="true">3.1.</strong> File System</a></li><li class="chapter-item expanded "><a href="../helpers/web.html"><strong aria-hidden="true">3.2.</strong> Web</a></li><li class="chapter-item expanded "><a href="../helpers/cli.html"><strong aria-hidden="true">3.3.</strong> CLI</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -157,23 +157,15 @@
 <p>We can read YAML data with the <code>yaml!</code> macro. <code>yaml!</code> takes in a relative file path and returns the YAML data as a <code>String</code>.</p>
 <p>This macro is very important for one reason. When you compile in debug mode (default), this macro will read from the file system as expected. However, when you compile for release (with the <code>--release</code> flag), it will read the file contents and embed the contents in the created executable. This means when you distribute the grader to your students, you don't need to provide the <code>yaml</code> file. The executable will run on it's own. Just be sure to compile in release mode before distributing.</p>
 <p>We can go ahead and add this to the end of our <code>main</code> function</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
-<span class="boring">}
-</span></code></pre></pre>
+<pre><code class="language-rust noplaypen">let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
+</code></pre>
 <h2><a class="header" href="#building-a-batch" id="building-a-batch">Building a Batch</a></h2>
 <p>Now that we have our yaml data, we can build a <code>Batch</code> from it.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
-<span class="boring">}
-</span></code></pre></pre>
+<pre><code class="language-rust noplaypen">let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
+</code></pre>
 <p>Here we're using the <code>expect</code> method again, but it's probably a good idea in this case. This will crash if we have invalid YAML or missing items. Once you're done developing and compile for release, the YAML will be embedded and won't change, so it won't crash after that.</p>
 <p>That's all there is to building a batch. Here's the complete <code>main.rs</code> file so far</p>
-<pre><pre class="playpen"><code class="language-rust">extern crate lab_grader;
+<pre><code class="language-rust noplaypen">extern crate lab_grader;
 
 use lab_grader::*;
 
@@ -188,7 +180,7 @@ fn main() {
     let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
     let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
 }
-</code></pre></pre>
+</code></pre>
 <p>Now we can move on to <a href="tests.html">writing the criteria tests</a>.</p>
 
                     </main>

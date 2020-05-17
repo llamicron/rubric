@@ -11,3 +11,7 @@
   - [The Results](./example_grader/results.md)
 - [Criteria](./criteria/home.md)
   - [YAML Specification](./criteria/yaml_spec.md)
+- [Helpers](./helpers/home.md)
+  - [File System](./helpers/fs.md)
+  - [Web](./helpers/web.md)
+  - [CLI](./helpers/cli.md)

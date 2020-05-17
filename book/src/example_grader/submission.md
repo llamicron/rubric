@@ -8,7 +8,7 @@ Any data that is needed from inside a criteria test should also be here. This wi
 ## Some Housekeeping
 We need to do some housekeeping in our `main.rs`
 
-```rust
+```rust ,noplaypen
 extern crate lab_grader;
 
 use lab_grader::*;
@@ -23,7 +23,7 @@ We added an import to the top to bring in all the items we'll need from `lab_gra
 
 ## Build a Submission
 Now we can build a submission, which the `Submission::new` function. Add the following to the beginning of your `main` function.
-```rust
+```rust ,noplaypen
 let mut sub = Submission::new();
 ```
 We make it mutable to we can attach data later.
@@ -35,7 +35,7 @@ We're going to use two macros to make this data:
 - `data!` - creates a bundle of key/value pairs
 - `prompt!` - asks the user for input from the terminal
 
-```rust
+```rust ,noplaypen
 fn main() {
     let mut sub = Submission::new();
 
@@ -55,7 +55,7 @@ fn main() {
 ## Refactor
 We can refactor the code above into this, using the `Submission::from_data` function.
 
-```rust
+```rust ,noplaypen
 fn main() {
     let mut sub = Submission::from_data(data! {
         "name" => prompt!("Name: ", String),
@@ -70,7 +70,7 @@ fn main() {
 ## Test
 Add the following line to the end of main and run the program with `cargo run` to see what it does so far.
 
-```rust
+```rust ,noplaypen
 println!("{:#?}", sub);
 ```
 
