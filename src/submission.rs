@@ -261,8 +261,7 @@ impl AsCsv for Submission {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::data;
-    // use crate::Criterion;
+    use crate::{data, yaml, attach};
 
 
     #[test]
@@ -315,8 +314,19 @@ mod tests {
     }
 
     #[test]
-    fn test_grade_against_criteria() {
-        unimplemented!();
+    fn test_grade_against_batch() {
+        let yaml = yaml!("../test_data/test_batch.yml").unwrap();
+        let mut batch = Batch::from_yaml(yaml).unwrap();
+        let test = |_: &TestData| true;
+        attach! {
+            batch,
+            "first-crit" => test
+        };
+
+        let mut sub = Submission::new();
+
+        sub.grade_against(&mut batch);
+        assert_eq!(sub.grade, 50);
     }
 
     #[test]

@@ -37,6 +37,7 @@ pub use submission::TestData;
 pub use criterion::Criterion;
 pub use results_file::AsCsv;
 pub use batch::Batch;
+pub use error::Error;
 
 
 // private uses
