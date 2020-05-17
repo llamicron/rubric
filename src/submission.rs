@@ -1,4 +1,4 @@
-//! A bundle of data that criteria are graded against, and is submitted for review
+//! A bundle of data that batches are graded against, and is submitted for review
 
 // std uses
 use std::collections::HashMap;
@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 // internal uses
 use crate::results_file::AsCsv;
-use crate::criteria::Criteria;
+use crate::batch::Batch;
 use crate::server;
 
 
@@ -169,34 +169,8 @@ impl Submission {
     }
 
     /// Tests a submission against a list of criterion
-    ///
-    /// The submission's grade will change for every passed criterion,
-    /// and every criterion will add it's name and message to the submissions
-    /// `passed` or `failed` vectors.
-    ///
-    /// ## Example
-    /// ```rust
-    /// # use lab_grader::*;
-    /// let mut sub = Submission::from_data(data! {
-    ///     "key" => "value"
-    /// });
-    ///
-    /// // Just one criterion here to save space
-    /// let mut crits = Criteria::from(vec![
-    ///     Criterion::new("test criterion")
-    ///         .worth(10)
-    ///         .test(Box::new(|data: &TestData| -> bool {
-    ///             data["key"] == "value"
-    ///         }))
-    ///         .build()
-    /// ]);
-    /// sub.grade_against(&mut crits);
-    /// assert_eq!(sub.grade, 10);
-    /// assert_eq!(sub.passed.len(), 1);
-    /// assert_eq!(sub.failed.len(), 0);
-    /// ```
-    pub fn grade_against(&mut self, criteria: &mut Criteria) {
-        for crit in &mut criteria.sorted().into_iter() {
+    pub fn grade_against(&mut self, batch: &mut Batch) {
+        for crit in &mut batch.sorted().into_iter() {
             crit.test_with_data(&self.data);
 
             if crit.status.unwrap() {
@@ -207,7 +181,6 @@ impl Submission {
             }
         }
     }
-
 
     /// Spins up a webserver to accept submission.
     ///
@@ -289,7 +262,7 @@ impl AsCsv for Submission {
 mod tests {
     use super::*;
     use crate::data;
-    use crate::Criterion;
+    // use crate::Criterion;
 
 
     #[test]
@@ -343,24 +316,7 @@ mod tests {
 
     #[test]
     fn test_grade_against_criteria() {
-        let mut sub = Submission::from_data(data! {
-            "key" => "value"
-        });
-
-        // Just one criterion here to save space
-        let mut crits = Criteria::from(vec![
-            Criterion::new("test criterion")
-                .worth(10)
-                .test(Box::new(|data: &TestData| -> bool {
-                    data["key"] == "value"
-                }))
-                .build()
-        ]);
-
-        sub.grade_against(&mut crits);
-        assert_eq!(sub.grade, 10);
-        assert_eq!(sub.passed.len(), 1);
-        assert_eq!(sub.failed.len(), 0);
+        unimplemented!();
     }
 
     #[test]

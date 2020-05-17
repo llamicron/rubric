@@ -21,7 +21,6 @@ pub mod criterion_builder;
 pub mod results_file;
 pub mod submission;
 pub mod criterion;
-pub mod criteria;
 pub mod helpers;
 pub mod batch;
 
@@ -37,7 +36,6 @@ pub use submission::Submission;
 pub use submission::TestData;
 pub use criterion::Criterion;
 pub use results_file::AsCsv;
-pub use criteria::Criteria;
 pub use batch::Batch;
 
 

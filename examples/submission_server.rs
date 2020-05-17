@@ -32,7 +32,7 @@ fn main() {
     // meaning they'll all fail. We don't really care,
     // this is just to demonstrate sending the submission.
     println!("About to grade");
-    sub.grade_against(&mut batch.criteria);
+    sub.grade_against(&mut batch);
     println!("{}", batch);
 
 

@@ -68,7 +68,7 @@ fn main() {
         "pushed" => confirm_repo_pushed
     }
 
-    sub.grade_against(&mut batch.criteria);
+    sub.grade_against(&mut batch);
     println!("{}", batch);
 
     // let url = "http://myurl.whatever/submit";

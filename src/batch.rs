@@ -1,5 +1,3 @@
-//! A batch of criteria, with some extra metadata
-
 // std uses
 use std::str::FromStr;
 use std::fmt;
@@ -8,30 +6,10 @@ use std::fmt;
 use ansi_term::Color;
 
 // internal uses
-use crate::{Criteria, TestData};
+use crate::{Criterion, TestData};
 use crate::yaml::BatchYaml;
 use crate::error::{Result, Error};
 
-/// Attaches multiple functions to a batch. Will panic if
-/// any criterion with the given stub isn't found.
-///
-/// ## Example
-/// ```no_compile
-/// use lab_grader::*;
-/// fn my_test_func(data: &TestData) -> bool {
-///     true
-/// }
-///
-/// fn main() {
-///     // Assume this has a criterion with the stub "my-stub"
-///     let mut batch = Batch::from_yaml(/* ... */).unwrap();
-///     attach! {
-///         batch,
-///         "my-stub" => my_test_func
-///     }
-/// }
-///
-/// ```
 #[macro_export]
 macro_rules! attach {
     ( $batch:ident, $($stub:literal => $func:ident),* ) => {
@@ -41,29 +19,15 @@ macro_rules! attach {
     };
 }
 
-/// A bundle of metadata with a set of criteria.
-///
-/// The main purpose of a `Batch` is to deserialize criteria from a yaml file. This
-/// struct provides a `from_yaml` method that takes yaml data and turns it into a batch.
-///
-/// [Specification for the yaml data](https://github.com/llamicron/lab_grader/wiki/YAML-Specification)
+
 pub struct Batch {
     pub name: String,
     pub desc: Option<String>,
-    pub criteria: Criteria,
+    pub criteria: Vec<Criterion>,
     pub total: isize
 }
 
 impl Batch {
-    /// Builds a batch from yaml data.
-    ///
-    /// ## Example
-    /// ```rust
-    /// # use lab_grader::batch::Batch;
-    /// # use lab_grader::yaml;
-    /// let yaml = yaml!("../test_data/test_batch.yml").unwrap();
-    /// let batch = Batch::from_yaml(yaml).expect("Bad yaml!");
-    /// ```
     pub fn from_yaml(yaml: &str) -> Result<Self> {
         match yaml.parse::<Self>() {
             Ok(batch) => Ok(batch),
@@ -76,22 +40,56 @@ impl Batch {
         }
     }
 
-
-    /// Gets a criterion by stub
-    pub fn attach(&mut self, stub: &str,
-        func: Box<dyn Fn(&TestData) -> bool>) -> Result<()> {
-        self.criteria.attach(stub, func)
+    pub fn get(&mut self, stub: &str) -> Result<&mut Criterion> {
+        let crit = self.criteria.iter_mut().find(|c| c.stub == stub);
+        if crit.is_some() {
+            return Ok(crit.unwrap());
+        }
+        return Err(Error::stub_not_found(stub));
     }
 
-    /// An alternative to printing through `println!("{}", batch)`.
-    ///
-    /// This prints a shorted report where each criterion is on it's own line,
-    /// and only the criterion name and status is printed. The batch description
-    /// is also hidden.
+    pub fn attach(&mut self, stub: &str,
+        func: Box<dyn Fn(&TestData) -> bool>) -> Result<()> {
+
+        let crit = self.get(stub)?;
+        crit.attach(func);
+        Ok(())
+    }
+
+    pub fn sorted(&mut self) -> &mut Vec<Criterion> {
+        let sorted = &mut self.criteria;
+        sorted.sort_by(|a, b| a.index.cmp(&b.index));
+        sorted
+    }
+
+    pub fn points(&self) -> usize {
+        let mut total: usize = 0;
+        for crit in &self.criteria {
+            if let Some(status) = crit.status {
+                if status {
+                    // Only add to the total if they've graded
+                    // and this criterion passed
+                    total += crit.worth as usize;
+                }
+            }
+        }
+        total
+    }
+
+    pub fn total_points(&self) -> isize {
+        let mut total: isize = 0;
+        for crit in &self.criteria {
+            total += crit.worth as isize;
+        }
+        total
+    }
+
     pub fn print_short(&self) {
         println!("{}", Color::White.bold().paint(&self.name));
-        self.criteria.print_short();
-        println!("{}/{}", self.criteria.points(), self.criteria.total_points());
+        for crit in &self.criteria {
+            crit.print_short();
+        }
+        println!("{}/{}", self.points(), self.total_points());
     }
 }
 
@@ -103,13 +101,16 @@ impl FromStr for Batch {
         // Construct BatchYaml from yaml data
         let batch_yaml = serde_yaml::from_str::<BatchYaml>(s)?;
 
-        // Pull out the criteria
-        let mut criteria = Criteria::from(vec![]);
-        for (name, crit) in batch_yaml.criteria {
-            criteria.add(crit.into_criterion(name));
+        // Pull out the criteria and count the total
+        let mut criteria_total: isize = 0;
+        let mut criteria = vec![];
+        for (name, crit_yaml) in batch_yaml.criteria {
+            let crit = crit_yaml.into_criterion(name);
+            criteria_total += crit.worth as isize;
+            criteria.push(crit);
         }
 
-        let criteria_total = criteria.total_points();
+
         if let Some(t) = batch_yaml.total {
             if criteria_total != t {
                 eprint!("{}", Color::Red.paint("Warning: "));
@@ -135,7 +136,10 @@ impl fmt::Display for Batch {
         if let Some(desc) = &self.desc {
             writeln!(f, "{}\n", desc).unwrap();
         }
-        write!(f, "{}", self.criteria)
+        for crit in &self.criteria {
+            writeln!(f, "{}", crit).unwrap();
+        }
+        write!(f, "")
     }
 }
 
@@ -161,14 +165,14 @@ mod tests {
         fn test_fn(_: &TestData) -> bool { true };
 
         let mut batch = Batch::from_yaml(yaml_data()).expect("Bad yaml");
-        assert!(!batch.criteria.get("first-crit").unwrap().test());
+        assert!(!batch.get("first-crit").unwrap().test());
 
         attach! {
             batch,
             "first-crit" => test_fn
         };
 
-        assert!(batch.criteria.get("first-crit").unwrap().test());
+        assert!(batch.get("first-crit").unwrap().test());
 
     }
 
