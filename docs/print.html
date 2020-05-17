@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Chapter 1</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -149,7 +149,490 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#chapter-1" id="chapter-1">Chapter 1</a></h1>
+                        <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
+<p>This Rust crate automates a lot of the necessary steps for testing criteria, originally created to grade labs in technology management classes.</p>
+<h2><a class="header" href="#use-case" id="use-case">Use Case</a></h2>
+<p>You should know that this program was intended for a technology management class. During the labs, the students would be managing Azure VMs, using software like Docker, Git and Github, etc. They were acting as SysAdmins, doing all the regular SysAdmin stuff. We needed a way to check each (60+) student's work on their VM or development machines, and report that back to us.</p>
+<p>This poses a unique challenge. How do you get proof that every student has the right version of Python installed, or has a web server running on the right port? There's lots of different possibilities.</p>
+<p>My original solution was to write a Rust program that checked everything and sent the results back to us. It wasn't modular or reusable; it was very much a bodge that was intended to work once. But after I wrote the fourth lab grader and prepared to write one to grade the final exam, I realized that I needed to set this in stone.</p>
+<p>This library was the outcome. It's a glorified task-runner, but it's actually kind of cool. If you have any need of running a lot of commands, checking web sites and APIs, examining the file system, or performing anything across a lot of machines and getting a report from each one, then this library is for you.</p>
+<h2><a class="header" href="#process" id="process">Process</a></h2>
+<p>The general process for writing a grader is this</p>
+<ul>
+<li>
+<p>Make a new rust project - you can do this with <code>cargo new</code></p>
+</li>
+<li>
+<p>Define your criteria - You'll write all the details about each criteria in yaml. Things like name and description, point value, etc.</p>
+</li>
+<li>
+<p>Build a Batch - from within Rust, you'll load your yaml data into a <code>Batch</code>. Then you'll write a function (a <em>test</em>) for each criterion and &quot;attach&quot; each test where it belongs.</p>
+</li>
+<li>
+<p>Define a Submission - Any data you want sent back to you, as well as any data you may need inside the criteria tests should be stored in a submission.</p>
+</li>
+<li>
+<p>Grade the Submission against the Batch - this is done with one function call.</p>
+</li>
+<li>
+<p>Submit the Submission - this is done by POSTing the data (with the web helper module). Again, one function call.</p>
+</li>
+</ul>
+<p>That might seem like a lot, but it's pretty easy once you do it. A good place to get started is the example grader exercise. It will walk you through a complete grader.</p>
+<h2><a class="header" href="#terminology" id="terminology">Terminology</a></h2>
+<p>Here's a list of the terminology that I use throughout the program. This will help you understand exactly what's going on. It's pretty straightforward anyway but I'd rather be explicit about this.</p>
+<p>If a term is formatted like <code>this</code>, that means it's represented in code as a struct or module of the same name.</p>
+<ul>
+<li>
+<p>Grader - The program you're writing when you define criteria. &quot;Grader&quot; may not be the best term for your use case, but it's how I use this library.</p>
+</li>
+<li>
+<p><code>Criterion</code> - a bit of clerical data, and a &quot;test&quot;, which is just a function that returns true or false. The Criterion's test is the heart of the application. It's a function that you write. Data can be passed into the Criterions test, but the criterion itself doesn't store it.</p>
+</li>
+<li>
+<p><code>Batch</code> - a batch is basically just a wrapper around a collection of criteria. This is the highest level of abstraction. You may want to run your tests in phases, or batches. Each yaml file that you define later on is a single batch. 1 yaml file = 1 Batch.</p>
+</li>
+<li>
+<p>Submission Server - just a web server that accepts Submissions as json data, then writes them to a file. You can start this server in one function call, all you need is a machine to run it on.</p>
+</li>
+<li>
+<p><code>Submission</code> - This is a bundle of data that represents the results of grading the criteria. The data it carries is defined by you. It is sent back to the submission server (that you run). A Submission is graded &quot;against&quot; a set of Criteria. Any data that you need in any criterion should be in here.</p>
+</li>
+<li>
+<p><code>helpers</code> - this is pretty self evident. It's a module (with submodules) that contains functions that easily accomplish tasks that you'll probably run into. Currently there are 3 helper modules, but more will be added:</p>
+<ul>
+<li><code>cli</code> - handles terminal operations like getting user input</li>
+<li><code>fs</code> - file system operations, like ensuring a file exists or contains something</li>
+<li><code>web</code> - make GET and POST web requests in one function call</li>
+</ul>
+</li>
+</ul>
+<p>As I said in the &quot;Use Case&quot; section, this was originally intended to grade TCMG labs. As a consequence, there may be some academia-oriented terminology in here. Originally, the Submission type had a mandatory student ID and name field, but I've removed those to make it more flexible. I'm trying to remove anything that would limit this application to just that use case. You may be using this for something other that what it was intended, which is fantastic.</p>
+<h1><a class="header" href="#example-grader" id="example-grader">Example Grader</a></h1>
+<p>This chapter will walk you through building a complete grader from start to finish. I'm writing this as I publish version <code>0.10.0</code>. There will no doubt be changes in later versions.</p>
+<h2><a class="header" href="#scenario" id="scenario">Scenario</a></h2>
+<p>Let's say we wrote a lab to teach the basics of Git, and we need to ensure that the sudents have done the following:</p>
+<ul>
+<li>Installed Git</li>
+<li>Initialized Git in a repository</li>
+<li>Made at least 3 commits in the repository</li>
+<li>Pushed the repository to Github</li>
+</ul>
+<p>These are our &quot;criteria&quot;, which is an important term. Because we have 4 criteria, let's say each is worth 25 points for a total of 100 points.</p>
+<p>Let's write a grader program that the student will run. The grader will check these criteria and send a report back to us.</p>
+<h2><a class="header" href="#setup" id="setup">Setup</a></h2>
+<p>Our grader will be written in <a href="https://www.rust-lang.org/">Rust</a>. Before we get started, be sure you have all the necessary tools to write a Rust application, including <code>cargo</code>. You can <a href="https://www.rust-lang.org/learn/get-started">install it here</a> if you don't already have it. Be sure you're running on the &quot;nightly&quot; release of Rust. You can switch to nightly with <code>rustup default nightly</code>.</p>
+<p>We'll make a new Rust project using <code>cargo</code></p>
+<pre><code>$ cargo new my_grader
+</code></pre>
+<p>This will make 3 files for us. <code>Cargo.toml</code> is where we specify details about our application (called a &quot;crate&quot;). You can leave most of it alone, as we won't be publishing this crate, but you need to add this crate (<code>lab_grader</code>) as a dependency.</p>
+<pre><code class="language-toml">[dependencies]
+lab_grader = &quot;0.10.0&quot;
+</code></pre>
+<p><code>main.rs</code> contains a hello world function, so you can go ahead and compile and run your program with</p>
+<pre><code>$ cargo run
+</code></pre>
+<p>After it compiles you should see &quot;Hello, world!&quot;. Now we can move on to <a href="example_grader/./criteria.html">defining the criteria</a>.</p>
+<h1><a class="header" href="#defining-the-criteria" id="defining-the-criteria">Defining the Criteria</a></h1>
+<p>Once we have our project set up, the first step is to define our criteria. Criteria are contained within a &quot;Batch&quot;. A Batch has a name, description, and a list of criteria. It's represented in Rust by the <code>Batch</code> structure. We're going to write a <code>yaml</code> file, and all the data we put in there will be serialized into a <code>Batch</code>.</p>
+<p>Let's make a directory called <code>criteria/</code>, and inside there we'll make a file called <code>batch.yml</code>:</p>
+<pre><code class="language-yaml"># criteria/batch.yml
+name: Git Lab
+desc: Install and use Git
+</code></pre>
+<p>Here we've put a name for our batch, and then an (optional) description.</p>
+<!-- TODO: put a link here -->
+<p>Next we'll add our criteria. You can see the <a href="example_grader/">YAML specification</a> to see all the keys that are available here. As a reminder, here's the criteria we wrote out in the last section:</p>
+<ul>
+<li>Installed Git</li>
+<li>Initialized Git in a repository</li>
+<li>Made at least 3 commits in the repository</li>
+<li>Pushed the repository to Github</li>
+</ul>
+<pre><code class="language-yaml"># criteria/batch.yml
+name: Git Lab
+desc: Install and use Git
+
+criteria:
+  &quot;Git installed&quot;:
+    stub: git-installed
+    index: 1
+    worth: 25
+    messages: [&quot;installed&quot;, &quot;not installed&quot;]
+
+  &quot;Git initialized&quot;:
+    stub: git-init
+    index: 2
+    worth: 25
+    messages: [&quot;initialized&quot;, &quot;uninitialized&quot;]
+
+  &quot;Commits present&quot;:
+    stub: commits-present
+    index: 3
+    worth: 25
+    messages: [&quot;&gt;= 3 commits found&quot;, &quot;&lt; 3 commits found&quot;]
+
+  &quot;Repo pushed&quot;:
+    stub: repo-pushed
+    index: 4
+    worth: 25
+    messages: [&quot;pushed&quot;, &quot;not pushed&quot;]
+</code></pre>
+<p>We've put 4 criteria in the <code>yaml</code> file. Each one has a name, a stub (an identifier), a point value, index, and some success/failure messages. The name and worth are the only required fields.</p>
+<p>Once again, see the <a href="example_grader/">YAML specification</a> for more info on what you can put in this file.</p>
+<p>Now we have our criteria defined, we can move on to <a href="example_grader/submission.html">writing some Rust</a>.</p>
+<h1><a class="header" href="#building-a-submission" id="building-a-submission">Building a Submission</a></h1>
+<p>A submission is a bundle of data that represents a students work. A submission is graded against a batch, and then sent back to you. By default, it contains a timestamp, a numerical grade, and 2 lists of the criteria that the student passed/failed.</p>
+<p>You can add any kind of data that you might want, for example the students name and ID, or information about their system like IP address.</p>
+<p>Any data that is needed from inside a criteria test should also be here. This will make more sense when we write the criteria tests.</p>
+<h2><a class="header" href="#some-housekeeping" id="some-housekeeping">Some Housekeeping</a></h2>
+<p>We need to do some housekeeping in our <code>main.rs</code></p>
+<pre><pre class="playpen"><code class="language-rust">extern crate lab_grader;
+
+use lab_grader::*;
+
+fn main() {
+    // code will go here
+}
+</code></pre></pre>
+<p>We added an import to the top to bring in all the items we'll need from <code>lab_grader</code>. Then we just cleared our <code>main</code> function. In the next section, we'll add code into the <code>main</code> function.</p>
+<h2><a class="header" href="#build-a-submission" id="build-a-submission">Build a Submission</a></h2>
+<p>Now we can build a submission, which the <code>Submission::new</code> function. Add the following to the beginning of your <code>main</code> function.</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>let mut sub = Submission::new();
+<span class="boring">}
+</span></code></pre></pre>
+<p>We make it mutable to we can attach data later.</p>
+<h2><a class="header" href="#attach-data" id="attach-data">Attach Data</a></h2>
+<p>We want some data to attach to the submission. In this case, we're going to want the student's name and ID, as well as their Github username and the name of the repository they create for the lab. We'll use this data a little later.</p>
+<p>We're going to use two macros to make this data:</p>
+<ul>
+<li><code>data!</code> - creates a bundle of key/value pairs</li>
+<li><code>prompt!</code> - asks the user for input from the terminal</li>
+</ul>
+<pre><pre class="playpen"><code class="language-rust">fn main() {
+    let mut sub = Submission::new();
+
+    // Create data
+    let data = data! {
+        &quot;name&quot; =&gt; prompt!(&quot;Name: &quot;, String),
+        &quot;id&quot; =&gt; prompt!(&quot;ID: &quot;, String),
+        &quot;gh_name&quot; =&gt; prompt!(&quot;Github Username: &quot;, String),
+        &quot;repo&quot; =&gt; prompt!(&quot;Repo name: &quot;, String)
+    };
+
+    // Attach data to submission
+    sub.use_data(data);
+}
+</code></pre></pre>
+<h2><a class="header" href="#refactor" id="refactor">Refactor</a></h2>
+<p>We can refactor the code above into this, using the <code>Submission::from_data</code> function.</p>
+<pre><pre class="playpen"><code class="language-rust">fn main() {
+    let mut sub = Submission::from_data(data! {
+        &quot;name&quot; =&gt; prompt!(&quot;Name: &quot;, String),
+        &quot;id&quot; =&gt; prompt!(&quot;ID: &quot;, String),
+        &quot;gh_name&quot; =&gt; prompt!(&quot;Github Username: &quot;, String),
+        &quot;repo&quot; =&gt; prompt!(&quot;Repo name: &quot;, String)
+    });
+}
+
+</code></pre></pre>
+<h2><a class="header" href="#test" id="test">Test</a></h2>
+<p>Add the following line to the end of main and run the program with <code>cargo run</code> to see what it does so far.</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>println!(&quot;{:#?}&quot;, sub);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now we can move on to <a href="example_grader/batch.html">building the batch</a>.</p>
+<h1><a class="header" href="#building-the-batch" id="building-the-batch">Building the Batch</a></h1>
+<p>In <a href="example_grader/criteria.html">the first section</a> we defined our criteria in a <code>yaml</code> file. Now we need to load the <code>yaml</code> data into Rust and build a <code>Batch</code> from it.</p>
+<h2><a class="header" href="#a-note-about-errors" id="a-note-about-errors">A Note about Errors</a></h2>
+<p>In Rust, the main way that errors are handled in through the <a href="https://doc.rust-lang.org/std/result/"><code>Result</code></a> and <a href="https://doc.rust-lang.org/std/option/"><code>Option</code></a> types. These are massively important to Rust, and you should read over them and learn how they work.</p>
+<p>A very good guide is from the <a href="https://doc.rust-lang.org/stable/rust-by-example/error.html">Rust by Example</a> book. The &quot;Error Handling&quot; section should take less than an hour to read over and will be very useful if you continue with Rust.</p>
+<p>I'm going to be using the <code>expect</code> method, which is normally bad practice. It simply panics (aborts) with an error message if there's an error. Normally you would want to deal with the error in one way or another, but I'm going to use this anyway since it's just an example. <code>expect</code> should <em>not</em> be used in production code.</p>
+<h2><a class="header" href="#reading-yaml-data" id="reading-yaml-data">Reading YAML Data</a></h2>
+<p>We can read YAML data with the <code>yaml!</code> macro. <code>yaml!</code> takes in a relative file path and returns the YAML data as a <code>String</code>.</p>
+<p>This macro is very important for one reason. When you compile in debug mode (default), this macro will read from the file system as expected. However, when you compile for release (with the <code>--release</code> flag), it will read the file contents and embed the contents in the created executable. This means when you distribute the grader to your students, you don't need to provide the <code>yaml</code> file. The executable will run on it's own. Just be sure to compile in release mode before distributing.</p>
+<p>We can go ahead and add this to the end of our <code>main</code> function</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
+<span class="boring">}
+</span></code></pre></pre>
+<h2><a class="header" href="#building-a-batch" id="building-a-batch">Building a Batch</a></h2>
+<p>Now that we have our yaml data, we can build a <code>Batch</code> from it.</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Here we're using the <code>expect</code> method again, but it's probably a good idea in this case. This will crash if we have invalid YAML or missing items. Once you're done developing and compile for release, the YAML will be embedded and won't change, so it won't crash after that.</p>
+<p>That's all there is to building a batch. Here's the complete <code>main.rs</code> file so far</p>
+<pre><pre class="playpen"><code class="language-rust">extern crate lab_grader;
+
+use lab_grader::*;
+
+fn main() {
+    let mut sub = Submission::from_data(data! {
+        &quot;name&quot; =&gt; prompt!(&quot;Name: &quot;, String),
+        &quot;id&quot; =&gt; prompt!(&quot;ID: &quot;, String),
+        &quot;gh_name&quot; =&gt; prompt!(&quot;Github Username: &quot;, String),
+        &quot;repo&quot; =&gt; prompt!(&quot;Repo name: &quot;, String)
+    });
+
+    let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
+    let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
+}
+</code></pre></pre>
+<p>Now we can move on to <a href="example_grader/tests.html">writing the criteria tests</a>.</p>
+<h1><a class="header" href="#writing-the-tests" id="writing-the-tests">Writing the Tests</a></h1>
+<p>Now comes the most important part of writing the application. We've build our batch of criteria, but they currently don't have a way to be tested. How do we know if they actually have Git installed or not?</p>
+<p>The way we determine this is by writing a &quot;test&quot;, which is just a function, for each of our criteria. Then we'll &quot;attach&quot; the function to the criteria, then we can grade the submission.</p>
+<h2><a class="header" href="#a-single-test" id="a-single-test">A Single Test</a></h2>
+<p>Each test needs to have the same signature, meaning it has to accept the same parameters and return the same thing. We need this consistency between tests to make grading possible.</p>
+<p>Every test must accept a reference to a <code>TestData</code> object, and return a boolean. We created a <code>TestData</code> object with the <code>data!</code> macro when we made a submission. In fact, the exact data we put in the submission will be the data passed into each of our criteria tests. This is why we put the users Github username and repository name in the data; we'll need it inside one of our tests.</p>
+<h2><a class="header" href="#helpers" id="helpers">Helpers</a></h2>
+<!-- TODO: Add a link here -->
+<p>Before we write any tests, you should know about the <a href="example_grader/">helpers</a> modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.</p>
+<h2><a class="header" href="#the-first-test" id="the-first-test">The First Test</a></h2>
+<p>Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature. I'll add this outside our <code>main</code> function.</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>fn confirm_git_installed(_: &amp;TestData) -&gt; bool {
+    cli::Program::Git.version().is_some()
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We added a function called <code>confirm_git_installed</code>. It takes in a parameter of type <code>&amp;TestData</code>, but in this case we don't need it so we'll name the parameter <code>_</code>. In the function body, we used the <code>cli</code> helper module to get the version of Git, and returned true if it's a <code>Some</code> value (this is an <code>Option</code> type, it would be <code>None</code> if Git wasn't installed).</p>
+<p>And that's it for the first test. There's still one step to go, but we'll do that after the other tests.</p>
+<h2><a class="header" href="#the-rest-of-the-tests" id="the-rest-of-the-tests">The Rest of the Tests</a></h2>
+<p>I'm going to write some functions to serve as the tests for the remaining criteria. I won't explain what each one is doing in detail, but it should be pretty self explanatory. I'll put the entire <code>main.rs</code> file here.</p>
+<pre><pre class="playpen"><code class="language-rust">extern crate lab_grader;
+
+use std::process::Command;
+use lab_grader::*;
+
+fn confirm_git_installed(_: &amp;TestData) -&gt; bool {
+    cli::Program::Git.version().is_some()
+}
+
+fn confirm_git_init(_: &amp;TestData) -&gt; bool {
+    // This is a filesystem helper that this crate provides
+    // also works on directories
+    helpers::fs::file_exists(&quot;.git/&quot;)
+}
+
+
+fn confirm_enough_commits(_: &amp;TestData) -&gt; bool {
+    // Run the git command to list commit count
+    let command = &quot;git rev-list --all --count&quot;;
+    let out = if cfg!(target_os = &quot;windows&quot;) {
+        Command::new(&quot;cmd&quot;)
+                    .args(&amp;[&quot;/C&quot;, command])
+                    .output()
+                    .expect(&quot;failed to execute process&quot;)
+    } else {
+        Command::new(&quot;sh&quot;)
+                .arg(&quot;-c&quot;)
+                .arg(command)
+                .output()
+                .expect(&quot;failed to execute process&quot;)
+    };
+
+    // If the command returns something
+    if let Ok(string) = String::from_utf8(out.stdout) {
+        // And if we could parse a number from it
+        if let Ok(num) = string.trim().parse::&lt;u64&gt;() {
+            return num &gt; 2;
+        }
+    }
+
+    false
+}
+
+
+// We do need the data this time, so we'll name it `data`
+fn confirm_repo_pushed(data: &amp;TestData) -&gt; bool {
+    // Format the url to check
+    let url = format!(&quot;https://github.com/{}/{}/&quot;, data[&quot;gh_name&quot;], data[&quot;repo&quot;]);
+    // Another helper function
+    web::site_responds(&amp;url)
+}
+
+fn main() {
+    let mut sub = Submission::from_data(data! {
+        &quot;name&quot; =&gt; prompt!(&quot;Name: &quot;, String),
+        &quot;id&quot; =&gt; prompt!(&quot;ID: &quot;, String),
+        &quot;gh_name&quot; =&gt; prompt!(&quot;Github Username: &quot;, String),
+        &quot;repo&quot; =&gt; prompt!(&quot;Repo name: &quot;, String)
+    });
+
+    let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
+    let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
+}
+</code></pre></pre>
+<p>In the <code>confirm_repo_pushed</code>, we're actually using the data attached to the submission. We can do that with bracket syntax (<code>data[&quot;key&quot;]</code>) or through the <a href="https://doc.rust-lang.org/beta/std/collections/struct.HashMap.html#method.get"><code>get</code></a> method. Using <code>get</code> is recommended over bracket syntax.</p>
+<h2><a class="header" href="#attaching-the-tests" id="attaching-the-tests">Attaching the Tests</a></h2>
+<p>Now that we have our tests, we need to attach them to the appropriate criteria. We can do that with the <code>attach!</code> macro.</p>
+<pre><pre class="playpen"><code class="language-rust">fn main() {
+    // ...
+    attach! {
+        batch,
+        &quot;git-installed&quot; =&gt; confirm_git_installed,
+        &quot;git-init&quot; =&gt; confirm_git_init,
+        &quot;commits-present&quot; =&gt; confirm_enough_commits,
+        &quot;repo-pushed&quot; =&gt; confirm_repo_pushed
+    };
+}
+</code></pre></pre>
+<p>This attached each of our functions to the criteria with the given stub. This is why we needed to specify a stub in yaml.</p>
+<blockquote>
+<p>Note: If you don't provide the stub in yaml, it will be created by lowercasing the name and replacing whitespace with a dash. ie. <code>My First Criterion =&gt; my-first-criterion</code>.</p>
+</blockquote>
+<p>Now that the tests are attached, we're <a href="example_grader/grade.html">ready to grade</a>.</p>
+<h1><a class="header" href="#grading" id="grading">Grading</a></h1>
+<p>We now have a complete <code>Batch</code> and a <code>Submission</code>, which is all we need to grade.</p>
+<p>When we grade the submission, we'll run each criteria test in the batch. The submission's data will be passed into each of the tests. If the test passes, the submissions <code>grade</code> field will increase by the worth of the criterion.</p>
+<pre><pre class="playpen"><code class="language-rust">fn main() {
+    // ...
+    // Grade the submission
+    sub.grade_against(&amp;mut batch);
+
+    // Print the batch results
+    println(&quot;{}&quot;, batch);
+}
+</code></pre></pre>
+<p>We've graded the submission and then printed the batch. Printing the batch will show the student all the criteria and let them know what they passed or failed. Of course, you don't have to do this. You may want to keep one or all of your criteria private. You can hide individual criteria with the <code>hide</code> field in yaml, and you can always just not print the batch.</p>
+<p>That's all there is to grading. The next step is to submit to a submission server, which we'll do in the <a href="example_grader/submit.html">next section</a>.</p>
+<h1><a class="header" href="#submitting" id="submitting">Submitting</a></h1>
+<p>When a student runs the program, it should grade their submission and then submit to a location you, as the professor/TA, can access. There's two parts to this.</p>
+<h2><a class="header" href="#submission-server" id="submission-server">Submission Server</a></h2>
+<p>The submission server is simply a web server with a single route: it accepts POST requests on the <code>/submit</code> route. You can run it with a single function.</p>
+<p>You'll want to set up a publicly accessible server to run this server. I use a Microsoft Azure VM because they're pretty easy to set up and provide DNS services.</p>
+<p>Let's add a little bit of code to the <em>beginning</em> of our <code>main</code> function. It will read the command line arguments and run the server if you run the program with the &quot;<code>server</code>&quot; argument.</p>
+<pre><pre class="playpen"><code class="language-rust">fn main() {
+    // Get command line arguments
+    let args: Vec&lt;String&gt; = std::env::args().collect();
+
+    // If the second one is &quot;server&quot;
+    if args.len() == 2 &amp;&amp; args[1] == &quot;server&quot; {
+        // Run the server on port 8080
+        Submission::server(8080);
+    }
+
+    // ...
+}
+</code></pre></pre>
+<p>Now you can run the program with the &quot;<code>server</code>&quot; argument to start up your web server. Open another terminal and run this server in the background while we finish the grader.</p>
+<h2><a class="header" href="#submitting-1" id="submitting-1">Submitting</a></h2>
+<p>Now that the submission server is running, we can submit. Let's add this to the end of the <code>main</code> function.</p>
+<pre><pre class="playpen"><code class="language-rust">fn main() {
+    // ...
+    let url = &quot;http://localhost:8080/submit&quot;;
+    let res = web::post_json(url, &amp;sub);
+    if let Ok(response) = res {
+        println!(&quot;Submission sent, response {}&quot;, response.status());
+    } else {
+        println!(&quot;Error sending submission! {}&quot;, res.unwrap_err());
+    }
+}
+</code></pre></pre>
+<p>This will submit the submission to the server that you should have running, and print a success or error message. Of course, you'll want to put the url for your server instead of <code>localhost</code>.</p>
+<h1><a class="header" href="#the-results" id="the-results">The Results</a></h1>
+<p>Once a submission is accepted by the submission server, it will create a file called <code>submissions.csv</code>. Every submission accepted will be written to this file. This is a simple csv file, and you can open it in Excel or another program to process the data in any way you see fit.</p>
+<p>A few warnings:</p>
+<ul>
+<li>The header of the csv file will be written for <em>the first</em> submission recieved. If, for some reason, submissions have different data fields, the csv values and header won't match up. You should be sure that submissions all have the same data fields.</li>
+<li>You should try to avoid having commas in criteria names/descriptions, or in your data. You can't really prevent users from entering commas though. When submitting, any commas found will be replaced with semicolons.</li>
+<li>You need to compile the grader on the platform that your students will be running it on. If you want to provide a version for Windows, Linux, and MacOS, I recommend using a <a href="https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow">Github workflow</a> to build for each platform.</li>
+</ul>
+<h2><a class="header" href="#wrapping-up" id="wrapping-up">Wrapping up</a></h2>
+<p>This has been a very simple example of a very simple grader. The last thing to do is distribute the program to your students. when you compile for release mode, it will generate an executable in <code>target/release/[program_name]</code></p>
+<pre><code>$ cargo build --release
+</code></pre>
+<p>We usually write our labs as repositories on Github that the student can clone and follow, so we put the grader in the repo.</p>
+<h1><a class="header" href="#criteria" id="criteria">Criteria</a></h1>
+<p>coming soon...</p>
+<h1><a class="header" href="#yaml-specification" id="yaml-specification">YAML Specification</a></h1>
+<p>Here's the keys allowed when making a yaml file for a batch. Not all fields are required, but it's better to be specific.</p>
+<p>Here's the <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">YAML syntax</a> so you can learn how to write valid YAML. This isn't the official specification, but it's the easiest guide I found.</p>
+<p>When naming your yaml files, you can use <code>.yml</code> or <code>.yaml</code>. Honestly you can use whatever extension, I don't care, but I use <code>.yml</code> for mine.</p>
+<p>Quotes around strings are usually not required.</p>
+<hr />
+<h2><a class="header" href="#minimum-required" id="minimum-required">Minimum Required</a></h2>
+<pre><code class="language-yaml">name: Minimum Batch
+criteria:
+  Only criterion:
+    worth: 10
+</code></pre>
+<h2><a class="header" href="#everything" id="everything">Everything</a></h2>
+<pre><code class="language-yaml"># Required
+name: Batch Name
+# Optional
+desc: A short description about your batch
+# Optional
+# This is just an extra check to make sure
+# all criteria add to the correct total
+# If they don't, it will print an error message when running.
+total: 25
+
+
+# Required
+# You need at least one criteria
+criteria:
+
+  # Required
+  # Quotes are not required
+  Criterion name:
+
+    # Optional but recommended
+    # This will be inferred from the name (lowercased, whitespace =&gt; '-')
+    # This is like a human readable ID.
+    # Must be unique.
+    # This can really be any string, but it's best to keep it short and whitespace-free
+    stub: a-unique-stub
+
+    # Required
+    # Point value of the criterion
+    # This is completely subjective, you give it worth
+    # Can be negative
+    worth: 15
+
+    # Optional
+    # Controls the order the criteria are run
+    # Lowest first
+    # Can be negative
+    index: 5
+
+    # Optional
+    desc: More information about this criterion
+
+    # Optional
+    # Printed to the console when a criterion passes or fails
+    # Defaults to these values
+    messages: [&quot;passed&quot;, &quot;failed&quot;]
+
+    # Optional
+    # if this is true, criterion cannot be printed
+    # Defaults to false
+    hide: false
+
+  # Here's all the fields without the comments
+  Second criterion:
+    stub: second-criterion
+    worth: 10
+    index: 1
+    desc: Here's some more about this criterion
+    messages: [&quot;passed&quot;, &quot;failed&quot;]
+    hide: false
+</code></pre>
 
                     </main>
 
@@ -172,21 +655,6 @@
 
         </div>
 
-        
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3001");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
         
 
         
