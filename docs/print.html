@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li></ol></li><li class="chapter-item expanded "><a href="helpers/home.html"><strong aria-hidden="true">3.</strong> Helpers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="helpers/fs.html"><strong aria-hidden="true">3.1.</strong> File System</a></li><li class="chapter-item expanded "><a href="helpers/web.html"><strong aria-hidden="true">3.2.</strong> Web</a></li><li class="chapter-item expanded "><a href="helpers/cli.html"><strong aria-hidden="true">3.3.</strong> CLI</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="example_grader/batch.html"><strong aria-hidden="true">1.3.</strong> Building the Batch</a></li><li class="chapter-item expanded "><a href="example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li><li class="chapter-item expanded "><a href="criteria/criterion.html"><strong aria-hidden="true">2.2.</strong> A Single Criterion</a></li><li class="chapter-item expanded "><a href="criteria/test.html"><strong aria-hidden="true">2.3.</strong> A Criteria Test</a></li><li class="chapter-item expanded "><a href="criteria/batch.html"><strong aria-hidden="true">2.4.</strong> A Batch</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">3.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/test_data.html"><strong aria-hidden="true">3.1.</strong> TestData</a></li><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">3.2.</strong> The prompt! macro</a></li><li class="chapter-item expanded "><a href="submission/create.html"><strong aria-hidden="true">3.3.</strong> Creating a Submission</a></li><li class="chapter-item expanded "><a href="submission/submit.html"><strong aria-hidden="true">3.4.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="submission/server.html"><strong aria-hidden="true">3.5.</strong> Submission Server</a></li></ol></li><li class="chapter-item expanded "><a href="helpers/home.html"><strong aria-hidden="true">4.</strong> Helpers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="helpers/fs.html"><strong aria-hidden="true">4.1.</strong> File System</a></li><li class="chapter-item expanded "><a href="helpers/web.html"><strong aria-hidden="true">4.2.</strong> Web</a></li><li class="chapter-item expanded "><a href="helpers/cli.html"><strong aria-hidden="true">4.3.</strong> CLI</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -151,6 +151,10 @@
                     <main>
                         <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
 <p>This Rust crate automates a lot of the necessary steps for testing criteria, originally created to grade labs in technology management classes.</p>
+<p>Detailed documentation can be <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/index.html">found here on docs.rs</a>.</p>
+<blockquote>
+<p>Note: this documentation is still very much a work in progress, and some sections are just missing. If you have any questions, send me an email at <code>llamicron@gmail.com</code> or on discord at <code>CoconutCake#3161</code>.</p>
+</blockquote>
 <h2><a class="header" href="#use-case" id="use-case">Use Case</a></h2>
 <p>You should know that this program was intended for a technology management class. During the labs, the students would be managing Azure VMs, using software like Docker, Git and Github, etc. They were acting as SysAdmins, doing all the regular SysAdmin stuff. We needed a way to check each (60+) student's work on their VM or development machines, and report that back to us.</p>
 <p>This poses a unique challenge. How do you get proof that every student has the right version of Python installed, or has a web server running on the right port? There's lots of different possibilities.</p>
@@ -613,6 +617,190 @@ criteria:
     messages: [&quot;passed&quot;, &quot;failed&quot;]
     hide: false
 </code></pre>
+<h1><a class="header" href="#a-single-criterion" id="a-single-criterion">A Single Criterion</a></h1>
+<p>A <code>Criterion</code> is the bread and butter of this application. To help us understand it a bit better, I'm going to put the definition of the <code>Criterion</code> struct here so we can take it apart.</p>
+<p>Detailed <code>Criterion</code> documentation available <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/criterion/struct.Criterion.html">here on docs.rs</a>.</p>
+<pre><code class="language-rust noplaypen">// Comments elided
+pub struct Criterion {
+    pub stub: String,
+    pub name: String,
+    pub worth: i16,
+    pub index: i64,
+    pub messages: (String, String),
+    pub desc: Option&lt;String&gt;,
+    pub test: Box&lt;dyn Fn(&amp;TestData) -&gt; bool&gt;,
+    pub status: Option&lt;bool&gt;,
+    pub hide: bool,
+}
+</code></pre>
+<p>If you look through these fields, you might recognize them as the fields allowed in the <a href="criteria/./yaml_spec.html">YAML specification</a>. In fact, the only field that isn't present in the YAML spec is the <code>test</code> field. This is because <code>test</code> is a function, and we can't write Rust functions from inside YAML.</p>
+<p>You should pretty much always create criteria from YAML, and parse it into a <code>Batch</code> type. A single criteria alone isn't really useful. Nonetheless, there is a <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/criterion_builder/struct.CriterionBuilder.html"><code>CriterionBuilder</code></a> struct that helps you create them individually. If you want you can create a list of criteria that way then throw them into a batch. But this is much more work than through YAML.</p>
+<p>The best reason I can think of for creating a <code>Criterion</code> manually is if you want to programmatically change a piece of data like the name or worth. But, you can always define it in YAML and change just that field later.</p>
+<p>Really all a <code>Criterion</code> can do is run it's own test with or without data, and return a result. Again, they aren't very useful alone.</p>
+<h1><a class="header" href="#a-criteria-test" id="a-criteria-test">A Criteria Test</a></h1>
+<h1><a class="header" href="#a-batch" id="a-batch">A Batch</a></h1>
+<p>A <code>Batch</code> is a collection of criteria. It is represented in Rust as the <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/batch/struct.Batch.html"><code>Batch</code></a> struct.</p>
+<p>A batch is the primary way that you, as the programmer, interact with a collection of criteria. Batches are created by parsing YAML data into criteria, then attaching tests to those criteria.</p>
+<p>Detailed <code>Batch</code> documentation <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/batch/struct.Batch.html">here on docs.rs</a>.</p>
+<h2><a class="header" href="#creating-a-batch" id="creating-a-batch">Creating a Batch</a></h2>
+<p>See the <a href="criteria/./yaml_spec.html">YAML specification</a> for more information on what is allowed and required in YAML. Here's a short example</p>
+<pre><code class="language-yaml">name: My First Batch
+desc: An optional description about what this batch does
+
+criteria:
+  &quot;First criterion&quot;
+    stub: first-crit
+    worth: 25
+
+  &quot;Second criterion&quot;
+    stub: second-crit
+    worth: 25
+</code></pre>
+<p>Now we can deserialize that YAML into a <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/batch/struct.Batch.html"><code>Batch</code></a> struct.</p>
+<pre><code class="language-rust noplaypen">let yaml = yaml!(&quot;path/to/that/yaml.yml&quot;).unwrap();
+let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
+</code></pre>
+<h2><a class="header" href="#using-a-batch" id="using-a-batch">Using a Batch</a></h2>
+<p>Batches can do a few things on their own, but they're meant to be used with a <code>Submission</code>. This is what a Submission is graded against.</p>
+<p>Here's a few code examples of what you can do with a <code>Batch</code> alone.</p>
+<pre><code class="language-rust noplaypen">// These print the batch and all the criteria contained in it
+println!(&quot;{}&quot;, batch); // Print a batch in full
+batch.print_short();   // Print a shorter version
+
+// This gets the total points possible
+println!(&quot;Total points possible: {}&quot;, batch.total_points());
+// This gets the total points earned. You should grade before running this
+println!(&quot;Points earned: {}&quot;, batch.points());
+
+// Attaches a function to a particular criteria
+fn my_func(_: &amp;TestData) -&gt; bool { true };
+batch.attach(&quot;first-crit&quot;, Box::new(my_func));
+
+// Adds a criterion to the list
+batch.add(/* some criterion */);
+
+// Gets a criterion by stub, if any
+if let Some(crit) = batch.get(&quot;first-crit&quot;) {
+    println!(&quot;criterion name: {}&quot;, crit.name);
+}
+</code></pre>
+<h2><a class="header" href="#the-attach-macro" id="the-attach-macro">The <code>attach!</code> macro</a></h2>
+<p>The <code>attach!</code> macro is provided to easily attach many tests to criteria. In the code example above, you can see how to define a function and then attach it to a criterion through the <code>Batch::attach</code> function. The <code>attach!</code> macro allows you to do many of these at once, and you don't have to <code>Box</code> it either.</p>
+<pre><pre class="playpen"><code class="language-rust noplayplen">fn test_func1(_: &amp;TestData) -&gt; bool { true };
+fn test_func2(_: &amp;TestData) -&gt; bool { false };
+
+fn main() {
+    // create the batch from yaml as above...
+    attach! {
+        batch,
+        &quot;first-crit&quot; =&gt; test_func1,
+        &quot;second-crit&quot; =&gt; test_func2
+    };
+}
+</code></pre></pre>
+<p>This is the recommended way to attach functions to criteria.</p>
+<h1><a class="header" href="#submission" id="submission">Submission</a></h1>
+<p>A <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/submission/struct.Submission.html"><code>Submission</code></a> represents one students work on a lab. It's a bundle of data that can have whatever you want in it. A <code>Submission</code> works together with a <code>Batch</code>. A <code>Submission</code> is graded against a <code>Batch</code> and assigned a grade.</p>
+<p>After a <code>Submission</code> is graded, it can be sent back to you, as the professor/TA, for review.</p>
+<p>Submissions come with a timestamp by default. This will be the timezone of the system it was submitted from, in <a href="https://tools.ietf.org/html/rfc3339">rfc3339</a> format. It also has a numerical grade that will be changed when grading it. The <code>passed</code> and <code>failed</code> fields store which criteria this submission passed or failed.</p>
+<p>The most important part of a submission is it's data, which you can read about in <a href="submission/./test_data.html">the next section</a>.</p>
+<h1><a class="header" href="#testdata" id="testdata">TestData</a></h1>
+<p>The <code>TestData</code> type is simply a type alias to the <a href="https://doc.rust-lang.org/beta/std/collections/struct.HashMap.html"><code>HashMap</code></a> type. Any methods or functionality that <code>HashMap</code> provides is also on <code>TestData</code>.</p>
+<p>This field is part of a <code>Submission</code> and is meant to hold 2 things:</p>
+<ol>
+<li>Data you need in the final submission, and</li>
+<li>Data you need from within a <a href="submission/../criteria/test.html">criteria test</a>.</li>
+</ol>
+<p>The only restriction is that the <code>TestData</code> type is equivilent to a <code>HashMap&lt;String, String&gt;</code>, meaning both the keys and values must be a <code>String</code> type.</p>
+<h2><a class="header" href="#creating" id="creating">Creating</a></h2>
+<p>The best way to create a <code>TestData</code> bundle is through the <code>data!</code> macro.</p>
+<pre><code class="language-rust noplaypen">let data = data! {
+    &quot;key&quot; =&gt; &quot;value&quot;,
+    &quot;key2&quot; =&gt; &quot;value 2&quot;
+};
+
+assert_eq!( data[&quot;key&quot;], &quot;value&quot; );
+</code></pre>
+<p>The <code>data!</code> and the <code>prompt!</code> macro work very well together. You can read about the <code>prompt!</code> macro in <a href="submission/./prompt.html">the next section</a>.</p>
+<h1><a class="header" href="#the-prompt-macro" id="the-prompt-macro">The <code>prompt!</code> macro</a></h1>
+<p>You're probably going to want to get some user input and put that into the submission's data. For instance, a submission isn't very useful if you don't know who sent it. You'll want a name and possibly ID.</p>
+<p>The <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/macro.prompt.html"><code>prompt!</code></a> macro will ask for user input and try to cast it to the given type.</p>
+<pre><code class="language-rust noplaypen">let name = prompt!(&quot;Name: &quot;, String);
+println!(&quot;Your name is {}&quot;, name);
+</code></pre>
+<p>This macro can also enfore that the user enters a certain type. If it can't cast what they entered into the given type, it will crash with an error message.</p>
+<pre><code class="language-rust noplaypen">let number = prompt!(&quot;Enter a number: &quot;, isize);
+println!(&quot;{} is definitely a number.&quot;, number);
+</code></pre>
+<blockquote>
+<p>Note: the values of a <code>TestData</code> object must be a string, so you'll need to cast whatever they entered <em>back to a <code>String</code></em> if you want to include it in the <code>TestData</code> object.</p>
+</blockquote>
+<h1><a class="header" href="#creating-a-submission" id="creating-a-submission">Creating a Submission</a></h1>
+<p>We can combine what we know about about submissions, <a href="submission/./test_data.html"><code>TestData</code></a>, and <a href="submission/./test_data.html#the-prompt-macro"><code>prompt!</code></a> to make a complete submission.</p>
+<p>This snippet will make a new submission, ask the user for their name and ID, then wrap those into a <code>TestData</code> object and attach it to the submission.</p>
+<pre><code class="language-rust noplaypen">let sub = Submission::from_data(data! {
+    &quot;name&quot; =&gt; prompt!(&quot;Name: &quot;, String),
+    &quot;id&quot; =&gt; prompt!(&quot;ID: &quot;, String)
+});
+</code></pre>
+<h1><a class="header" href="#submitting-2" id="submitting-2">Submitting</a></h1>
+<p>You can send a submission with a POST request. The easiest way to do this is through the <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/helpers/web/fn.post_json.html"><code>post_json</code></a> method from the <code>helpers::web</code> module.</p>
+<p>The <code>Submission</code> type is JSON serializable, so we don't have to do any extra work before sending.</p>
+<pre><code class="language-rust noplaypen">let sub = Submission::from_data(/* data here */);
+
+// application code here...
+
+let url = &quot;http://localhost:8080/submit&quot;;
+web::post_json(url, &amp;sub);
+</code></pre>
+<p>Here, I'm POSTing the submission to a server running on <code>localhost:8080</code>. There's a special web server meant to handle these requests, which you can read about in the <a href="submission/./server.html">submission server</a> section.</p>
+<h2><a class="header" href="#error-handling" id="error-handling">Error Handling</a></h2>
+<p>The <code>web::post_json</code> method returns a <code>Result</code> with a <a href="https://docs.rs/reqwest/0.10.4/reqwest/blocking/struct.Response.html"><code>Response</code></a> type inside, which can be used to handle errors. There's 101 ways you could do this, but here's an example.</p>
+<pre><code class="language-rust noplaypen">let url = &quot;http://localhost:8080/submit&quot;;
+
+if let Ok(resp) = web::post_json(url, &amp;sub) {
+    if resp.status().is_success() {
+        // if the response has a success code
+        println!(&quot;Success! server responded with {}&quot;, resp.status());
+    } else {
+        // otherwise it came back with an error
+        println!(&quot;Error! the server responded with {}&quot;, resp.status());
+    }
+} else {
+    // This means the response couldn't even be completed
+    println!(&quot;Error! The request could not be performed!&quot;);
+}
+</code></pre>
+<h1><a class="header" href="#submission-server-1" id="submission-server-1">Submission Server</a></h1>
+<p>The &quot;Submission Server&quot; is the other half to <a href="submission/./submit.html">submitting</a>. It's a preconfigured web server built to handle submissions.</p>
+<p>You can run it through the <code>Submission</code> type like this</p>
+<pre><code class="language-rust noplaypen">// Running on port 8080
+Submission::server(8080);
+</code></pre>
+<p>This will run a web server with two routes:</p>
+<ol>
+<li><code>GET /</code> - returns an <code>OK</code> status with no other content</li>
+<li><code>POST /submit</code> - Accepts a JSON body of a <code>Submission</code>, returns an <code>Accepted</code> code on success, and an <code>InternalServerError</code> on failure.</li>
+</ol>
+<h2><a class="header" href="#running-the-server" id="running-the-server">Running the server</a></h2>
+<p>I like to set up a Microsoft Azure server to run this web server on, but you can do whatever you like. It just needs to be publicly accessible with a static IP or DNS name. You should put the address to your server (including the <code>/submit</code> bit) as the url to POST the submission to.</p>
+<p>Be sure your server has the proper ports exposed. If you want to run on port 80 and omit the port in the url, be sure to run with root permission.</p>
+<p>I like to run the server from within my grader through a command line parameter. Here's an example.</p>
+<pre><code class="language-rust noplaypen">use std::env;
+
+// ...
+
+fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    if args.len() == 2 &amp;&amp; args[1] == &quot;server&quot; {
+        Submission::server(8080);
+    }
+}
+</code></pre>
+<h2><a class="header" href="#the-results-1" id="the-results-1">The Results</a></h2>
+<p>When the server accepts the first submission, it will make a file (in the directory you run the server in) called <code>submissions.csv</code>. It will then write the submission (including all the data you put in it) to the csv file.</p>
+<p>It's important to note that the header for the csv file will be written according to the <em>first</em> submission it accepts. If, for some reason, different submissions has different data keys, the csv file will break. This is because one submission should have more columns and values than another. You should be sure not to conditionally add data to a submission.</p>
 <h1><a class="header" href="#helpers-1" id="helpers-1">Helpers</a></h1>
 <p>This chapter contains examples of all the helper functions. If you need more specific documentation, look on <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/helpers/index.html">docs.rs</a>.</p>
 <h2><a class="header" href="#importing" id="importing">Importing</a></h2>
