@@ -154,8 +154,7 @@
 <p>Each test needs to have the same signature, meaning it has to accept the same parameters and return the same thing. We need this consistency between tests to make grading possible.</p>
 <p>Every test must accept a reference to a <code>TestData</code> object, and return a boolean. We created a <code>TestData</code> object with the <code>data!</code> macro when we made a submission. In fact, the exact data we put in the submission will be the data passed into each of our criteria tests. This is why we put the users Github username and repository name in the data; we'll need it inside one of our tests.</p>
 <h2><a class="header" href="#helpers" id="helpers">Helpers</a></h2>
-<!-- TODO: Add a link here -->
-<p>Before we write any tests, you should know about the <a href="">helpers</a> modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.</p>
+<p>Before we write any tests, you should know about the <a href="../helpers/home.html">helper</a> modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.</p>
 <h2><a class="header" href="#the-first-test" id="the-first-test">The First Test</a></h2>
 <p>Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature. I'll add this outside our <code>main</code> function.</p>
 <pre><code class="language-rust noplaypen">fn confirm_git_installed(_: &amp;TestData) -&gt; bool {

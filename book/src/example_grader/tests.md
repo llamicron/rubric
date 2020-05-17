@@ -9,8 +9,7 @@ Each test needs to have the same signature, meaning it has to accept the same pa
 Every test must accept a reference to a `TestData` object, and return a boolean. We created a `TestData` object with the `data!` macro when we made a submission. In fact, the exact data we put in the submission will be the data passed into each of our criteria tests. This is why we put the users Github username and repository name in the data; we'll need it inside one of our tests.
 
 ## Helpers
-<!-- TODO: Add a link here -->
-Before we write any tests, you should know about the [helpers]() modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.
+Before we write any tests, you should know about the [helper](../helpers/home.md) modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.
 
 ## The First Test
 Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature. I'll add this outside our `main` function.

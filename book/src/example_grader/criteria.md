@@ -11,8 +11,7 @@ desc: Install and use Git
 
 Here we've put a name for our batch, and then an (optional) description.
 
-<!-- TODO: put a link here -->
-Next we'll add our criteria. You can see the [YAML specification]() to see all the keys that are available here. As a reminder, here's the criteria we wrote out in the last section:
+Next we'll add our criteria. You can see the [YAML specification](../criteria/yaml_spec.md) to see all the keys that are available here. As a reminder, here's the criteria we wrote out in the last section:
 - Installed Git
 - Initialized Git in a repository
 - Made at least 3 commits in the repository
