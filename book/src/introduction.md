@@ -1,9 +1,14 @@
 # Introduction
-small change. This Rust crate automates a lot of the necessary steps for testing criteria, originally created to grade labs in technology management classes.
+This Rust crate automates a lot of the necessary steps for testing criteria, originally created to grade labs in technology management classes.
 
 Detailed documentation can be [found here on docs.rs](https://docs.rs/lab_grader/0.10.0/lab_grader/index.html).
 
 > Note: this documentation is still very much a work in progress, and some sections are just missing. If you have any questions, send me an email at `llamicron@gmail.com` or on discord at `CoconutCake#3161`.
+
+Links:
+- [API documentation](https://docs.rs/lab_grader)
+- [Repository](https://github.com/llamicron/lab_grader)
+
 ## Use Case
 You should know that this program was intended for a technology management class. During the labs, the students would be managing Azure VMs, using software like Docker, Git and Github, etc. They were acting as SysAdmins, doing all the regular SysAdmin stuff. We needed a way to check each (60+) student's work on their VM or development machines, and report that back to us.
 
