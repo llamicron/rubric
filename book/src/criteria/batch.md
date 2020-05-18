@@ -44,16 +44,19 @@ println!("Total points possible: {}", batch.total_points());
 // This gets the total points earned. You should grade before running this
 println!("Points earned: {}", batch.points());
 
-// Attaches a function to a particular criteria
-fn my_func(_: &TestData) -> bool { true };
-batch.attach("first-crit", Box::new(my_func));
-
 // Adds a criterion to the list
 batch.add(/* some criterion */);
 
 // Gets a criterion by stub, if any
 if let Some(crit) = batch.get("first-crit") {
     println!("criterion name: {}", crit.name);
+}
+
+
+// Attaches a function to a particular criteria
+fn my_func(_: &TestData) -> bool { true };
+if let Some(crit) = batch.get("first-crit") {
+    crit.attach(Box::new(my_func));
 }
 ```
 

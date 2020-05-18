@@ -34,7 +34,7 @@ use ansi_term::Color;
 
 // internal uses
 use crate::yaml::BatchYaml;
-use crate::{Criterion, TestData};
+use crate::Criterion;
 use crate::error::{Result, Error};
 
 /// Attaches tests to criteria in a batch.
@@ -63,7 +63,11 @@ use crate::error::{Result, Error};
 macro_rules! attach {
     ( $batch:ident, $($stub:literal => $func:ident),* ) => {
         $(
-            $batch.attach($stub, Box::new($func)).expect("criterion not found");
+            if let Some(c) = $batch.get($stub) {
+                c.attach(Box::new($func));
+            } else {
+                panic!("Criterion with stub {} not found, can't attach function", $stub);
+            }
         )+
     };
 }
@@ -142,20 +146,6 @@ impl Batch {
     /// your criteria in yaml.
     pub fn add(&mut self, criterion: Criterion) {
         self.criteria.push(criterion);
-    }
-
-    /// Attach a test function to a criterion.
-    ///
-    /// You should probably use the [`attach!`](crate::batch::attach) macro
-    /// instead of this,
-    pub fn attach(&mut self, stub: &str,
-        func: Box<dyn Fn(&TestData) -> bool>) -> Result<()> {
-
-        match self.get(stub) {
-            Some(crit) => crit.attach(func),
-            None => return Err(Error::stub_not_found(stub)),
-        }
-        Ok(())
     }
 
     /// Returns the criteria as a `&mut Vec<Criterion>`, sorted
