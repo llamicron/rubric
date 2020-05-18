@@ -1,5 +1,5 @@
 # Introduction
-This Rust crate automates a lot of the necessary steps for testing criteria, originally created to grade labs in technology management classes.
+small change. This Rust crate automates a lot of the necessary steps for testing criteria, originally created to grade labs in technology management classes.
 
 Detailed documentation can be [found here on docs.rs](https://docs.rs/lab_grader/0.10.0/lab_grader/index.html).
 
