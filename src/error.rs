@@ -19,6 +19,7 @@ impl Error {
         self.ctx.get_context()
     }
 
+    #[allow(dead_code)]
     pub(crate) fn stub_not_found<T: AsRef<str>>(stub: T) -> Error {
         Error::from(ErrorKind::StubNotFound(stub.as_ref().to_string()))
     }

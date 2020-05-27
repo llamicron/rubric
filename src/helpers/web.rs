@@ -65,7 +65,7 @@ fn construct_headers() -> HeaderMap {
 pub fn get(url: &str) -> Result<Response, reqwest::Error> {
     let client = Client::builder()
         .user_agent(APP_USER_AGENT)
-        .timeout(Duration::from_secs(4))
+        .timeout(Duration::from_secs(6))
         .build()
         .expect("Couldn't build reqwest client. This shouldn't happen.");
 

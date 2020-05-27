@@ -267,7 +267,7 @@ impl fmt::Display for Batch {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::yaml;
+    use crate::{yaml, TestData};
 
     fn yaml_data() -> &'static str {
         yaml!("../test_data/test_batch.yml").unwrap()
