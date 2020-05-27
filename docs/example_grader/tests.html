@@ -156,46 +156,41 @@
 <h2><a class="header" href="#helpers" id="helpers">Helpers</a></h2>
 <p>Before we write any tests, you should know about the <a href="../helpers/home.html">helper</a> modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.</p>
 <h2><a class="header" href="#the-first-test" id="the-first-test">The First Test</a></h2>
-<p>Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature. I'll add this outside our <code>main</code> function.</p>
-<pre><code class="language-rust noplaypen">fn confirm_git_installed(_: &amp;TestData) -&gt; bool {
+<p>Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature.</p>
+<p>You can write your tests anywhere, but I'll make a <code>tests.rs</code> to keep the tests separate from the rest of our code.</p>
+<pre><code class="language-rust noplaypen">// tests.rs
+use lab_grader::*;
+
+fn confirm_git_installed(_: &amp;TestData) -&gt; bool {
     cli::Program::Git.version().is_some()
 }
 </code></pre>
 <p>We added a function called <code>confirm_git_installed</code>. It takes in a parameter of type <code>&amp;TestData</code>, but in this case we don't need it so we'll name the parameter <code>_</code>. In the function body, we used the <code>cli</code> helper module to get the version of Git, and returned true if it's a <code>Some</code> value (this is an <code>Option</code> type, it would be <code>None</code> if Git wasn't installed).</p>
 <p>And that's it for the first test. There's still one step to go, but we'll do that after the other tests.</p>
 <h2><a class="header" href="#the-rest-of-the-tests" id="the-rest-of-the-tests">The Rest of the Tests</a></h2>
-<p>I'm going to write some functions to serve as the tests for the remaining criteria. I won't explain what each one is doing in detail, but it should be pretty self explanatory. I'll put the entire <code>main.rs</code> file here.</p>
-<pre><code class="language-rust noplaypen">extern crate lab_grader;
-
-use std::process::Command;
+<p>I'm going to write some functions to serve as the tests for the remaining criteria. I won't explain what each one is doing in detail, but it should be pretty self explanatory. I'll put the entire <code>tests.rs</code> file here.</p>
+<pre><code class="language-rust noplaypen">use std::process::Command;
 use lab_grader::*;
 
-fn confirm_git_installed(_: &amp;TestData) -&gt; bool {
+// Naming the data parameter &quot;_&quot; because we don't need it in this case
+pub fn confirm_git_installed(_: &amp;TestData) -&gt; bool {
     cli::Program::Git.version().is_some()
 }
 
-fn confirm_git_init(_: &amp;TestData) -&gt; bool {
+pub fn confirm_git_init(_: &amp;TestData) -&gt; bool {
     // This is a filesystem helper that this crate provides
     // also works on directories
-    helpers::fs::file_exists(&quot;.git/&quot;)
+    // This is *not* std::fs
+    fs::file_exists(&quot;.git/&quot;)
 }
 
-
-fn confirm_enough_commits(_: &amp;TestData) -&gt; bool {
+pub fn confirm_enough_commits(_: &amp;TestData) -&gt; bool {
     // Run the git command to list commit count
-    let command = &quot;git rev-list --all --count&quot;;
-    let out = if cfg!(target_os = &quot;windows&quot;) {
-        Command::new(&quot;cmd&quot;)
-                    .args(&amp;[&quot;/C&quot;, command])
-                    .output()
-                    .expect(&quot;failed to execute process&quot;)
-    } else {
-        Command::new(&quot;sh&quot;)
-                .arg(&quot;-c&quot;)
-                .arg(command)
-                .output()
-                .expect(&quot;failed to execute process&quot;)
-    };
+    let out = Command::new(&quot;sh&quot;)
+        .arg(&quot;-c&quot;)
+        .arg(&quot;git rev-list --all --count&quot;)
+        .output()
+        .expect(&quot;Couldn't run subcommand&quot;);
 
     // If the command returns something
     if let Ok(string) = String::from_utf8(out.stdout) {
@@ -208,29 +203,22 @@ fn confirm_enough_commits(_: &amp;TestData) -&gt; bool {
     false
 }
 
-
-// We do need the data this time, so we'll name it `data`
-fn confirm_repo_pushed(data: &amp;TestData) -&gt; bool {
+// We do need the data this time
+pub fn confirm_repo_pushed(data: &amp;TestData) -&gt; bool {
     // Format the url to check
     let url = format!(&quot;https://github.com/{}/{}/&quot;, data[&quot;gh_name&quot;], data[&quot;repo&quot;]);
     // Another helper function
     web::site_responds(&amp;url)
 }
-
-fn main() {
-    let mut sub = Submission::from_data(data! {
-        &quot;name&quot; =&gt; prompt!(&quot;Name: &quot;, String),
-        &quot;id&quot; =&gt; prompt!(&quot;ID: &quot;, String),
-        &quot;gh_name&quot; =&gt; prompt!(&quot;Github Username: &quot;, String),
-        &quot;repo&quot; =&gt; prompt!(&quot;Repo name: &quot;, String)
-    });
-
-    let yaml = yaml!(&quot;../criteria/batch.yml&quot;).expect(&quot;Couldn't read file&quot;);
-    let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
-}
 </code></pre>
 <p>In the <code>confirm_repo_pushed</code>, we're actually using the data attached to the submission. We can do that with bracket syntax (<code>data[&quot;key&quot;]</code>) or through the <a href="https://doc.rust-lang.org/beta/std/collections/struct.HashMap.html#method.get"><code>get</code></a> method. Using <code>get</code> is recommended over bracket syntax.</p>
 <h2><a class="header" href="#attaching-the-tests" id="attaching-the-tests">Attaching the Tests</a></h2>
+<p>We need to import the tests we wrote in <code>main.rs</code>. Add this import to the top of <code>main.rs</code></p>
+<pre><code class="language-rust noplaypen">// Declare the tests mod (tests.rs)
+mod tests;
+// Import all the test functions
+use tests::*;
+</code></pre>
 <p>Now that we have our tests, we need to attach them to the appropriate criteria. We can do that with the <code>attach!</code> macro.</p>
 <pre><code class="language-rust noplaypen">fn main() {
     // ...

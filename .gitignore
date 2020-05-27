@@ -2,3 +2,4 @@
 Cargo.lock
 submissions.csv
 lab_grader.wiki
+.DS_Store

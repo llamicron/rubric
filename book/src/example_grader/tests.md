@@ -12,9 +12,14 @@ Every test must accept a reference to a `TestData` object, and return a boolean.
 Before we write any tests, you should know about the [helper](../helpers/home.md) modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.
 
 ## The First Test
-Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature. I'll add this outside our `main` function.
+Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature.
+
+You can write your tests anywhere, but I'll make a `tests.rs` to keep the tests separate from the rest of our code.
 
 ```rust ,noplaypen
+// tests.rs
+use lab_grader::*;
+
 fn confirm_git_installed(_: &TestData) -> bool {
     cli::Program::Git.version().is_some()
 }
@@ -26,41 +31,32 @@ And that's it for the first test. There's still one step to go, but we'll do tha
 
 
 ## The Rest of the Tests
-I'm going to write some functions to serve as the tests for the remaining criteria. I won't explain what each one is doing in detail, but it should be pretty self explanatory. I'll put the entire `main.rs` file here.
+I'm going to write some functions to serve as the tests for the remaining criteria. I won't explain what each one is doing in detail, but it should be pretty self explanatory. I'll put the entire `tests.rs` file here.
 
 
 ```rust ,noplaypen
-extern crate lab_grader;
-
 use std::process::Command;
 use lab_grader::*;
 
-fn confirm_git_installed(_: &TestData) -> bool {
+// Naming the data parameter "_" because we don't need it in this case
+pub fn confirm_git_installed(_: &TestData) -> bool {
     cli::Program::Git.version().is_some()
 }
 
-fn confirm_git_init(_: &TestData) -> bool {
+pub fn confirm_git_init(_: &TestData) -> bool {
     // This is a filesystem helper that this crate provides
     // also works on directories
-    helpers::fs::file_exists(".git/")
+    // This is *not* std::fs
+    fs::file_exists(".git/")
 }
 
-
-fn confirm_enough_commits(_: &TestData) -> bool {
+pub fn confirm_enough_commits(_: &TestData) -> bool {
     // Run the git command to list commit count
-    let command = "git rev-list --all --count";
-    let out = if cfg!(target_os = "windows") {
-        Command::new("cmd")
-                    .args(&["/C", command])
-                    .output()
-                    .expect("failed to execute process")
-    } else {
-        Command::new("sh")
-                .arg("-c")
-                .arg(command)
-                .output()
-                .expect("failed to execute process")
-    };
+    let out = Command::new("sh")
+        .arg("-c")
+        .arg("git rev-list --all --count")
+        .output()
+        .expect("Couldn't run subcommand");
 
     // If the command returns something
     if let Ok(string) = String::from_utf8(out.stdout) {
@@ -73,25 +69,12 @@ fn confirm_enough_commits(_: &TestData) -> bool {
     false
 }
 
-
-// We do need the data this time, so we'll name it `data`
-fn confirm_repo_pushed(data: &TestData) -> bool {
+// We do need the data this time
+pub fn confirm_repo_pushed(data: &TestData) -> bool {
     // Format the url to check
     let url = format!("https://github.com/{}/{}/", data["gh_name"], data["repo"]);
     // Another helper function
     web::site_responds(&url)
-}
-
-fn main() {
-    let mut sub = Submission::from_data(data! {
-        "name" => prompt!("Name: ", String),
-        "id" => prompt!("ID: ", String),
-        "gh_name" => prompt!("Github Username: ", String),
-        "repo" => prompt!("Repo name: ", String)
-    });
-
-    let yaml = yaml!("../criteria/batch.yml").expect("Couldn't read file");
-    let mut batch = Batch::from_yaml(yaml).expect("Bad yaml!");
 }
 ```
 
@@ -99,6 +82,15 @@ In the `confirm_repo_pushed`, we're actually using the data attached to the subm
 
 
 ## Attaching the Tests
+We need to import the tests we wrote in `main.rs`. Add this import to the top of `main.rs`
+
+```rust ,noplaypen
+// Declare the tests mod (tests.rs)
+mod tests;
+// Import all the test functions
+use tests::*;
+```
+
 Now that we have our tests, we need to attach them to the appropriate criteria. We can do that with the `attach!` macro.
 
 ```rust ,noplaypen
