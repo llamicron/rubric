@@ -173,8 +173,9 @@ let mut batch = Batch::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
 <p>Batches can do a few things on their own, but they're meant to be used with a <code>Submission</code>. This is what a Submission is graded against.</p>
 <p>Here's a few code examples of what you can do with a <code>Batch</code> alone.</p>
 <pre><code class="language-rust noplaypen">// These print the batch and all the criteria contained in it
-println!(&quot;{}&quot;, batch); // Print a batch in full
-batch.print_short();   // Print a shorter version
+println!(&quot;{}&quot;, batch);  // Print a batch in full
+batch.print_short();    // Print a shorter version
+batch.print_table();    // print a full table
 
 // This gets the total points possible
 println!(&quot;Total points possible: {}&quot;, batch.total_points());

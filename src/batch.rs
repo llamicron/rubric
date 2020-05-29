@@ -214,7 +214,6 @@ impl Batch {
         println!("{}/{}", self.points(), self.total_points());
     }
 
-
     /// Prints a table with the batch info and all the criteria to stdout
     pub fn print_table(&mut self) {
         let mut table = Table::new();
@@ -227,9 +226,11 @@ impl Batch {
 
         // Add each criterion as a row
         for crit in self.sorted() {
-            let default_desc = String::new();
-            let desc = crit.desc.as_ref().unwrap_or(&default_desc);
-            table.add_row(row![crit.name, crit.worth, crit.colored_status_message(), desc]);
+            if !crit.hide {
+                let default_desc = String::new();
+                let desc = crit.desc.as_ref().unwrap_or(&default_desc);
+                table.add_row(row![crit.name, crit.worth, crit.colored_status_message(), desc]);
+            }
         }
 
         // Add total to bottom of worth row

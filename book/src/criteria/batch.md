@@ -36,8 +36,9 @@ Batches can do a few things on their own, but they're meant to be used with a `S
 Here's a few code examples of what you can do with a `Batch` alone.
 ```rust ,noplaypen
 // These print the batch and all the criteria contained in it
-println!("{}", batch); // Print a batch in full
-batch.print_short();   // Print a shorter version
+println!("{}", batch);  // Print a batch in full
+batch.print_short();    // Print a shorter version
+batch.print_table();    // print a full table
 
 // This gets the total points possible
 println!("Total points possible: {}", batch.total_points());
