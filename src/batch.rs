@@ -30,6 +30,7 @@ use std::str::FromStr;
 use std::fmt;
 
 // external uses
+use prettytable::{Table, row, cell};
 use ansi_term::Color;
 
 // internal uses
@@ -212,6 +213,30 @@ impl Batch {
         }
         println!("{}/{}", self.points(), self.total_points());
     }
+
+
+    /// Prints a table with the batch info and all the criteria to stdout
+    pub fn print_table(&mut self) {
+        let mut table = Table::new();
+
+        // Batch name and description
+        table.add_row(row!["", "", b->self.name, self.desc.as_ref().unwrap_or(&String::new())]);
+
+        // Headers
+        table.add_row(row![b->"Criteria", b->"Worth", b->"Status", b->"Description"]);
+
+        // Add each criterion as a row
+        for crit in self.sorted() {
+            let default_desc = String::new();
+            let desc = crit.desc.as_ref().unwrap_or(&default_desc);
+            table.add_row(row![crit.name, crit.worth, crit.colored_status_message(), desc]);
+        }
+
+        // Add total to bottom of worth row
+        table.add_row(row![br->"Total", br->format!("{}/{}", self.points(), self.total_points()), "", ""]);
+        table.printstd();
+    }
+
 }
 
 

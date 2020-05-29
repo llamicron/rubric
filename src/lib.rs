@@ -7,6 +7,7 @@
 #![feature(proc_macro_hygiene, decl_macro, stmt_expr_attributes)]
 #[macro_use] extern crate rocket;
 extern crate rocket_contrib;
+extern crate prettytable;
 extern crate serde_yaml;
 extern crate serde_json;
 extern crate ansi_term;

@@ -138,6 +138,30 @@ impl Criterion {
             println!("{}  not tested", self.name);
         }
     }
+
+
+    /// Returns the success message if the criterion passed, otherwise
+    /// returns the failure message
+    pub fn status_message(&self) -> String {
+        if self.status == Some(true) {
+            self.success_message().clone()
+        } else {
+            self.failure_message().clone()
+        }
+    }
+
+
+    /// Same as [`status_message`](crate::criterion::Criterion::status_message), but
+    /// the success message will be colored green and the failure message red.
+    pub fn colored_status_message(&self) -> String {
+        if self.status == Some(true) {
+            format!("{}", Green.paint(self.success_message()))
+        } else {
+            format!("{}", Red.paint(self.failure_message()))
+        }
+    }
+
+
 }
 
 /// Displays the results of the criterion.
