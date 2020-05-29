@@ -205,7 +205,8 @@ impl Batch {
     /// Prints the batch name, then each criteria, only taking
     /// one line each. It's a shortened version of `println!("{}", batch)`.
     pub fn print_short(&self) {
-        println!("{}", Color::White.bold().paint(&self.name));
+        println!("-- {} --", Color::White.bold().paint(&self.name));
+
         for crit in &self.criteria {
             crit.print_short();
         }

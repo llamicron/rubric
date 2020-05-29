@@ -120,19 +120,22 @@ impl Criterion {
     }
 
     /// Prints the essential criterion information in one line.
+    ///
+    /// Names will be padded with spaces on the left to 30 characters wide,
+    /// so that printing many criteria at once will look better.
     pub fn print_short(&self) {
         if let Some(s) = self.status {
             if s {
-                println!("{} {}",
+                println!("{}  {}",
                     self.name,
                     Green.paint(self.success_message()));
             } else {
-                println!("{} {}",
+                println!("{}  {}",
                     self.name,
                     Red.paint(self.failure_message()));
             }
         } else {
-            println!("{} not tested", self.name);
+            println!("{}  not tested", self.name);
         }
     }
 }

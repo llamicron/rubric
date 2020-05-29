@@ -80,7 +80,8 @@ fn main() {
     }
 
     sub.grade_against(&mut batch);
-    println!("{}", batch);
+    // println!("{}", batch);
+    batch.print_short();
 
     let url = "https://postman-echo.com/post";
     match web::post_json(url, &sub) {
