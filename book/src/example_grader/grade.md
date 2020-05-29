@@ -16,4 +16,6 @@ fn main() {
 
 We've graded the submission and then printed the batch. Printing the batch will show the student all the criteria and let them know what they passed or failed. Of course, you don't have to do this. You may want to keep one or all of your criteria private. You can hide individual criteria with the `hide` field in yaml, and you can always just not print the batch.
 
+> Note: You can print the batch as a table with [`batch.print_table()`](https://docs.rs/lab_grader/0.10.0/lab_grader/batch/struct.Batch.html#method.print_table).
+
 That's all there is to grading. The next step is to submit to a submission server, which we'll do in the [next section](submit.md).

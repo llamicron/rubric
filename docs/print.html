@@ -485,6 +485,9 @@ use tests::*;
 }
 </code></pre>
 <p>We've graded the submission and then printed the batch. Printing the batch will show the student all the criteria and let them know what they passed or failed. Of course, you don't have to do this. You may want to keep one or all of your criteria private. You can hide individual criteria with the <code>hide</code> field in yaml, and you can always just not print the batch.</p>
+<blockquote>
+<p>Note: You can print the batch as a table with <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/batch/struct.Batch.html#method.print_table"><code>batch.print_table()</code></a>.</p>
+</blockquote>
 <p>That's all there is to grading. The next step is to submit to a submission server, which we'll do in the <a href="example_grader/submit.html">next section</a>.</p>
 <h1><a class="header" href="#submitting" id="submitting">Submitting</a></h1>
 <p>When a student runs the program, it should grade their submission and then submit to a location you, as the professor/TA, can access. There's two parts to this.</p>
