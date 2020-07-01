@@ -1,5 +1,5 @@
 # Writing the Tests
-Now comes the most important part of writing the application. We've build our batch of criteria, but they currently don't have a way to be tested. How do we know if they actually have Git installed or not?
+Now comes the most important part of writing the application. We've build our rubric of criteria, but they currently don't have a way to be tested. How do we know if they actually have Git installed or not?
 
 The way we determine this is by writing a "test", which is just a function, for each of our criteria. Then we'll "attach" the function to the criteria, then we can grade the submission.
 
@@ -97,7 +97,7 @@ Now that we have our tests, we need to attach them to the appropriate criteria. 
 fn main() {
     // ...
     attach! {
-        batch,
+        rubric,
         "git-installed" => confirm_git_installed,
         "git-init" => confirm_git_init,
         "commits-present" => confirm_enough_commits,

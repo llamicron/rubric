@@ -25,11 +25,11 @@ The general process for writing a grader is this
 
 - Define your criteria - You'll write all the details about each criteria in yaml. Things like name and description, point value, etc.
 
-- Build a Batch - from within Rust, you'll load your yaml data into a `Batch`. Then you'll write a function (a *test*) for each criterion and "attach" each test where it belongs.
+- Build a Rubric - from within Rust, you'll load your yaml data into a `Rubric`. Then you'll write a function (a *test*) for each criterion and "attach" each test where it belongs.
 
 - Define a Submission - Any data you want sent back to you, as well as any data you may need inside the criteria tests should be stored in a submission.
 
-- Grade the Submission against the Batch - this is done with one function call.
+- Grade the Submission against the Rubric - this is done with one function call.
 
 - Submit the Submission - this is done by POSTing the data (with the web helper module). Again, one function call.
 
@@ -46,7 +46,7 @@ If a term is formatted like `this`, that means it's represented in code as a str
 
 - `Criterion` - a bit of clerical data, and a "test", which is just a function that returns true or false. The Criterion's test is the heart of the application. It's a function that you write. Data can be passed into the Criterions test, but the criterion itself doesn't store it.
 
-- `Batch` - a batch is basically just a wrapper around a collection of criteria. This is the highest level of abstraction. You may want to run your tests in phases, or batches. Each yaml file that you define later on is a single batch. 1 yaml file = 1 Batch.
+- `Rubric` - a rubric is basically just a wrapper around a collection of criteria. This is the highest level of abstraction. You may want to run your tests in batches, which would be multiple rubrics. Each yaml file that you define later on is a single rubric. 1 yaml file = 1 Rubric.
 
 - Submission Server - just a web server that accepts Submissions as json data, then writes them to a file. You can start this server in one function call, all you need is a machine to run it on.
 

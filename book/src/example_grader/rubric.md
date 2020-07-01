@@ -1,5 +1,5 @@
-# Building the Batch
-In [the first section](criteria.md) we defined our criteria in a `yaml` file. Now we need to load the `yaml` data into Rust and build a `Batch` from it.
+# Building the Rubric
+In [the first section](criteria.md) we defined our criteria in a `yaml` file. Now we need to load the `yaml` data into Rust and build a `Rubric` from it.
 
 ## A Note about Errors
 In Rust, the main way that errors are handled in through the [`Result`](https://doc.rust-lang.org/std/result/) and [`Option`](https://doc.rust-lang.org/std/option/) types. These are massively important to Rust, and you should read over them and learn how they work.
@@ -16,19 +16,19 @@ This macro is very important for one reason. When you compile in debug mode (def
 We can go ahead and add this to the end of our `main` function
 
 ```rust ,noplaypen
-let yaml = yaml!("../criteria/batch.yml").expect("Couldn't read file");
+let yaml = yaml!("../criteria/rubric.yml").expect("Couldn't read file");
 ```
 
-## Building a Batch
-Now that we have our yaml data, we can build a `Batch` from it.
+## Building a Rubric
+Now that we have our yaml data, we can build a `Rubric` from it.
 
 ```rust ,noplaypen
-let mut batch = Batch::from_yaml(yaml).expect("Bad yaml!");
+let mut rubric = Rubric::from_yaml(yaml).expect("Bad yaml!");
 ```
 
 Here we're using the `expect` method again, but it's probably a good idea in this case. This will crash if we have invalid YAML or missing items. Once you're done developing and compile for release, the YAML will be embedded and won't change, so it won't crash after that.
 
-That's all there is to building a batch. Here's the complete `main.rs` file so far
+That's all there is to building a rubric. Here's the complete `main.rs` file so far
 
 ```rust ,noplaypen
 extern crate lab_grader;
@@ -43,8 +43,8 @@ fn main() {
         "repo" => prompt!("Repo name: ", String)
     });
 
-    let yaml = yaml!("../criteria/batch.yml").expect("Couldn't read file");
-    let mut batch = Batch::from_yaml(yaml).expect("Bad yaml!");
+    let yaml = yaml!("../criteria/rubric.yml").expect("Couldn't read file");
+    let mut rubric = Rubric::from_yaml(yaml).expect("Bad yaml!");
 }
 ```
 

@@ -1,5 +1,5 @@
 # Building a Submission
-A submission is a bundle of data that represents a students work. A submission is graded against a batch, and then sent back to you. By default, it contains a timestamp, a numerical grade, and 2 lists of the criteria that the student passed/failed.
+A submission is a bundle of data that represents a students work. A submission is graded against a rubric, and then sent back to you. By default, it contains a timestamp, a numerical grade, and 2 lists of the criteria that the student passed/failed.
 
 You can add any kind of data that you might want, for example the students name and ID, or information about their system like IP address.
 
@@ -74,4 +74,4 @@ Add the following line to the end of main and run the program with `cargo run` t
 println!("{:#?}", sub);
 ```
 
-Now we can move on to [building the batch](batch.md).
+Now we can move on to [building the rubric](rubric.md).

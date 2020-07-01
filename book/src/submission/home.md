@@ -1,5 +1,5 @@
 # Submission
-A [`Submission`](https://docs.rs/lab_grader/0.10.0/lab_grader/submission/struct.Submission.html) represents one students work on a lab. It's a bundle of data that can have whatever you want in it. A `Submission` works together with a `Batch`. A `Submission` is graded against a `Batch` and assigned a grade.
+A [`Submission`](https://docs.rs/lab_grader/0.10.0/lab_grader/submission/struct.Submission.html) represents one students work on a lab. It's a bundle of data that can have whatever you want in it. A `Submission` works together with a `Rubric`. A `Submission` is graded against a `Rubric` and assigned a grade.
 
 After a `Submission` is graded, it can be sent back to you, as the professor/TA, for review.
 

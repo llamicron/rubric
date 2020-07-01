@@ -1,5 +1,5 @@
 # YAML Specification
-Here's the keys allowed when making a yaml file for a batch. Not all fields are required, but it's better to be specific.
+Here's the keys allowed when making a yaml file for a rubric. Not all fields are required, but it's better to be specific.
 
 Here's the [YAML syntax](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html) so you can learn how to write valid YAML. This isn't the official specification, but it's the easiest guide I found.
 
@@ -11,7 +11,7 @@ Quotes around strings are usually not required.
 
 ## Minimum Required
 ```yaml
-name: Minimum Batch
+name: Minimum Rubric
 criteria:
   Only criterion:
     worth: 10
@@ -19,9 +19,9 @@ criteria:
 ## Everything
 ```yaml
 # Required
-name: Batch Name
+name: Rubric Name
 # Optional
-desc: A short description about your batch
+desc: A short description about your rubric
 # Optional
 # This is just an extra check to make sure
 # all criteria add to the correct total
