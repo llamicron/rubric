@@ -8,7 +8,7 @@
 //!
 //! You **probably shouldn't** create criteria individually through this module,
 //! but you can if you want. Instead, you should define your criteria in `YAML` then
-//! build that into a [`Batch`](crate::batch::Batch).
+//! build that into a [`Rubric`](crate::rubric::Rubric).
 
 // std uses
 use std::fmt;
@@ -102,7 +102,7 @@ impl Criterion {
     /// to the result of the test.
     ///
     /// You shouldn't call this method directly, instead grade an entire
-    /// [`Batch`](crate::batch::Batch).
+    /// [`Rubric`](crate::rubric::Rubric).
     pub fn test_with_data(&mut self, data: &TestData) -> bool {
         self.status = Some((self.test)(data));
         self.status.unwrap()
@@ -114,7 +114,7 @@ impl Criterion {
     /// an empty `TestData`.
     ///
     /// You shouldn't call this method directly, instead grade an entire
-    /// [`Batch`](crate::batch::Batch).
+    /// [`Rubric`](crate::rubric::Rubric).
     pub fn test(&mut self) -> bool {
         self.test_with_data(&TestData::new())
     }

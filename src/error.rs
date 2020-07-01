@@ -50,7 +50,7 @@ impl fmt::Display for Error {
 pub enum ErrorKind {
     /// When a criterion with the given stub could not be found
     StubNotFound(String),
-    /// When Batch YAML data is invalid
+    /// When Rubric YAML data is invalid
     BadYaml {
         line: usize,
         col: usize

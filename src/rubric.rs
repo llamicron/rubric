@@ -1,12 +1,12 @@
 //! A collection of criteria and other data
 //!
-//! A batch is a collection of criteria, along with a name and optional
+//! A rubric is a collection of criteria, along with a name and optional
 //! description. It's meant to be created by serializing `yaml` data.
 //!
-//! **Note:** throughout the `Batch` documentation, I'll be loading some test
+//! **Note:** throughout the `Rubric` documentation, I'll be loading some test
 //! yaml, it looks like this:
 //! ```yaml
-//! name: Test batch
+//! name: Test Rubric
 //! desc: here's a short description
 //! total: 80
 //!
@@ -34,15 +34,15 @@ use prettytable::{Table, row, cell};
 use ansi_term::Color;
 
 // internal uses
-use crate::yaml::BatchYaml;
+use crate::yaml::RubricYaml;
 use crate::Criterion;
 use crate::error::{Result, Error};
 
-/// Attaches tests to criteria in a batch.
+/// Attaches tests to criteria in a rubric.
 ///
-/// When you create a batch from `yaml`, the criteria inside
+/// When you create a rubric from `yaml`, the criteria inside
 /// don't have tests attached to them. You can call
-/// [`Batch.attach()`](crate::batch::Batch::attach) to achieve the
+/// [`Rubric.attach()`](crate::rubric::Rubric::attach) to achieve the
 /// same thing, but this is faster and easier.
 ///
 /// ## Example
@@ -53,18 +53,18 @@ use crate::error::{Result, Error};
 /// }
 ///
 /// fn main() {
-///     let mut batch = Batch::from_yaml(/* some yaml data */);
+///     let mut rubric = Rubric::from_yaml(/* some yaml data */);
 ///     attach! {
-///         batch,
+///         rubric,
 ///         "some-stub" => some_test
 ///     };
 /// }
 /// ```
 #[macro_export]
 macro_rules! attach {
-    ( $batch:ident, $($stub:literal => $func:ident),* ) => {
+    ( $rubric:ident, $($stub:literal => $func:ident),* ) => {
         $(
-            if let Some(c) = $batch.get($stub) {
+            if let Some(c) = $rubric.get($stub) {
                 c.attach(Box::new($func));
             } else {
                 panic!("Criterion with stub {} not found, can't attach function", $stub);
@@ -78,25 +78,25 @@ macro_rules! attach {
 ///
 /// ## Example
 /// ```rust
-/// use lab_grader::{Batch, yaml};
+/// use lab_grader::{Rubric, yaml};
 ///
 /// // Relative path to the yaml file
-/// let yaml = yaml!("../test_data/test_batch.yml").expect("Couldn't load yaml");
-/// let mut batch = Batch::from_yaml(yaml).expect("Bad yaml!");
+/// let yaml = yaml!("../test_data/test_rubric.yml").expect("Couldn't load yaml");
+/// let mut rubric = Rubric::from_yaml(yaml).expect("Bad yaml!");
 ///
-/// assert_eq!(batch.name, "Test batch");
-/// assert_eq!(batch.len(), 2);
+/// assert_eq!(rubric.name, "Test Rubric");
+/// assert_eq!(rubric.len(), 2);
 /// ```
-pub struct Batch {
+pub struct Rubric {
     pub name: String,
     pub desc: Option<String>,
     pub criteria: Vec<Criterion>,
     pub total: isize
 }
 
-impl Batch {
+impl Rubric {
 
-    /// Parses `yaml` data into a Batch.
+    /// Parses `yaml` data into a `Rubric`.
     ///
     /// This is equivilent to calling `parse()` on a string, except
     /// this will return a [`lab_grader::Error`](crate::error::ErrorKind::BadYaml)
@@ -104,17 +104,17 @@ impl Batch {
     ///
     /// ## Example
     /// ```rust
-    /// use lab_grader::{Batch, yaml};
-    /// let yaml = yaml!("../test_data/test_batch.yml").expect("Couldn't load yaml");
+    /// use lab_grader::{Rubric, yaml};
+    /// let yaml = yaml!("../test_data/test_rubric.yml").expect("Couldn't load yaml");
     /// // If this is an Err, it will panic with the line/col of the yaml err
-    /// let mut batch = Batch::from_yaml(yaml).expect("Bad yaml!");
+    /// let mut rubric = Rubric::from_yaml(yaml).expect("Bad yaml!");
     ///
-    /// assert_eq!(batch.name, "Test batch");
-    /// assert_eq!(batch.criteria().len(), 2);
+    /// assert_eq!(rubric.name, "Test Rubric");
+    /// assert_eq!(rubric.criteria().len(), 2);
     /// ```
     pub fn from_yaml(yaml: &str) -> Result<Self> {
         match yaml.parse::<Self>() {
-            Ok(batch) => Ok(batch),
+            Ok(rubric) => Ok(rubric),
             Err(e) => {
                 match e.location() {
                     Some(loc) => return Err(Error::bad_yaml(loc.line(), loc.column())),
@@ -128,20 +128,20 @@ impl Batch {
     /// returning None if it couldn't be found
     ///
     /// ```rust
-    /// # use lab_grader::{Batch, yaml};
-    /// # let yaml = yaml!("../test_data/test_batch.yml").expect("Couldn't load yaml");
-    /// # let mut batch = Batch::from_yaml(yaml).expect("Bad yaml!");
-    /// // `batch` contains a criterion with the stub 'first-crit`
-    /// let criterion = batch.get("first-crit");
+    /// # use lab_grader::{Rubric, yaml};
+    /// # let yaml = yaml!("../test_data/test_rubric.yml").expect("Couldn't load yaml");
+    /// # let mut rubric = Rubric::from_yaml(yaml).expect("Bad yaml!");
+    /// // `rubric` contains a criterion with the stub 'first-crit`
+    /// let criterion = rubric.get("first-crit");
     /// assert!(criterion.is_some());
-    /// let not_criterion = batch.get("doesnt-exist");
+    /// let not_criterion = rubric.get("doesnt-exist");
     /// assert!(not_criterion.is_none());
     /// ```
     pub fn get(&mut self, stub: &str) -> Option<&mut Criterion> {
         self.criteria.iter_mut().find(|c| c.stub == stub)
     }
 
-    /// Adds a criterion to the batch's collection.
+    /// Adds a criterion to the rubric's collection.
     ///
     /// You probably shouldn't use this, instead define all
     /// your criteria in yaml.
@@ -166,7 +166,7 @@ impl Batch {
     /// of all criteria that passed.
     ///
     /// If you run this before grading, it should return 0. If it
-    /// doesn't call me lmao.
+    /// doesn't, call me lmao.
     pub fn points(&self) -> usize {
         let mut total: usize = 0;
         for crit in &self.criteria {
@@ -192,19 +192,19 @@ impl Batch {
     }
 
     /// Returns a reference to a `Vec` of the criteria. This
-    /// is like [`sorted`](crate::batch::Batch::sorted), but
+    /// is like [`sorted`](crate::rubric::Rubric::sorted), but
     /// they aren't sorted.
     pub fn criteria(&self) -> &Vec<Criterion> {
         &self.criteria
     }
 
-    /// Returns the amount of criteria in the batch
+    /// Returns the amount of criteria in the rubric
     pub fn len(&self) -> usize {
         self.criteria.len()
     }
 
-    /// Prints the batch name, then each criteria, only taking
-    /// one line each. It's a shortened version of `println!("{}", batch)`.
+    /// Prints the rubric name, then each criteria, only taking
+    /// one line each. It's a shortened version of `println!("{}", rubric)`.
     pub fn print_short(&self) {
         println!("-- {} --", Color::White.bold().paint(&self.name));
 
@@ -214,11 +214,11 @@ impl Batch {
         println!("{}/{}", self.points(), self.total_points());
     }
 
-    /// Prints a table with the batch info and all the criteria to stdout
+    /// Prints a table with the rubric info and all the criteria to stdout
     pub fn print_table(&mut self) {
         let mut table = Table::new();
 
-        // Batch name and description
+        // Rubric name and description
         table.add_row(row!["", "", b->self.name, self.desc.as_ref().unwrap_or(&String::new())]);
 
         // Headers
@@ -241,43 +241,43 @@ impl Batch {
 }
 
 
-impl FromStr for Batch {
+impl FromStr for Rubric {
     type Err = serde_yaml::Error;
 
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
-        // Construct BatchYaml from yaml data
-        let batch_yaml = serde_yaml::from_str::<BatchYaml>(s)?;
+        // Construct RubricYaml from yaml data
+        let rubric_yaml = serde_yaml::from_str::<RubricYaml>(s)?;
 
         // Pull out the criteria and count the total
         let mut criteria_total: isize = 0;
         let mut criteria = vec![];
-        for (name, crit_yaml) in batch_yaml.criteria {
+        for (name, crit_yaml) in rubric_yaml.criteria {
             let crit = crit_yaml.into_criterion(name);
             criteria_total += crit.worth as isize;
             criteria.push(crit);
         }
 
 
-        if let Some(t) = batch_yaml.total {
+        if let Some(t) = rubric_yaml.total {
             if criteria_total != t {
                 eprint!("{}", Color::Red.paint("Warning: "));
-                eprintln!("Batch total does not match criteria total: batch = {}, criteria = {}",
+                eprintln!("Rubric total does not match criteria total: rubric = {}, criteria = {}",
                     t, criteria_total);
             }
         }
 
 
-        // Construct a batch
-        Ok(Batch {
-            name: batch_yaml.name,
-            desc: batch_yaml.desc,
+        // Construct a rubric
+        Ok(Rubric {
+            name: rubric_yaml.name,
+            desc: rubric_yaml.desc,
             criteria: criteria,
             total: criteria_total
         })
     }
 }
 
-impl fmt::Display for Batch {
+impl fmt::Display for Rubric {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "\n-- {} --", Color::White.bold().paint(&self.name)).unwrap();
         if let Some(desc) = &self.desc {
@@ -297,36 +297,36 @@ mod tests {
     use crate::{yaml, TestData};
 
     fn yaml_data() -> &'static str {
-        yaml!("../test_data/test_batch.yml").unwrap()
+        yaml!("../test_data/test_rubric.yml").unwrap()
     }
 
     #[test]
     fn test_from_yaml() {
-        let batch = Batch::from_yaml(yaml_data()).expect("Bad yaml");
-        assert_eq!(batch.name, "Test batch");
-        assert!(batch.desc.is_some());
+        let rubric = Rubric::from_yaml(yaml_data()).expect("Bad yaml");
+        assert_eq!(rubric.name, "Test Rubric");
+        assert!(rubric.desc.is_some());
     }
 
     #[test]
     fn test_attach_macro() {
         fn test_fn(_: &TestData) -> bool { true };
 
-        let mut batch = Batch::from_yaml(yaml_data()).expect("Bad yaml");
-        assert!(!batch.get("first-crit").unwrap().test());
+        let mut rubric = Rubric::from_yaml(yaml_data()).expect("Bad yaml");
+        assert!(!rubric.get("first-crit").unwrap().test());
 
         attach! {
-            batch,
+            rubric,
             "first-crit" => test_fn
         };
 
-        assert!(batch.get("first-crit").unwrap().test());
+        assert!(rubric.get("first-crit").unwrap().test());
 
     }
 
     #[test]
     fn test_parse_yaml() {
         let raw = r#"
-            name: Test batch
+            name: Test rubric
             desc: here's a short description
             criteria:
                 First Criterion:
@@ -342,6 +342,6 @@ mod tests {
                     worth: 30
         "#;
 
-        assert!(raw.parse::<Batch>().is_ok());
+        assert!(raw.parse::<Rubric>().is_ok());
     }
 }

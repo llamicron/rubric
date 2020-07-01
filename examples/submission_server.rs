@@ -26,14 +26,14 @@ fn main() {
 
 
     let yaml_data = yaml!("submission_server.yml").expect("Couldn't read yaml file");
-    let mut batch = Batch::from_yaml(yaml_data).expect("Bad yaml");
+    let mut rubric = Rubric::from_yaml(yaml_data).expect("Bad yaml");
 
     // We're not going to attach a test to the criteria,
     // meaning they'll all fail. We don't really care,
     // this is just to demonstrate sending the submission.
     println!("About to grade");
-    sub.grade_against(&mut batch);
-    println!("{}", batch);
+    sub.grade_against(&mut rubric);
+    println!("{}", rubric);
 
 
     // Url of the submission server

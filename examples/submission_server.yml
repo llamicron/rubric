@@ -1,5 +1,5 @@
-name: My Example Batch
-desc: This batch will be graded and sent to the submission server
+name: My Example Rubric
+desc: This rubric will be graded and sent to the submission server
 
 criteria:
   First Criterion:

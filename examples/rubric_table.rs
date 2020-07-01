@@ -12,13 +12,13 @@ fn main() {
     let mut sub = Submission::new();
 
     let yaml = yaml!("github.yml").unwrap();
-    let mut batch = Batch::from_yaml(yaml).unwrap();
+    let mut rubric = Rubric::from_yaml(yaml).unwrap();
 
     attach! {
-        batch,
+        rubric,
         "git-installed" => test
     }
 
-    sub.grade_against(&mut batch);
-    batch.print_table();
+    sub.grade_against(&mut rubric);
+    rubric.print_table();
 }

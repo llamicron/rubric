@@ -23,7 +23,7 @@ pub mod results_file;
 pub mod submission;
 pub mod criterion;
 pub mod helpers;
-pub mod batch;
+pub mod rubric;
 
 // Private modules
 mod server;
@@ -37,7 +37,7 @@ pub use submission::Submission;
 pub use submission::TestData;
 pub use criterion::Criterion;
 pub use results_file::AsCsv;
-pub use batch::Batch;
+pub use rubric::Rubric;
 pub use error::Error;
 
 

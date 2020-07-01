@@ -23,12 +23,12 @@ macro_rules! yaml {
     };
 }
 
-/// A yaml representation of a [`Batch`](crate::batch::Batch).
+/// A yaml representation of a [`Rubric`](crate::rubric::Rubric).
 ///
-/// This struct is just used for deserializing yaml. [`Batch::from_str`](crate::batch::Batch::from_str)
-/// uses one of these puppies for deserializing then consumes it to build a Batch.
+/// This struct is just used for deserializing yaml. [`Rubric::from_str`](crate::rubric::Rubric::from_str)
+/// uses one of these puppies for deserializing then consumes it to build a Rubric.
 #[derive(Deserialize)]
-pub struct BatchYaml {
+pub struct RubricYaml {
     pub name: String,
     pub desc: Option<String>,
     pub criteria: HashMap<String, CriterionYaml>,

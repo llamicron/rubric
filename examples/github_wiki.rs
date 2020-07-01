@@ -65,23 +65,23 @@ fn main() {
 
 
     let yaml = yaml!("github.yml").expect("Couldn't get yaml from file");
-    let mut batch = match Batch::from_yaml(yaml) {
+    let mut rubric = match Rubric::from_yaml(yaml) {
         Ok(b) => b,
         Err(e) => panic!(format!("{}", e))
     };
 
 
     attach! {
-        batch,
+        rubric,
         "git-installed" => confirm_git_installed,
         "git-init" => confirm_git_init,
         "commits" => confirm_enough_commits,
         "pushed" => confirm_repo_pushed
     }
 
-    sub.grade_against(&mut batch);
-    // println!("{}", batch);
-    batch.print_short();
+    sub.grade_against(&mut rubric);
+    // println!("{}", rubric);
+    rubric.print_short();
 
     let url = "https://postman-echo.com/post";
     match web::post_json(url, &sub) {

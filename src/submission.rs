@@ -1,4 +1,4 @@
-//! A bundle of data that batches are graded against, and is submitted for review
+//! A bundle of data that rubrics are graded against, and is submitted for review
 
 // std uses
 use std::collections::HashMap;
@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 // internal uses
 use crate::results_file::AsCsv;
-use crate::batch::Batch;
+use crate::rubric::Rubric;
 use crate::server;
 
 
@@ -169,8 +169,8 @@ impl Submission {
     }
 
     /// Tests a submission against a list of criterion
-    pub fn grade_against(&mut self, batch: &mut Batch) {
-        for crit in &mut batch.sorted().into_iter() {
+    pub fn grade_against(&mut self, rubric: &mut Rubric) {
+        for crit in &mut rubric.sorted().into_iter() {
             crit.test_with_data(&self.data);
 
             if crit.status.unwrap() {
@@ -314,18 +314,18 @@ mod tests {
     }
 
     #[test]
-    fn test_grade_against_batch() {
-        let yaml = yaml!("../test_data/test_batch.yml").unwrap();
-        let mut batch = Batch::from_yaml(yaml).unwrap();
+    fn test_grade_against_rubric() {
+        let yaml = yaml!("../test_data/test_rubric.yml").unwrap();
+        let mut rubric = Rubric::from_yaml(yaml).unwrap();
         let test = |_: &TestData| true;
         attach! {
-            batch,
+            rubric,
             "first-crit" => test
         };
 
         let mut sub = Submission::new();
 
-        sub.grade_against(&mut batch);
+        sub.grade_against(&mut rubric);
         assert_eq!(sub.grade, 50);
     }
 

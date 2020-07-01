@@ -40,7 +40,7 @@ mod tests {
 
     #[test]
     fn test_file_exists() {
-        assert!(file_exists("test_data/test_batch.yml"));
+        assert!(file_exists("test_data/test_rubric.yml"));
         assert!(!file_exists(""));
         assert!(!file_exists("doesntexist"));
         assert!(file_exists("src"));
@@ -49,8 +49,8 @@ mod tests {
 
     #[test]
     fn test_file_contains() {
-        assert!(file_contains("test_data/test_batch.yml", "criteria"));
-        assert!(!file_contains("test_data/test_batch.yml", "something it doesn't contain"));
+        assert!(file_contains("test_data/test_rubric.yml", "criteria"));
+        assert!(!file_contains("test_data/test_rubric.yml", "something it doesn't contain"));
         assert!(!file_contains("src/", "doesn't matter"));
     }
 }
