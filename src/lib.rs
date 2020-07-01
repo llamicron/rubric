@@ -45,6 +45,6 @@ pub use error::Error;
 use results_file::ResultsFile;
 
 
-// Testing external crates
+// External testing crates
 #[cfg(test)]
 #[macro_use] extern crate pretty_assertions;
