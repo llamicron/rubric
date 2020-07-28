@@ -213,7 +213,7 @@ mod tests {
     fn test_dir() -> PathBuf {
         let path = canonicalize(".").expect("test_data dir missing. Are you in the right directory?");
         let mut dir = PathBuf::from(path);
-        dir.push("test_data/");
+        dir.push("test_data");
         match create_dir(&dir) {
             Ok(_) => return dir,
             Err(_) => return dir
