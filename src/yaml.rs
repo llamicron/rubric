@@ -1,6 +1,14 @@
 //! YAML representations of some key structs
 //!
 //! Much bourbon went into the creation of this module.
+//!
+//! I think a better way to do what this module does is to implement `FromStr`
+//! or some similar trait so that serde can (de)serialize. However, this places
+//! some restrictions on the format of the YAML. So instead there are "proxy"
+//! structs that mirror the structs I want to serialize. These proxy structs have
+//! a slightly different structure, which allows the YAML format I want. They are meant
+//! to be consumed and transformed into the target structs.
+
 
 // std uses
 use std::collections::HashMap;
@@ -16,6 +24,8 @@ use crate::Criterion;
 /// from the filesystem. When compiling for release, this will embed the data
 /// in the executable. Graders built using this crate need to have the data embedded
 /// in the executable to make it easier to distribute and to keep the data private.
+///
+/// Returns `Result<&str, Utf8Error>`.
 #[macro_export]
 macro_rules! yaml {
     ( $file:expr ) => {
@@ -25,7 +35,7 @@ macro_rules! yaml {
 
 /// A yaml representation of a [`Rubric`](crate::rubric::Rubric).
 ///
-/// This struct is just used for deserializing yaml. [`Rubric::from_str`](crate::rubric::Rubric::from_str)
+/// This struct is just used for deserializing YAML. [`Rubric::from_str`](crate::rubric::Rubric::from_str)
 /// uses one of these puppies for deserializing then consumes it to build a Rubric.
 #[derive(Deserialize)]
 pub struct RubricYaml {
@@ -72,6 +82,6 @@ impl CriterionYaml {
             builder = builder.index(index);
         }
 
-        return builder.build();
+        builder.build()
     }
 }
