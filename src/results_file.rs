@@ -214,18 +214,12 @@ mod tests {
         let path = canonicalize(".").expect("test_data dir missing. Are you in the right directory?");
         let mut dir = PathBuf::from(path);
         dir.push("test_data");
-        match create_dir(&dir) {
-            Ok(_) => return dir,
-            Err(_) => return dir
-        };
-
+        create_dir(&dir).ok();
+        return dir;
     }
 
     fn delete<P: AsRef<Path>>(file: P) {
-        match remove_file(file) {
-            Ok(_) => {},
-            Err(_) => {}
-        }
+        remove_file(file).ok();
     }
 
     #[test]
