@@ -2,7 +2,6 @@ extern crate rubric;
 
 use rubric::*;
 
-
 fn test(_: &TestData) -> bool {
     true
 }

@@ -32,7 +32,7 @@ mod yaml;
 
 
 // Public uses
-pub use helpers::{web, fs, cli};
+pub use helpers::{web, fs, system, cli};
 pub use submission::Submission;
 pub use submission::TestData;
 pub use self::rubric::Rubric;

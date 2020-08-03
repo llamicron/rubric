@@ -20,14 +20,14 @@ fn load_rubric() -> Rubric {
 
 mod tests {
     use std::process::Command;
-    use rubric::{TestData, helpers::{fs, cli, web}};
+    use rubric::{TestData, helpers::{fs, system, web}};
 
     pub fn confirm_git_init(_: &TestData) -> bool {
         fs::file_exists(".git/")
     }
 
     pub fn confirm_git_installed(_: &TestData) -> bool {
-        cli::Program::Git.version().is_some()
+        system::Program::Git.version().is_some()
     }
 
     pub fn confirm_commits_present(_: &TestData) -> bool {
