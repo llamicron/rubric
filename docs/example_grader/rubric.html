@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Building the Rubric - Lab Grader</title>
+        <title>Building the Rubric - Rubric</title>
         
         
 
@@ -121,7 +121,7 @@
                         
                     </div>
 
-                    <h1 class="menu-title">Lab Grader</h1>
+                    <h1 class="menu-title">Rubric</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -175,9 +175,9 @@
 </code></pre>
 <p>Here we're using the <code>expect</code> method again, but it's actually a good idea in this case. This will crash if we have invalid YAML or missing items. Since you're the one compiling, you're the one who will get the error about bad yaml. Once you're done developing and successfully compile for release, the YAML will be embedded and won't change, so it won't crash after that.</p>
 <p>That's all there is to building a rubric. Here's the complete <code>main.rs</code> file so far</p>
-<pre><code class="language-rust noplaypen">extern crate lab_grader;
+<pre><code class="language-rust noplaypen">extern crate rubric;
 
-use lab_grader::*;
+use rubric::*;
 
 fn main() {
     let mut sub = Submission::from_data(data! {

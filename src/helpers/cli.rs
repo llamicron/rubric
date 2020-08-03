@@ -53,7 +53,7 @@ fn flush() {
 #[macro_export]
 macro_rules! prompt {
     ( $msg:expr, $type:ty ) => {
-        match crate::helpers::cli::prompt($msg).parse::<$type>() {
+        match rubric::helpers::cli::prompt($msg).parse::<$type>() {
             Ok(val) => val,
             Err(_) => {
                 eprintln!("Could not parse input");

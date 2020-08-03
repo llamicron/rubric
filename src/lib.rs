@@ -35,9 +35,9 @@ mod yaml;
 pub use helpers::{web, fs, cli};
 pub use submission::Submission;
 pub use submission::TestData;
+pub use self::rubric::Rubric;
 pub use criterion::Criterion;
 pub use results_file::AsCsv;
-pub use self::rubric::Rubric;
 pub use error::Error;
 
 

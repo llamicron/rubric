@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Lab Grader</title>
+        <title>Rubric</title>
         
         <meta name="robots" content="noindex" />
         
@@ -123,7 +123,7 @@
                         
                     </div>
 
-                    <h1 class="menu-title">Lab Grader</h1>
+                    <h1 class="menu-title">Rubric</h1>
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -158,6 +158,9 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
+<blockquote>
+<p>IMPORTANT! This book is out of date. Significant changes have been made since it was written. It will be rewritten soon reflecting the new updates.</p>
+</blockquote>
 <p>This Rust crate automates a lot of the necessary steps for testing criteria, originally created to grade labs in technology management classes.</p>
 <p>Detailed documentation can be <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/index.html">found here on docs.rs</a>.</p>
 <blockquote>
@@ -314,7 +317,7 @@ criteria:
 <p>Sometimes you'll also need certain data to test a criterion in our rubric. You can include that data in the submission. This will become clear later.</p>
 <h2><a class="header" href="#some-housekeeping" id="some-housekeeping">Some Housekeeping</a></h2>
 <p>We need to do some housekeeping in our <code>main.rs</code></p>
-<pre><code class="language-rust noplaypen">extern crate lab_grader;
+<pre><code class="language-rust noplaypen">extern crate rubric;
 
 use lab_grader::*;
 
@@ -392,9 +395,9 @@ fn main() {
 </code></pre>
 <p>Here we're using the <code>expect</code> method again, but it's actually a good idea in this case. This will crash if we have invalid YAML or missing items. Since you're the one compiling, you're the one who will get the error about bad yaml. Once you're done developing and successfully compile for release, the YAML will be embedded and won't change, so it won't crash after that.</p>
 <p>That's all there is to building a rubric. Here's the complete <code>main.rs</code> file so far</p>
-<pre><code class="language-rust noplaypen">extern crate lab_grader;
+<pre><code class="language-rust noplaypen">extern crate rubric;
 
-use lab_grader::*;
+use rubric::*;
 
 fn main() {
     let mut sub = Submission::from_data(data! {
