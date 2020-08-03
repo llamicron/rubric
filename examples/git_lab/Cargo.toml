@@ -6,4 +6,4 @@ edition = "2018"
 
 
 [dependencies]
-rubric = "0.11"
+rubric = "0.11.1"

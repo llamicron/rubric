@@ -83,5 +83,10 @@ fn main() {
     // after grading, we need to submit to the submission server
     // we can use one of the web helpers
     let url = format!("http://localhost:8080/submit");
-    web::post_json(&url, &sub).expect("Error! Couldn't send submission");
+    let result = web::post_json(&url, &sub);
+    if result.is_ok() {
+        println!("Success! Submission recorded");
+    } else {
+        println!("There was an error! Submission could not be sent. {}", result.unwrap_err());
+    }
 }
