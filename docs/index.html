@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="example_grader/home.html"><strong aria-hidden="true">1.</strong> Example Grader</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="example_grader/criteria.html"><strong aria-hidden="true">1.1.</strong> Defining the Criteria</a></li><li class="chapter-item expanded "><a href="example_grader/submission.html"><strong aria-hidden="true">1.2.</strong> Building a Submission</a></li><li class="chapter-item expanded "><a href="example_grader/rubric.html"><strong aria-hidden="true">1.3.</strong> Building the Rubric</a></li><li class="chapter-item expanded "><a href="example_grader/tests.html"><strong aria-hidden="true">1.4.</strong> Writing the Tests</a></li><li class="chapter-item expanded "><a href="example_grader/grade.html"><strong aria-hidden="true">1.5.</strong> Grading</a></li><li class="chapter-item expanded "><a href="example_grader/submit.html"><strong aria-hidden="true">1.6.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="example_grader/results.html"><strong aria-hidden="true">1.7.</strong> The Results</a></li></ol></li><li class="chapter-item expanded "><a href="criteria/home.html"><strong aria-hidden="true">2.</strong> Criteria</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="criteria/yaml_spec.html"><strong aria-hidden="true">2.1.</strong> YAML Specification</a></li><li class="chapter-item expanded "><a href="criteria/criterion.html"><strong aria-hidden="true">2.2.</strong> A Single Criterion</a></li><li class="chapter-item expanded "><a href="criteria/test.html"><strong aria-hidden="true">2.3.</strong> A Criteria Test</a></li><li class="chapter-item expanded "><a href="criteria/rubric.html"><strong aria-hidden="true">2.4.</strong> A Rubric</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">3.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/test_data.html"><strong aria-hidden="true">3.1.</strong> TestData</a></li><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">3.2.</strong> The prompt! macro</a></li><li class="chapter-item expanded "><a href="submission/create.html"><strong aria-hidden="true">3.3.</strong> Creating a Submission</a></li><li class="chapter-item expanded "><a href="submission/submit.html"><strong aria-hidden="true">3.4.</strong> Submitting</a></li><li class="chapter-item expanded "><a href="submission/server.html"><strong aria-hidden="true">3.5.</strong> Submission Server</a></li></ol></li><li class="chapter-item expanded "><a href="helpers/home.html"><strong aria-hidden="true">4.</strong> Helpers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="helpers/fs.html"><strong aria-hidden="true">4.1.</strong> File System</a></li><li class="chapter-item expanded "><a href="helpers/web.html"><strong aria-hidden="true">4.2.</strong> Web</a></li><li class="chapter-item expanded "><a href="helpers/cli.html"><strong aria-hidden="true">4.3.</strong> CLI</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -157,75 +157,8 @@
                     <main>
                         <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
 <blockquote>
-<p>IMPORTANT! This book is out of date. Significant changes have been made since it was written. It will be rewritten soon reflecting the new updates.</p>
+<p>IMPORTANT! I just deleted this entire book. The framework is changing quite a bit and it needs to be rewriten. More coming soon.</p>
 </blockquote>
-<p>This Rust crate automates a lot of the necessary steps for testing criteria, originally created to grade labs in technology management classes.</p>
-<p>Detailed documentation can be <a href="https://docs.rs/lab_grader/0.10.0/lab_grader/index.html">found here on docs.rs</a>.</p>
-<blockquote>
-<p>Note: this documentation is still very much a work in progress, and some sections are just missing. If you have any questions, send me an email at <code>llamicron@gmail.com</code> or on discord at <code>CoconutCake#3161</code>.</p>
-</blockquote>
-<p>Links:</p>
-<ul>
-<li><a href="https://docs.rs/lab_grader">API documentation</a></li>
-<li><a href="https://github.com/llamicron/lab_grader">Repository</a></li>
-</ul>
-<h2><a class="header" href="#use-case" id="use-case">Use Case</a></h2>
-<p>You should know that this program was intended for a technology management class. During the labs, the students would be managing Azure VMs, using software like Docker, Git and Github, etc. They were acting as SysAdmins, doing all the regular SysAdmin stuff. We needed a way to check each (60+) student's work on their VM or development machines, and report that back to us.</p>
-<p>This poses a unique challenge. How do you get proof that every student has the right version of Python installed, or has a web server running on the right port? There's lots of different possibilities.</p>
-<p>My original solution was to write a Rust program that checked everything and sent the results back to us. It wasn't modular or reusable; it was very much a bodge that was intended to work once. But after I wrote the fourth lab grader and prepared to write one to grade the final exam, I realized that I needed to set this in stone.</p>
-<p>This library was the outcome. It's a glorified task-runner, but it's actually kind of cool. If you have any need of running a lot of commands, checking web sites and APIs, examining the file system, or performing anything across a lot of machines and getting a report from each one, then this library is for you.</p>
-<h2><a class="header" href="#process" id="process">Process</a></h2>
-<p>The general process for writing a grader is this</p>
-<ul>
-<li>
-<p>Make a new rust project - you can do this with <code>cargo new</code></p>
-</li>
-<li>
-<p>Define your criteria - You'll write all the details about each criteria in yaml. Things like name and description, point value, etc.</p>
-</li>
-<li>
-<p>Build a Rubric - from within Rust, you'll load your yaml data into a <code>Rubric</code>. Then you'll write a function (a <em>test</em>) for each criterion and &quot;attach&quot; each test where it belongs.</p>
-</li>
-<li>
-<p>Define a Submission - Any data you want sent back to you, as well as any data you may need inside the criteria tests should be stored in a submission.</p>
-</li>
-<li>
-<p>Grade the Submission against the Rubric - this is done with one function call.</p>
-</li>
-<li>
-<p>Submit the Submission - this is done by POSTing the data (with the web helper module). Again, one function call.</p>
-</li>
-</ul>
-<p>That might seem like a lot, but it's pretty easy once you do it. A good place to get started is the example grader exercise. It will walk you through a complete grader.</p>
-<h2><a class="header" href="#terminology" id="terminology">Terminology</a></h2>
-<p>Here's a list of the terminology that I use throughout the program. This will help you understand exactly what's going on. It's pretty straightforward anyway but I'd rather be explicit about this.</p>
-<p>If a term is formatted like <code>this</code>, that means it's represented in code as a struct or module of the same name.</p>
-<ul>
-<li>
-<p>Grader - The program you're writing when you define criteria. &quot;Grader&quot; may not be the best term for your use case, but it's how I use this library.</p>
-</li>
-<li>
-<p><code>Criterion</code> - a bit of clerical data, and a &quot;test&quot;, which is just a function that returns true or false. The Criterion's test is the heart of the application. It's a function that you write. Data can be passed into the Criterions test, but the criterion itself doesn't store it.</p>
-</li>
-<li>
-<p><code>Rubric</code> - a rubric is basically just a wrapper around a collection of criteria. This is the highest level of abstraction. You may want to run your tests in batches, which would be multiple rubrics. Each yaml file that you define later on is a single rubric. 1 yaml file = 1 Rubric.</p>
-</li>
-<li>
-<p>Submission Server - just a web server that accepts Submissions as json data, then writes them to a file. You can start this server in one function call, all you need is a machine to run it on.</p>
-</li>
-<li>
-<p><code>Submission</code> - This is a bundle of data that represents the results of grading the criteria. The data it carries is defined by you. It is sent back to the submission server (that you run). A Submission is graded &quot;against&quot; a set of Criteria. Any data that you need in any criterion should be in here.</p>
-</li>
-<li>
-<p><code>helpers</code> - this is pretty self evident. It's a module (with submodules) that contains functions that easily accomplish tasks that you'll probably run into. Currently there are 3 helper modules, but more will be added:</p>
-<ul>
-<li><code>cli</code> - handles terminal operations like getting user input</li>
-<li><code>fs</code> - file system operations, like ensuring a file exists or contains something</li>
-<li><code>web</code> - make GET and POST web requests in one function call</li>
-</ul>
-</li>
-</ul>
-<p>As I said in the &quot;Use Case&quot; section, this was originally intended to grade TCMG labs. As a consequence, there may be some academia-oriented terminology in here. Originally, the Submission type had a mandatory student ID and name field, but I've removed those to make it more flexible. I'm trying to remove anything that would limit this application to just that use case. You may be using this for something other that what it was intended, which is fantastic.</p>
 
                     </main>
 
@@ -233,10 +166,6 @@
                         <!-- Mobile navigation buttons -->
                         
 
-                        
-                            <a rel="next" href="example_grader/home.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -247,10 +176,6 @@
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
 
-                
-                    <a rel="next" href="example_grader/home.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
                 
             </nav>
 
