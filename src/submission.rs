@@ -209,10 +209,9 @@ impl AsCsv for TestData {
     /// Returns the test data, serialized to a csv string. It will be
     /// sorted alphabetically by key.
     fn as_csv(&self) -> String {
-        let values: Vec<&String> = self.values().collect();
-        let mut owned_values: Vec<String> = values.iter().map(|&k| k.replace(",", ";").to_owned() ).collect();
-        owned_values.sort_by(|a,b| a.cmp(&b) );
-        return owned_values.join(",");
+        let mut v: Vec<_> = self.into_iter().collect();
+        v.sort_by(|x,y| x.0.cmp(&y.0));
+        v.iter().map(|v| v.1.replace(",", ";") ).collect::<Vec<_>>().join(",")
     }
 
     /// Returns the filename that the [`ResultsFile`](crate::results_file::ResultsFile)
@@ -226,10 +225,13 @@ impl AsCsv for TestData {
 
     /// Returns a header to write to a csv file. This should match the fields in `as_csv` above.
     fn header(&self) -> String {
-        let keys: Vec<&String> = self.keys().collect();
-        let mut owned_keys: Vec<String> = keys.iter().map(|&k| k.to_owned() ).collect();
-        owned_keys.sort_by(|a,b| a.cmp(&b) );
-        return format!("{}", owned_keys.join(","));
+        // let keys: Vec<&String> = self.keys().collect();
+        // let mut owned_keys: Vec<String> = keys.iter().map(|&k| k.to_owned() ).collect();
+        // owned_keys.sort_by(|a,b| a.cmp(&b) );
+        // return format!("{}", owned_keys.join(","));
+        let mut v: Vec<_> = self.into_iter().collect();
+        v.sort_by(|x,y| x.0.cmp(&y.0));
+        v.iter().map(|v| v.0.to_owned() ).collect::<Vec<_>>().join(",")
     }
 }
 
@@ -352,5 +354,16 @@ mod tests {
         });
 
         assert!(sub.as_csv().contains("value with; comma"));
+    }
+
+    #[test]
+    fn test_test_data_gets_sorted() {
+        let data = data! { 
+            "a" => "something",
+            "b" => "else"
+        };
+
+        let csv = data.as_csv();
+        assert!(csv.contains("something,else"));
     }
 }

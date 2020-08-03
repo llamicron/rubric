@@ -1,0 +1,9 @@
+[package]
+name = "git_lab"
+version = "0.1.0"
+authors = ["llamicron <llamicron@gmail.com>"]
+edition = "2018"
+
+
+[dependencies]
+rubric = "0.11"
