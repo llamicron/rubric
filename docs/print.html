@@ -7,12 +7,19 @@
         
         <meta name="robots" content="noindex" />
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        <link rel="icon" href="favicon.svg">
         <link rel="shortcut icon" href="favicon.png">
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
@@ -21,8 +28,9 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -38,7 +46,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -218,46 +226,49 @@
 </ul>
 <p>As I said in the &quot;Use Case&quot; section, this was originally intended to grade TCMG labs. As a consequence, there may be some academia-oriented terminology in here. Originally, the Submission type had a mandatory student ID and name field, but I've removed those to make it more flexible. I'm trying to remove anything that would limit this application to just that use case. You may be using this for something other that what it was intended, which is fantastic.</p>
 <h1><a class="header" href="#example-grader" id="example-grader">Example Grader</a></h1>
-<p>This chapter will walk you through building a complete grader from start to finish. I'm writing this as I publish version <code>0.10.0</code>. There will no doubt be changes in later versions.</p>
+<p>This chapter will walk you through building a complete grader from start to finish. I'm writing this as I publish version <code>0.11.0</code>. There will no doubt be changes in later versions.</p>
 <h2><a class="header" href="#scenario" id="scenario">Scenario</a></h2>
-<p>Let's say we wrote a lab to teach the basics of Git, and we need to ensure that the sudents have done the following:</p>
-<ul>
+<p>Let's say we are administering a lab for our students to teach the basics of Git, and we need to ensure that the sudents have done the following:</p>
+<ol>
 <li>Installed Git</li>
 <li>Initialized Git in a repository</li>
 <li>Made at least 3 commits in the repository</li>
 <li>Pushed the repository to Github</li>
-</ul>
-<p>These are our &quot;criteria&quot;, which is an important term. Because we have 4 criteria, let's say each is worth 25 points for a total of 100 points.</p>
-<p>Let's write a grader program that the student will run. The grader will check these criteria and send a report back to us.</p>
+</ol>
+<p>There are the criteria that will make up our <em>rubric</em>. Let's say the lab is worth 100 points, so each criterion is worth 25.</p>
+<p>Let's write a program to grade this lab. The program will be distributed by you, and run <em>by the student</em>. A report (&quot;submission&quot;) will be sent from the student-run program to you. The result will be an Excel friendly CSV file with all the students results and progress. We'll see more of that towards the end of this example.</p>
 <h2><a class="header" href="#setup" id="setup">Setup</a></h2>
-<p>Our grader will be written in <a href="https://www.rust-lang.org/">Rust</a>. Before we get started, be sure you have all the necessary tools to write a Rust application, including <code>cargo</code>. You can <a href="https://www.rust-lang.org/learn/get-started">install it here</a> if you don't already have it. Be sure you're running on the &quot;nightly&quot; release of Rust. You can switch to nightly with <code>rustup default nightly</code>.</p>
-<p>We'll make a new Rust project using <code>cargo</code></p>
+<p>Our grader will be written in <a href="https://www.rust-lang.org/">Rust</a>. Before we get started, be sure you have all the necessary tools to write a Rust application, including <code>cargo</code>. You can <a href="https://www.rust-lang.org/learn/get-started">install it here</a> if you don't already have it. Currently, this program runs on the &quot;nightly&quot; build of Rust, but that will soon change. You can switch to nightly with <code>rustup default nightly</code>. Be sure you can compile a &quot;Hello, World&quot; program before continuing.</p>
+<p>Rust has many resources targeted at beginners or people coming to the language for the first time. <a href="https://doc.rust-lang.org/book/">&quot;The Book&quot;</a> is kind of the Rust bible, and a good place to start. I won't go over Rust syntax or patterns here, because many people have done that more elegently than I can. Instead, I'll just assume you, the reader, are relatively new to Rust.</p>
+<p>Rust projects are called &quot;crates&quot;. The grader we're writing is technically a crate, and it will use the <code>lab_grader</code> crate like any other framework. We'll make a new crate using <code>cargo</code></p>
 <pre><code>$ cargo new my_grader
 </code></pre>
-<p>This will make 3 files for us. <code>Cargo.toml</code> is where we specify details about our application (called a &quot;crate&quot;). You can leave most of it alone, as we won't be publishing this crate, but you need to add this crate (<code>lab_grader</code>) as a dependency.</p>
+<p>This will make 3 files for us. <code>Cargo.toml</code> is where we specify details about our application (called a &quot;crate&quot;). You can leave most of it alone, as we won't be publishing this crate, but you need to add <code>lab_grader</code> as a dependency.</p>
 <pre><code class="language-toml">[dependencies]
-lab_grader = &quot;0.10.0&quot;
+lab_grader = &quot;0.11&quot;
 </code></pre>
-<p><code>main.rs</code> contains a hello world function, so you can go ahead and compile and run your program with</p>
+<p><code>main.rs</code> contains a hello world function by default, so you can go ahead and compile and run your program with</p>
 <pre><code>$ cargo run
 </code></pre>
 <p>After it compiles you should see &quot;Hello, world!&quot;. Now we can move on to <a href="example_grader/./criteria.html">defining the criteria</a>.</p>
 <h1><a class="header" href="#defining-the-criteria" id="defining-the-criteria">Defining the Criteria</a></h1>
-<p>Once we have our project set up, the first step is to define our criteria. Criteria are contained within a &quot;Rubric&quot;. A Rubric has a name, description, and a list of criteria. It's represented in Rust by the <code>Rubric</code> structure. We're going to write a <code>yaml</code> file, and all the data we put in there will be serialized into a <code>Rubric</code>.</p>
-<p>Let's make a directory called <code>criteria/</code>, and inside there we'll make a file called <code>rubric.yml</code>:</p>
-<pre><code class="language-yaml"># criteria/rubric.yml
+<p>Once we have our project set up, the first step is to define our criteria. Criteria are contained within a &quot;Rubric&quot;. A Rubric has a name, description, and a list of criteria. It's represented in Rust by the <code>Rubric</code> struct.</p>
+<p>We need to write out all the details of each of our criteria so our grader program can use them. We'll write the details in a <code>yaml</code> file, which our grader will automatically turn into a gradable <code>Rubric</code>.</p>
+<p>You can put this <code>yaml</code> file wherever you want, but I like to keep things organized. Let's make a directory called <code>rubrics/</code>, and inside there we'll make a file called <code>main.yml</code>:</p>
+<pre><code class="language-yaml"># rubrics/main.yml
 name: Git Lab
 desc: Install and use Git
 </code></pre>
 <p>Here we've put a name for our rubric, and then an (optional) description.</p>
-<p>Next we'll add our criteria. You can see the <a href="example_grader/../criteria/yaml_spec.html">YAML specification</a> to see all the keys that are available here. As a reminder, here's the criteria we wrote out in the last section:</p>
-<ul>
-<li>Installed Git</li>
-<li>Initialized Git in a repository</li>
-<li>Made at least 3 commits in the repository</li>
-<li>Pushed the repository to Github</li>
-</ul>
-<pre><code class="language-yaml"># criteria/rubric.yml
+<p>Next we'll add our criteria. You can reference the <a href="example_grader/../criteria/yaml_spec.html">Rubric YAML specification</a> to see all the keys that are available here. </p>
+<p>As a reminder, here's the criteria we wrote out in the last section:</p>
+<ol>
+<li>Install Git</li>
+<li>Initialize Git in a repository</li>
+<li>Make at least 3 commits in the repository</li>
+<li>Push the repository to Github</li>
+</ol>
+<pre><code class="language-yaml"># rubrics/main.yml
 name: Git Lab
 desc: Install and use Git
 
@@ -286,13 +297,21 @@ criteria:
     worth: 25
     messages: [&quot;pushed&quot;, &quot;not pushed&quot;]
 </code></pre>
-<p>We've put 4 criteria in the <code>yaml</code> file. Each one has a name, a stub (an identifier), a point value, index, and some success/failure messages. The name and worth are the only required fields.</p>
+<p>Here, we've described our 4 criteria. Each one has</p>
+<ul>
+<li>A descriptive <code>name</code></li>
+<li>A <code>stub</code>, which is a unique identifier</li>
+<li><code>worth</code>, it's point value</li>
+<li>and <code>messages</code>, which are success/failure messages that the student will get when grading.</li>
+</ul>
+<p><code>name</code> and <code>worth</code> are the only required fields, but it's good to be explicit.</p>
 <p>Once again, see the <a href="example_grader/">YAML specification</a> for more info on what you can put in this file.</p>
 <p>Now we have our criteria defined, we can move on to <a href="example_grader/submission.html">writing some Rust</a>.</p>
 <h1><a class="header" href="#building-a-submission" id="building-a-submission">Building a Submission</a></h1>
-<p>A submission is a bundle of data that represents a students work. A submission is graded against a rubric, and then sent back to you. By default, it contains a timestamp, a numerical grade, and 2 lists of the criteria that the student passed/failed.</p>
-<p>You can add any kind of data that you might want, for example the students name and ID, or information about their system like IP address.</p>
-<p>Any data that is needed from inside a criteria test should also be here. This will make more sense when we write the criteria tests.</p>
+<p>Let's take a break from our rubric for a minute.</p>
+<p>A &quot;submission&quot; is a bundle of data that represents a students work. A submission is graded against a rubric, and then sent back to you. By default, it contains a timestamp, a numerical grade, and which criteria the student passed or failed.</p>
+<p>You can add any kind of data that you might want, for example the students name and ID, or information about their system like IP address. Different situations call for different data, so it's kept as flexible as possible.</p>
+<p>Sometimes you'll also need certain data to test a criterion in our rubric. You can include that data in the submission. This will become clear later.</p>
 <h2><a class="header" href="#some-housekeeping" id="some-housekeeping">Some Housekeeping</a></h2>
 <p>We need to do some housekeeping in our <code>main.rs</code></p>
 <pre><code class="language-rust noplaypen">extern crate lab_grader;
@@ -304,6 +323,9 @@ fn main() {
 }
 </code></pre>
 <p>We added an import to the top to bring in all the items we'll need from <code>lab_grader</code>. Then we just cleared our <code>main</code> function. In the next section, we'll add code into the <code>main</code> function.</p>
+<blockquote>
+<p>Note: glob importing with <code>*</code> is usually bad practice because you can't explicitly see what is brought into scope vs. what was already there. I'd rather not specify every import in this example, so we'll leave it as a glob. After you're done you can reduce it to only the items you need.</p>
+</blockquote>
 <h2><a class="header" href="#build-a-submission" id="build-a-submission">Build a Submission</a></h2>
 <p>Now we can build a submission, which the <code>Submission::new</code> function. Add the following to the beginning of your <code>main</code> function.</p>
 <pre><code class="language-rust noplaypen">let mut sub = Submission::new();
@@ -317,6 +339,7 @@ fn main() {
 <li><code>prompt!</code> - asks the user for input from the terminal</li>
 </ul>
 <pre><code class="language-rust noplaypen">fn main() {
+    // Create submission
     let mut sub = Submission::new();
 
     // Create data
@@ -332,8 +355,9 @@ fn main() {
 }
 </code></pre>
 <h2><a class="header" href="#refactor" id="refactor">Refactor</a></h2>
-<p>We can refactor the code above into this, using the <code>Submission::from_data</code> function.</p>
+<p>We can refactor the code above into this, using the <code>Submission::from_data</code> function instead of <code>new</code>.</p>
 <pre><code class="language-rust noplaypen">fn main() {
+    // Create submission with data
     let mut sub = Submission::from_data(data! {
         &quot;name&quot; =&gt; prompt!(&quot;Name: &quot;, String),
         &quot;id&quot; =&gt; prompt!(&quot;ID: &quot;, String),
@@ -344,7 +368,7 @@ fn main() {
 
 </code></pre>
 <h2><a class="header" href="#test" id="test">Test</a></h2>
-<p>Add the following line to the end of main and run the program with <code>cargo run</code> to see what it does so far.</p>
+<p>Add the following temporary line to the end of <code>main</code> and run the program with <code>cargo run</code> to see what it does so far.</p>
 <pre><code class="language-rust noplaypen">println!(&quot;{:#?}&quot;, sub);
 </code></pre>
 <p>Now we can move on to <a href="example_grader/rubric.html">building the rubric</a>.</p>
@@ -356,15 +380,17 @@ fn main() {
 <p>I'm going to be using the <code>expect</code> method, which is normally bad practice. It simply panics (aborts) with an error message if there's an error. Normally you would want to deal with the error in one way or another, but I'm going to use this anyway since it's just an example. <code>expect</code> should <em>not</em> be used in production code.</p>
 <h2><a class="header" href="#reading-yaml-data" id="reading-yaml-data">Reading YAML Data</a></h2>
 <p>We can read YAML data with the <code>yaml!</code> macro. <code>yaml!</code> takes in a relative file path and returns the YAML data as a <code>String</code>.</p>
-<p>This macro is very important for one reason. When you compile in debug mode (default), this macro will read from the file system as expected. However, when you compile for release (with the <code>--release</code> flag), it will read the file contents and embed the contents in the created executable. This means when you distribute the grader to your students, you don't need to provide the <code>yaml</code> file. The executable will run on it's own. Just be sure to compile in release mode before distributing.</p>
+<p>This macro is very important for one reason. When you compile, it will read the file contents and embed the contents in the created executable. This means when you distribute the grader to your students, you don't need to provide the <code>yaml</code> file. The executable will run standalone. </p>
+<p>This is good because it means you only need to distribute one file (the executable), and the criteria can be kept private if you want them to be. It also prevents students from tampering with the criteria.</p>
 <p>We can go ahead and add this to the end of our <code>main</code> function</p>
-<pre><code class="language-rust noplaypen">let yaml = yaml!(&quot;../criteria/rubric.yml&quot;).expect(&quot;Couldn't read file&quot;);
+<pre><code class="language-rust noplaypen">let yaml = yaml!(&quot;../rubrics/main.yml&quot;).expect(&quot;Couldn't read file&quot;);
 </code></pre>
+<p>This reads from a file relative to the current file (<code>main.rs</code>).</p>
 <h2><a class="header" href="#building-a-rubric" id="building-a-rubric">Building a Rubric</a></h2>
 <p>Now that we have our yaml data, we can build a <code>Rubric</code> from it.</p>
 <pre><code class="language-rust noplaypen">let mut rubric = Rubric::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
 </code></pre>
-<p>Here we're using the <code>expect</code> method again, but it's probably a good idea in this case. This will crash if we have invalid YAML or missing items. Once you're done developing and compile for release, the YAML will be embedded and won't change, so it won't crash after that.</p>
+<p>Here we're using the <code>expect</code> method again, but it's actually a good idea in this case. This will crash if we have invalid YAML or missing items. Since you're the one compiling, you're the one who will get the error about bad yaml. Once you're done developing and successfully compile for release, the YAML will be embedded and won't change, so it won't crash after that.</p>
 <p>That's all there is to building a rubric. Here's the complete <code>main.rs</code> file so far</p>
 <pre><code class="language-rust noplaypen">extern crate lab_grader;
 
@@ -385,12 +411,12 @@ fn main() {
 <p>Now we can move on to <a href="example_grader/tests.html">writing the criteria tests</a>.</p>
 <h1><a class="header" href="#writing-the-tests" id="writing-the-tests">Writing the Tests</a></h1>
 <p>Now comes the most important part of writing the application. We've build our rubric of criteria, but they currently don't have a way to be tested. How do we know if they actually have Git installed or not?</p>
-<p>The way we determine this is by writing a &quot;test&quot;, which is just a function, for each of our criteria. Then we'll &quot;attach&quot; the function to the criteria, then we can grade the submission.</p>
+<p>The way we determine this is by writing a &quot;test&quot;, which is just a function, for each of our criteria. Then we'll &quot;attach&quot; the functions to the rubric, then we can grade the submission.</p>
 <h2><a class="header" href="#a-single-test" id="a-single-test">A Single Test</a></h2>
-<p>Each test needs to have the same signature, meaning it has to accept the same parameters and return the same thing. We need this consistency between tests to make grading possible.</p>
+<p>Each test is a special function. All test functions need to have the same signature, meaning they must accept the same parameters and return the same thing. We need this consistency between tests to make grading possible.</p>
 <p>Every test must accept a reference to a <code>TestData</code> object, and return a boolean. We created a <code>TestData</code> object with the <code>data!</code> macro when we made a submission. In fact, the exact data we put in the submission will be the data passed into each of our criteria tests. This is why we put the users Github username and repository name in the data; we'll need it inside one of our tests.</p>
 <h2><a class="header" href="#helpers" id="helpers">Helpers</a></h2>
-<p>Before we write any tests, you should know about the <a href="example_grader/../helpers/home.html">helper</a> modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.</p>
+<p>Before we write any tests, you should know about the <a href="example_grader/../helpers/home.html">helper</a> modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some time. See the documentation linked above for more info on each module.</p>
 <h2><a class="header" href="#the-first-test" id="the-first-test">The First Test</a></h2>
 <p>Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature.</p>
 <p>You can write your tests anywhere, but I'll make a <code>tests.rs</code> to keep the tests separate from the rest of our code.</p>
@@ -681,7 +707,7 @@ if let Some(crit) = rubric.get(&quot;first-crit&quot;) {
 </code></pre>
 <h2><a class="header" href="#the-attach-macro" id="the-attach-macro">The <code>attach!</code> macro</a></h2>
 <p>The <code>attach!</code> macro is provided to easily attach many tests to criteria. In the code example above, you can see how to define a function and then attach it to a criterion through the <code>Rubric::attach</code> function. The <code>attach!</code> macro allows you to do many of these at once, and you don't have to <code>Box</code> it either.</p>
-<pre><pre class="playpen"><code class="language-rust noplayplen">fn test_func1(_: &amp;TestData) -&gt; bool { true };
+<pre><pre class="playground"><code class="language-rust noplayplen">fn test_func1(_: &amp;TestData) -&gt; bool { true };
 fn test_func2(_: &amp;TestData) -&gt; bool { false };
 
 fn main() {
@@ -932,10 +958,10 @@ assert!( version.unwrap().major() &gt;= 1 );
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 

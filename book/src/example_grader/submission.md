@@ -1,9 +1,11 @@
 # Building a Submission
-A submission is a bundle of data that represents a students work. A submission is graded against a rubric, and then sent back to you. By default, it contains a timestamp, a numerical grade, and 2 lists of the criteria that the student passed/failed.
+Let's take a break from our rubric for a minute.
 
-You can add any kind of data that you might want, for example the students name and ID, or information about their system like IP address.
+A "submission" is a bundle of data that represents a students work. A submission is graded against a rubric, and then sent back to you. By default, it contains a timestamp, a numerical grade, and which criteria the student passed or failed.
 
-Any data that is needed from inside a criteria test should also be here. This will make more sense when we write the criteria tests.
+You can add any kind of data that you might want, for example the students name and ID, or information about their system like IP address. Different situations call for different data, so it's kept as flexible as possible.
+
+Sometimes you'll also need certain data to test a criterion in our rubric. You can include that data in the submission. This will become clear later.
 
 ## Some Housekeeping
 We need to do some housekeeping in our `main.rs`
@@ -19,6 +21,8 @@ fn main() {
 ```
 
 We added an import to the top to bring in all the items we'll need from `lab_grader`. Then we just cleared our `main` function. In the next section, we'll add code into the `main` function.
+
+> Note: glob importing with `*` is usually bad practice because you can't explicitly see what is brought into scope vs. what was already there. I'd rather not specify every import in this example, so we'll leave it as a glob. After you're done you can reduce it to only the items you need.
 
 
 ## Build a Submission
@@ -37,6 +41,7 @@ We're going to use two macros to make this data:
 
 ```rust ,noplaypen
 fn main() {
+    // Create submission
     let mut sub = Submission::new();
 
     // Create data
@@ -53,10 +58,11 @@ fn main() {
 ```
 
 ## Refactor
-We can refactor the code above into this, using the `Submission::from_data` function.
+We can refactor the code above into this, using the `Submission::from_data` function instead of `new`.
 
 ```rust ,noplaypen
 fn main() {
+    // Create submission with data
     let mut sub = Submission::from_data(data! {
         "name" => prompt!("Name: ", String),
         "id" => prompt!("ID: ", String),
@@ -68,7 +74,7 @@ fn main() {
 ```
 
 ## Test
-Add the following line to the end of main and run the program with `cargo run` to see what it does so far.
+Add the following temporary line to the end of `main` and run the program with `cargo run` to see what it does so far.
 
 ```rust ,noplaypen
 println!("{:#?}", sub);

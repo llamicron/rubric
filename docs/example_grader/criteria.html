@@ -5,12 +5,19 @@
         <meta charset="UTF-8">
         <title>Defining the Criteria - Lab Grader</title>
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        <link rel="icon" href="../favicon.svg">
         <link rel="shortcut icon" href="../favicon.png">
         <link rel="stylesheet" href="../css/variables.css">
         <link rel="stylesheet" href="../css/general.css">
@@ -19,8 +26,9 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="../highlight.css">
@@ -36,7 +44,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -148,21 +156,23 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#defining-the-criteria" id="defining-the-criteria">Defining the Criteria</a></h1>
-<p>Once we have our project set up, the first step is to define our criteria. Criteria are contained within a &quot;Rubric&quot;. A Rubric has a name, description, and a list of criteria. It's represented in Rust by the <code>Rubric</code> structure. We're going to write a <code>yaml</code> file, and all the data we put in there will be serialized into a <code>Rubric</code>.</p>
-<p>Let's make a directory called <code>criteria/</code>, and inside there we'll make a file called <code>rubric.yml</code>:</p>
-<pre><code class="language-yaml"># criteria/rubric.yml
+<p>Once we have our project set up, the first step is to define our criteria. Criteria are contained within a &quot;Rubric&quot;. A Rubric has a name, description, and a list of criteria. It's represented in Rust by the <code>Rubric</code> struct.</p>
+<p>We need to write out all the details of each of our criteria so our grader program can use them. We'll write the details in a <code>yaml</code> file, which our grader will automatically turn into a gradable <code>Rubric</code>.</p>
+<p>You can put this <code>yaml</code> file wherever you want, but I like to keep things organized. Let's make a directory called <code>rubrics/</code>, and inside there we'll make a file called <code>main.yml</code>:</p>
+<pre><code class="language-yaml"># rubrics/main.yml
 name: Git Lab
 desc: Install and use Git
 </code></pre>
 <p>Here we've put a name for our rubric, and then an (optional) description.</p>
-<p>Next we'll add our criteria. You can see the <a href="../criteria/yaml_spec.html">YAML specification</a> to see all the keys that are available here. As a reminder, here's the criteria we wrote out in the last section:</p>
-<ul>
-<li>Installed Git</li>
-<li>Initialized Git in a repository</li>
-<li>Made at least 3 commits in the repository</li>
-<li>Pushed the repository to Github</li>
-</ul>
-<pre><code class="language-yaml"># criteria/rubric.yml
+<p>Next we'll add our criteria. You can reference the <a href="../criteria/yaml_spec.html">Rubric YAML specification</a> to see all the keys that are available here. </p>
+<p>As a reminder, here's the criteria we wrote out in the last section:</p>
+<ol>
+<li>Install Git</li>
+<li>Initialize Git in a repository</li>
+<li>Make at least 3 commits in the repository</li>
+<li>Push the repository to Github</li>
+</ol>
+<pre><code class="language-yaml"># rubrics/main.yml
 name: Git Lab
 desc: Install and use Git
 
@@ -191,7 +201,14 @@ criteria:
     worth: 25
     messages: [&quot;pushed&quot;, &quot;not pushed&quot;]
 </code></pre>
-<p>We've put 4 criteria in the <code>yaml</code> file. Each one has a name, a stub (an identifier), a point value, index, and some success/failure messages. The name and worth are the only required fields.</p>
+<p>Here, we've described our 4 criteria. Each one has</p>
+<ul>
+<li>A descriptive <code>name</code></li>
+<li>A <code>stub</code>, which is a unique identifier</li>
+<li><code>worth</code>, it's point value</li>
+<li>and <code>messages</code>, which are success/failure messages that the student will get when grading.</li>
+</ul>
+<p><code>name</code> and <code>worth</code> are the only required fields, but it's good to be explicit.</p>
 <p>Once again, see the <a href="">YAML specification</a> for more info on what you can put in this file.</p>
 <p>Now we have our criteria defined, we can move on to <a href="submission.html">writing some Rust</a>.</p>
 
@@ -237,10 +254,10 @@ criteria:
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 

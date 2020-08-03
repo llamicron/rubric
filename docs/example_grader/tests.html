@@ -5,12 +5,19 @@
         <meta charset="UTF-8">
         <title>Writing the Tests - Lab Grader</title>
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        <link rel="icon" href="../favicon.svg">
         <link rel="shortcut icon" href="../favicon.png">
         <link rel="stylesheet" href="../css/variables.css">
         <link rel="stylesheet" href="../css/general.css">
@@ -19,8 +26,9 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="../highlight.css">
@@ -36,7 +44,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -149,12 +157,12 @@
                     <main>
                         <h1><a class="header" href="#writing-the-tests" id="writing-the-tests">Writing the Tests</a></h1>
 <p>Now comes the most important part of writing the application. We've build our rubric of criteria, but they currently don't have a way to be tested. How do we know if they actually have Git installed or not?</p>
-<p>The way we determine this is by writing a &quot;test&quot;, which is just a function, for each of our criteria. Then we'll &quot;attach&quot; the function to the criteria, then we can grade the submission.</p>
+<p>The way we determine this is by writing a &quot;test&quot;, which is just a function, for each of our criteria. Then we'll &quot;attach&quot; the functions to the rubric, then we can grade the submission.</p>
 <h2><a class="header" href="#a-single-test" id="a-single-test">A Single Test</a></h2>
-<p>Each test needs to have the same signature, meaning it has to accept the same parameters and return the same thing. We need this consistency between tests to make grading possible.</p>
+<p>Each test is a special function. All test functions need to have the same signature, meaning they must accept the same parameters and return the same thing. We need this consistency between tests to make grading possible.</p>
 <p>Every test must accept a reference to a <code>TestData</code> object, and return a boolean. We created a <code>TestData</code> object with the <code>data!</code> macro when we made a submission. In fact, the exact data we put in the submission will be the data passed into each of our criteria tests. This is why we put the users Github username and repository name in the data; we'll need it inside one of our tests.</p>
 <h2><a class="header" href="#helpers" id="helpers">Helpers</a></h2>
-<p>Before we write any tests, you should know about the <a href="../helpers/home.html">helper</a> modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.</p>
+<p>Before we write any tests, you should know about the <a href="../helpers/home.html">helper</a> modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some time. See the documentation linked above for more info on each module.</p>
 <h2><a class="header" href="#the-first-test" id="the-first-test">The First Test</a></h2>
 <p>Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature.</p>
 <p>You can write your tests anywhere, but I'll make a <code>tests.rs</code> to keep the tests separate from the rest of our code.</p>
@@ -279,10 +287,10 @@ use tests::*;
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 

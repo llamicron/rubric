@@ -1,25 +1,29 @@
 # Defining the Criteria
-Once we have our project set up, the first step is to define our criteria. Criteria are contained within a "Rubric". A Rubric has a name, description, and a list of criteria. It's represented in Rust by the `Rubric` structure. We're going to write a `yaml` file, and all the data we put in there will be serialized into a `Rubric`.
+Once we have our project set up, the first step is to define our criteria. Criteria are contained within a "Rubric". A Rubric has a name, description, and a list of criteria. It's represented in Rust by the `Rubric` struct.
 
-Let's make a directory called `criteria/`, and inside there we'll make a file called `rubric.yml`:
+We need to write out all the details of each of our criteria so our grader program can use them. We'll write the details in a `yaml` file, which our grader will automatically turn into a gradable `Rubric`.
+
+You can put this `yaml` file wherever you want, but I like to keep things organized. Let's make a directory called `rubrics/`, and inside there we'll make a file called `main.yml`:
 
 ```yaml
-# criteria/rubric.yml
+# rubrics/main.yml
 name: Git Lab
 desc: Install and use Git
 ```
 
 Here we've put a name for our rubric, and then an (optional) description.
 
-Next we'll add our criteria. You can see the [YAML specification](../criteria/yaml_spec.md) to see all the keys that are available here. As a reminder, here's the criteria we wrote out in the last section:
-- Installed Git
-- Initialized Git in a repository
-- Made at least 3 commits in the repository
-- Pushed the repository to Github
+Next we'll add our criteria. You can reference the [Rubric YAML specification](../criteria/yaml_spec.md) to see all the keys that are available here. 
+
+As a reminder, here's the criteria we wrote out in the last section:
+1. Install Git
+1. Initialize Git in a repository
+1. Make at least 3 commits in the repository
+1. Push the repository to Github
 
 
 ```yaml
-# criteria/rubric.yml
+# rubrics/main.yml
 name: Git Lab
 desc: Install and use Git
 
@@ -49,7 +53,13 @@ criteria:
     messages: ["pushed", "not pushed"]
 ```
 
-We've put 4 criteria in the `yaml` file. Each one has a name, a stub (an identifier), a point value, index, and some success/failure messages. The name and worth are the only required fields.
+Here, we've described our 4 criteria. Each one has
+  - A descriptive `name`
+  - A `stub`, which is a unique identifier
+  - `worth`, it's point value
+  - and `messages`, which are success/failure messages that the student will get when grading.
+
+`name` and `worth` are the only required fields, but it's good to be explicit.
 
 Once again, see the [YAML specification]() for more info on what you can put in this file.
 

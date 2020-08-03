@@ -5,12 +5,19 @@
         <meta charset="UTF-8">
         <title>Building the Rubric - Lab Grader</title>
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        <link rel="icon" href="../favicon.svg">
         <link rel="shortcut icon" href="../favicon.png">
         <link rel="stylesheet" href="../css/variables.css">
         <link rel="stylesheet" href="../css/general.css">
@@ -19,8 +26,9 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="../highlight.css">
@@ -36,7 +44,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -155,15 +163,17 @@
 <p>I'm going to be using the <code>expect</code> method, which is normally bad practice. It simply panics (aborts) with an error message if there's an error. Normally you would want to deal with the error in one way or another, but I'm going to use this anyway since it's just an example. <code>expect</code> should <em>not</em> be used in production code.</p>
 <h2><a class="header" href="#reading-yaml-data" id="reading-yaml-data">Reading YAML Data</a></h2>
 <p>We can read YAML data with the <code>yaml!</code> macro. <code>yaml!</code> takes in a relative file path and returns the YAML data as a <code>String</code>.</p>
-<p>This macro is very important for one reason. When you compile in debug mode (default), this macro will read from the file system as expected. However, when you compile for release (with the <code>--release</code> flag), it will read the file contents and embed the contents in the created executable. This means when you distribute the grader to your students, you don't need to provide the <code>yaml</code> file. The executable will run on it's own. Just be sure to compile in release mode before distributing.</p>
+<p>This macro is very important for one reason. When you compile, it will read the file contents and embed the contents in the created executable. This means when you distribute the grader to your students, you don't need to provide the <code>yaml</code> file. The executable will run standalone. </p>
+<p>This is good because it means you only need to distribute one file (the executable), and the criteria can be kept private if you want them to be. It also prevents students from tampering with the criteria.</p>
 <p>We can go ahead and add this to the end of our <code>main</code> function</p>
-<pre><code class="language-rust noplaypen">let yaml = yaml!(&quot;../criteria/rubric.yml&quot;).expect(&quot;Couldn't read file&quot;);
+<pre><code class="language-rust noplaypen">let yaml = yaml!(&quot;../rubrics/main.yml&quot;).expect(&quot;Couldn't read file&quot;);
 </code></pre>
+<p>This reads from a file relative to the current file (<code>main.rs</code>).</p>
 <h2><a class="header" href="#building-a-rubric" id="building-a-rubric">Building a Rubric</a></h2>
 <p>Now that we have our yaml data, we can build a <code>Rubric</code> from it.</p>
 <pre><code class="language-rust noplaypen">let mut rubric = Rubric::from_yaml(yaml).expect(&quot;Bad yaml!&quot;);
 </code></pre>
-<p>Here we're using the <code>expect</code> method again, but it's probably a good idea in this case. This will crash if we have invalid YAML or missing items. Once you're done developing and compile for release, the YAML will be embedded and won't change, so it won't crash after that.</p>
+<p>Here we're using the <code>expect</code> method again, but it's actually a good idea in this case. This will crash if we have invalid YAML or missing items. Since you're the one compiling, you're the one who will get the error about bad yaml. Once you're done developing and successfully compile for release, the YAML will be embedded and won't change, so it won't crash after that.</p>
 <p>That's all there is to building a rubric. Here's the complete <code>main.rs</code> file so far</p>
 <pre><code class="language-rust noplaypen">extern crate lab_grader;
 
@@ -225,10 +235,10 @@ fn main() {
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 

@@ -5,12 +5,19 @@
         <meta charset="UTF-8">
         <title>Example Grader - Lab Grader</title>
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        <link rel="icon" href="../favicon.svg">
         <link rel="shortcut icon" href="../favicon.png">
         <link rel="stylesheet" href="../css/variables.css">
         <link rel="stylesheet" href="../css/general.css">
@@ -19,8 +26,9 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="../highlight.css">
@@ -36,7 +44,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -148,27 +156,28 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#example-grader" id="example-grader">Example Grader</a></h1>
-<p>This chapter will walk you through building a complete grader from start to finish. I'm writing this as I publish version <code>0.10.0</code>. There will no doubt be changes in later versions.</p>
+<p>This chapter will walk you through building a complete grader from start to finish. I'm writing this as I publish version <code>0.11.0</code>. There will no doubt be changes in later versions.</p>
 <h2><a class="header" href="#scenario" id="scenario">Scenario</a></h2>
-<p>Let's say we wrote a lab to teach the basics of Git, and we need to ensure that the sudents have done the following:</p>
-<ul>
+<p>Let's say we are administering a lab for our students to teach the basics of Git, and we need to ensure that the sudents have done the following:</p>
+<ol>
 <li>Installed Git</li>
 <li>Initialized Git in a repository</li>
 <li>Made at least 3 commits in the repository</li>
 <li>Pushed the repository to Github</li>
-</ul>
-<p>These are our &quot;criteria&quot;, which is an important term. Because we have 4 criteria, let's say each is worth 25 points for a total of 100 points.</p>
-<p>Let's write a grader program that the student will run. The grader will check these criteria and send a report back to us.</p>
+</ol>
+<p>There are the criteria that will make up our <em>rubric</em>. Let's say the lab is worth 100 points, so each criterion is worth 25.</p>
+<p>Let's write a program to grade this lab. The program will be distributed by you, and run <em>by the student</em>. A report (&quot;submission&quot;) will be sent from the student-run program to you. The result will be an Excel friendly CSV file with all the students results and progress. We'll see more of that towards the end of this example.</p>
 <h2><a class="header" href="#setup" id="setup">Setup</a></h2>
-<p>Our grader will be written in <a href="https://www.rust-lang.org/">Rust</a>. Before we get started, be sure you have all the necessary tools to write a Rust application, including <code>cargo</code>. You can <a href="https://www.rust-lang.org/learn/get-started">install it here</a> if you don't already have it. Be sure you're running on the &quot;nightly&quot; release of Rust. You can switch to nightly with <code>rustup default nightly</code>.</p>
-<p>We'll make a new Rust project using <code>cargo</code></p>
+<p>Our grader will be written in <a href="https://www.rust-lang.org/">Rust</a>. Before we get started, be sure you have all the necessary tools to write a Rust application, including <code>cargo</code>. You can <a href="https://www.rust-lang.org/learn/get-started">install it here</a> if you don't already have it. Currently, this program runs on the &quot;nightly&quot; build of Rust, but that will soon change. You can switch to nightly with <code>rustup default nightly</code>. Be sure you can compile a &quot;Hello, World&quot; program before continuing.</p>
+<p>Rust has many resources targeted at beginners or people coming to the language for the first time. <a href="https://doc.rust-lang.org/book/">&quot;The Book&quot;</a> is kind of the Rust bible, and a good place to start. I won't go over Rust syntax or patterns here, because many people have done that more elegently than I can. Instead, I'll just assume you, the reader, are relatively new to Rust.</p>
+<p>Rust projects are called &quot;crates&quot;. The grader we're writing is technically a crate, and it will use the <code>lab_grader</code> crate like any other framework. We'll make a new crate using <code>cargo</code></p>
 <pre><code>$ cargo new my_grader
 </code></pre>
-<p>This will make 3 files for us. <code>Cargo.toml</code> is where we specify details about our application (called a &quot;crate&quot;). You can leave most of it alone, as we won't be publishing this crate, but you need to add this crate (<code>lab_grader</code>) as a dependency.</p>
+<p>This will make 3 files for us. <code>Cargo.toml</code> is where we specify details about our application (called a &quot;crate&quot;). You can leave most of it alone, as we won't be publishing this crate, but you need to add <code>lab_grader</code> as a dependency.</p>
 <pre><code class="language-toml">[dependencies]
-lab_grader = &quot;0.10.0&quot;
+lab_grader = &quot;0.11&quot;
 </code></pre>
-<p><code>main.rs</code> contains a hello world function, so you can go ahead and compile and run your program with</p>
+<p><code>main.rs</code> contains a hello world function by default, so you can go ahead and compile and run your program with</p>
 <pre><code>$ cargo run
 </code></pre>
 <p>After it compiles you should see &quot;Hello, world!&quot;. Now we can move on to <a href="./criteria.html">defining the criteria</a>.</p>
@@ -215,10 +224,10 @@ lab_grader = &quot;0.10.0&quot;
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 

@@ -1,15 +1,15 @@
 # Writing the Tests
 Now comes the most important part of writing the application. We've build our rubric of criteria, but they currently don't have a way to be tested. How do we know if they actually have Git installed or not?
 
-The way we determine this is by writing a "test", which is just a function, for each of our criteria. Then we'll "attach" the function to the criteria, then we can grade the submission.
+The way we determine this is by writing a "test", which is just a function, for each of our criteria. Then we'll "attach" the functions to the rubric, then we can grade the submission.
 
 ## A Single Test
-Each test needs to have the same signature, meaning it has to accept the same parameters and return the same thing. We need this consistency between tests to make grading possible.
+Each test is a special function. All test functions need to have the same signature, meaning they must accept the same parameters and return the same thing. We need this consistency between tests to make grading possible.
 
 Every test must accept a reference to a `TestData` object, and return a boolean. We created a `TestData` object with the `data!` macro when we made a submission. In fact, the exact data we put in the submission will be the data passed into each of our criteria tests. This is why we put the users Github username and repository name in the data; we'll need it inside one of our tests.
 
 ## Helpers
-Before we write any tests, you should know about the [helper](../helpers/home.md) modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some times. See the documentation linked above for more info on each module.
+Before we write any tests, you should know about the [helper](../helpers/home.md) modules. These modules are a collection of functions that do common tasks in criteria tests. They may save you some time. See the documentation linked above for more info on each module.
 
 ## The First Test
 Let's write a test for our first criteria, which checks if Git is installed or not. Remember that a test is just a function with a specific signature.
