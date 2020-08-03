@@ -24,8 +24,8 @@ fn flush() {
 ///
 /// ## Example
 /// ```no_run
-/// #[macro_use] extern crate lab_grader;
-/// use lab_grader::helpers;
+/// #[macro_use] extern crate rubric;
+/// use rubric::helpers;
 /// use std::net::Ipv4Addr;
 ///
 /// fn main() {
@@ -73,7 +73,7 @@ macro_rules! prompt {
 ///
 /// ## Example
 /// ```no_run
-/// use lab_grader::helpers::cli::prompt;
+/// use rubric::helpers::cli::prompt;
 ///
 /// let input = prompt("Enter hello: ");
 /// println!("{}", input);
@@ -131,7 +131,7 @@ pub struct Version {
 impl Version {
     /// Returns the installed version of the program provided.
     /// ```rust
-    /// use lab_grader::cli::{Version, Program};
+    /// use rubric::cli::{Version, Program};
     ///
     /// // Tests that git is installed
     /// assert!(Version::of(Program::Git).is_some());
@@ -150,7 +150,7 @@ impl Version {
     /// Makes a custom version number. Mostly use to compare to another
     ///
     /// ```rust
-    /// # use lab_grader::cli::Version;
+    /// # use rubric::cli::Version;
     /// #
     /// let v = Version::custom(4, 5, 6);
     /// assert_eq!(v.major(), 4);

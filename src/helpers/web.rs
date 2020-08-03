@@ -35,7 +35,7 @@ fn construct_headers() -> HeaderMap {
 ///
 /// ## Example
 /// ```rust
-/// use lab_grader::helpers::web::get;
+/// use rubric::helpers::web::get;
 ///
 /// let result = get("https://postman-echo.com/get");
 ///
@@ -48,7 +48,7 @@ fn construct_headers() -> HeaderMap {
 /// ```
 /// **Get the body of data returned from a GET request**
 /// ```rust
-/// # use lab_grader::helpers::web::get;
+/// # use rubric::helpers::web::get;
 ///
 /// let result = get("https://postman-echo.com/get");
 ///
@@ -77,7 +77,7 @@ pub fn get(url: &str) -> Result<Response, reqwest::Error> {
 /// the response was successful. Just saves a few lines of code.
 ///
 /// ```rust
-/// # use lab_grader::web;
+/// # use rubric::web;
 ///
 /// let url = "https://postman-echo.com/get";
 /// assert!(web::site_responds(url));
@@ -98,7 +98,7 @@ pub fn site_responds(url: &str) -> bool {
 ///
 /// ## Example
 /// ```rust
-/// use lab_grader::helpers::web::post_json;
+/// use rubric::helpers::web::post_json;
 ///
 /// // We'll use a HashMap because it's similar to json
 /// use std::collections::HashMap;
@@ -154,7 +154,7 @@ pub fn post(url: &str, body: &'static str) -> Result<Response, reqwest::Error> {
 ///
 /// ## Example
 /// ```rust
-/// # use lab_grader::helpers::web;
+/// # use rubric::helpers::web;
 ///
 /// let ip = web::get_ip();
 /// assert!(ip.is_some());

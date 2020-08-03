@@ -1,6 +1,6 @@
-extern crate lab_grader;
+extern crate rubric;
 
-use lab_grader::*;
+use rubric::*;
 
 
 fn test(_: &TestData) -> bool {

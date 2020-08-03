@@ -1,7 +1,7 @@
-extern crate lab_grader;
+extern crate rubric;
 
 use std::env;
-use lab_grader::*;
+use rubric::*;
 
 
 fn main() {

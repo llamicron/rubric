@@ -26,8 +26,8 @@ pub type TestData = HashMap<String, String>;
 ///
 /// ## Example
 /// ```rust
-/// # extern crate lab_grader;
-/// use lab_grader::{TestData, data};
+/// # extern crate rubric;
+/// use rubric::{TestData, data};
 ///
 /// // The long way
 /// let mut map = TestData::new();
@@ -78,7 +78,7 @@ impl Submission {
     ///
     /// ## Example
     /// ```rust
-    /// use lab_grader::Submission;
+    /// use rubric::Submission;
     ///
     /// // You probably want it to be mutable so
     /// // you can attach data and change the grade
@@ -107,8 +107,8 @@ impl Submission {
     ///
     /// ## Example
     /// ```rust
-    /// # use lab_grader::data;
-    /// # use lab_grader::Submission;
+    /// # use rubric::data;
+    /// # use rubric::Submission;
     /// #
     /// let data = data! {
     ///     "key" => "value",
@@ -129,7 +129,7 @@ impl Submission {
     ///
     /// ## Example
     /// ```rust
-    /// # use lab_grader::{Submission, data};
+    /// # use rubric::{Submission, data};
     ///
     /// let sub = Submission::from_data(data! {
     ///     "name" => "luke i guess",
@@ -153,7 +153,7 @@ impl Submission {
     ///
     /// ## Example
     /// ```rust
-    /// # use lab_grader::Submission;
+    /// # use rubric::Submission;
     /// let mut sub = Submission::new();
     /// sub.pass("Some criterion name");
     ///
@@ -197,7 +197,7 @@ impl Submission {
     ///
     /// Support for custom results file locations is coming...
     /// ```no_run
-    /// use lab_grader::Submission;
+    /// use rubric::Submission;
     /// Submission::server(8080);
     /// ```
     pub fn server(port: u16) {

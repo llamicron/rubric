@@ -23,7 +23,7 @@
 //!     stub: second-crit
 //!     worth: 30
 //! ```
-//! See the [YAML specification](https://github.com/llamicron/lab_grader/wiki/YAML-Specification) for more info.
+//! See the [YAML specification](https://github.com/llamicron/rubric/wiki/YAML-Specification) for more info.
 
 // std uses
 use std::str::FromStr;
@@ -78,7 +78,7 @@ macro_rules! attach {
 ///
 /// ## Example
 /// ```rust
-/// use lab_grader::{Rubric, yaml};
+/// use rubric::{Rubric, yaml};
 ///
 /// // Relative path to the yaml file
 /// let yaml = yaml!("../test_data/test_rubric.yml").expect("Couldn't load yaml");
@@ -99,12 +99,12 @@ impl Rubric {
     /// Parses `yaml` data into a `Rubric`.
     ///
     /// This is equivilent to calling `parse()` on a string, except
-    /// this will return a [`lab_grader::Error`](crate::error::ErrorKind::BadYaml)
+    /// this will return a [`rubric::Error`](crate::error::ErrorKind::BadYaml)
     /// error instead of a [`serde_yaml::Error`].
     ///
     /// ## Example
     /// ```rust
-    /// use lab_grader::{Rubric, yaml};
+    /// use rubric::{Rubric, yaml};
     /// let yaml = yaml!("../test_data/test_rubric.yml").expect("Couldn't load yaml");
     /// // If this is an Err, it will panic with the line/col of the yaml err
     /// let mut rubric = Rubric::from_yaml(yaml).expect("Bad yaml!");
@@ -128,7 +128,7 @@ impl Rubric {
     /// returning None if it couldn't be found
     ///
     /// ```rust
-    /// # use lab_grader::{Rubric, yaml};
+    /// # use rubric::{Rubric, yaml};
     /// # let yaml = yaml!("../test_data/test_rubric.yml").expect("Couldn't load yaml");
     /// # let mut rubric = Rubric::from_yaml(yaml).expect("Bad yaml!");
     /// // `rubric` contains a criterion with the stub 'first-crit`

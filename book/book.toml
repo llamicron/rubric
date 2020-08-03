@@ -3,4 +3,4 @@ authors = ["Luke Sweeney"]
 language = "en"
 multilingual = false
 src = "src"
-title = "Lab Grader"
+title = "Rubric"

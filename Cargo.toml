@@ -1,13 +1,13 @@
 [package]
-name = "lab_grader"
+name = "rubric"
 version = "0.11.0"
 authors = ["llamicron <llamicron@gmail.com>"]
 edition = "2018"
 description = "A crate to help grade labs and assignments"
-documentation = "https://docs.rs/crate/lab_grader"
+documentation = "https://docs.rs/crate/rubric"
 readme = "README.md"
-homepage = "https://github.com/llamicron/lab_grader"
-repository = "https://github.com/llamicron/lab_grader"
+homepage = "https://github.com/llamicron/rubric"
+repository = "https://github.com/llamicron/rubric"
 license = "MIT"
 keywords = [ "grade", "academia", "automation", ]
 categories = [ "command-line-utilities" ]

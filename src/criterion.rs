@@ -65,7 +65,7 @@ impl Criterion {
     /// ## Example
     /// **A basic criterion**
     /// ```rust
-    /// use lab_grader::Criterion;
+    /// use rubric::Criterion;
     ///
     /// let c = Criterion::new("my crit").build();
     /// assert_eq!(c.name, "my crit");

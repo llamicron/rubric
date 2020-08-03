@@ -8,7 +8,7 @@ use std::path::{Path, PathBuf};
 /// Returns true if a file or dir at the given path exists
 ///
 /// ```rust
-/// use lab_grader::helpers::fs;
+/// use rubric::helpers::fs;
 ///
 /// assert!(fs::file_exists("Cargo.toml"));
 /// ```
@@ -23,7 +23,7 @@ pub fn file_exists<P: AsRef<Path>>(path: P) -> bool {
 /// return `false`, not panic!
 ///
 /// ```rust
-/// use lab_grader::helpers::fs;
+/// use rubric::helpers::fs;
 ///
 /// assert!(fs::file_contains("Cargo.toml", "version"));
 /// ```

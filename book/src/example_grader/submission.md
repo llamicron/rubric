@@ -11,7 +11,7 @@ Sometimes you'll also need certain data to test a criterion in our rubric. You c
 We need to do some housekeeping in our `main.rs`
 
 ```rust ,noplaypen
-extern crate lab_grader;
+extern crate rubric;
 
 use lab_grader::*;
 

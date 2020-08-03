@@ -1,6 +1,6 @@
 //! A criterion runner
 //!
-//! For complete examples, see the [examples](https://github.com/llamicron/lab_grader/tree/master/examples)
+//! For complete examples, see the [examples](https://github.com/llamicron/rubric/tree/master/examples)
 //! directory on Github.
 
 // External crates
@@ -37,7 +37,7 @@ pub use submission::Submission;
 pub use submission::TestData;
 pub use criterion::Criterion;
 pub use results_file::AsCsv;
-pub use rubric::Rubric;
+pub use self::rubric::Rubric;
 pub use error::Error;
 
 

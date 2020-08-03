@@ -35,9 +35,9 @@ Here we're using the `expect` method again, but it's actually a good idea in thi
 That's all there is to building a rubric. Here's the complete `main.rs` file so far
 
 ```rust ,noplaypen
-extern crate lab_grader;
+extern crate rubric;
 
-use lab_grader::*;
+use rubric::*;
 
 fn main() {
     let mut sub = Submission::from_data(data! {
