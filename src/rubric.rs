@@ -141,7 +141,7 @@ impl Rubric {
         self.criteria.iter_mut().find(|c| c.stub == stub)
     }
 
-    /// Adds a criterion to the rubric's collection.
+    /// Adds a criterion to the rubric.
     ///
     /// You probably shouldn't use this, instead define all
     /// your criteria in yaml.
@@ -150,7 +150,7 @@ impl Rubric {
     }
 
     /// Returns the criteria as a `&mut Vec<Criterion>`, sorted
-    /// by the index provided.
+    /// by the criterion's index.
     ///
     /// Criteria with the same index/no index will not have guaranteed order.
     pub fn sorted(&mut self) -> &mut Vec<Criterion> {

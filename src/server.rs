@@ -22,7 +22,8 @@ fn accept_submission(submission: Json<Submission>) -> Status {
     let sub = submission.into_inner();
     // We can't have a globally managed results file
     // because the header for this file is generated based on the
-    // data in the submission
+    // data in the submission. We won't know all the headers until
+    // the first submission is sent.
     let mut rf = ResultsFile::for_item(&sub).expect("Could not open results file");
 
     if rf.write_csv(&sub).is_ok() {
