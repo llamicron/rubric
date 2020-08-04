@@ -2,8 +2,10 @@
 
 // std uses
 use std::io::{stdin, stdout, Write};
+use std::process::Command;
 
 
+// Flushes stdout, this is only used internally
 fn flush() {
     stdout().flush().expect("Failed to flush output");
 }
@@ -90,5 +92,63 @@ pub fn prompt(msg: &str) -> String {
         } else {
             return input.trim().to_string();
         }
+    }
+}
+
+
+/// Runs a command and returns a Result with the output.
+/// 
+/// This is equivilent to using [`Command`](std::process::Command), but it
+/// handles platform differences for you. This is only meant for basic commands. For
+/// anything more advanced than a simple command, use [`Command`](std::process::Command)
+/// yourself.
+#[cfg(target_family = "windows")]
+pub fn cmd(command: &str) -> std::result::Result<std::process::Output, std::io::Error> {
+    Command::new("cmd")
+        .args(&["/C", command])
+        .output()
+}
+
+
+/// Runs a command and returns a Result with the output.
+/// 
+/// This is equivilent to using [`Command`](std::process::Command), but it
+/// handles platform differences for you. This is only meant for basic commands. For
+/// anything more advanced than a simple command, use [`Command`](std::process::Command)
+/// yourself.
+#[cfg(target_os = "unix")]
+pub fn cmd(command: &str) {
+    Command::new("sh")
+        .arg("-c")
+        .arg(command)
+        .output()
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+
+    #[test]
+    #[cfg(target_family = "windows")]
+    fn test_windows_command() {
+        let result = cmd("dir");
+        assert!(result.is_ok());
+        let output = result.unwrap();
+        assert!(output.stdout.len() > 0);
+        assert!(output.stderr.len() == 0);
+        assert!(output.status.success());
+    }
+
+    #[test]
+    #[cfg(target_family = "unix")]
+    fn test_unix_command() {
+        let result = cmd("ls");
+        assert!(result.is_ok());
+        let output = result.unwrap();
+        assert!(output.stdout.len() > 0);
+        assert!(output.stderr.len() == 0);
+        assert!(output.status.success());
     }
 }
