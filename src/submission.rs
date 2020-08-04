@@ -70,7 +70,11 @@ pub struct Submission {
     /// The criteria (name) that this submission passed
     pub passed: Vec<String>,
     /// The citeria (name) that this submission failed
-    pub failed: Vec<String>
+    pub failed: Vec<String>,
+    /// How to format the timestamp.
+    /// See https://docs.rs/chrono/0.4.13/chrono/format/strftime/index.html for more options
+    #[serde(skip)]
+    timestamp_format: String
 }
 
 impl Submission {
@@ -93,7 +97,8 @@ impl Submission {
             grade: 0,
             data: TestData::new(),
             passed: Vec::new(),
-            failed: Vec::new()
+            failed: Vec::new(),
+            timestamp_format: String::from("%Y-%m-%d %a %T %:z")
         }
     }
 
@@ -182,6 +187,16 @@ impl Submission {
         }
     }
 
+    /// Overrides the default timestamp format.
+    /// The default is `%Y-%m-%d %a %T %:z` which gives
+    /// ```text
+    /// 2001-08-04 Thu 00:34:60 +09:30
+    /// ```
+    /// This timestamp format is human readable and also sortable in a spreadsheet.
+    pub fn set_timestamp_format(&mut self, new_format: &str) {
+        self.timestamp_format = String::from(new_format);
+    }
+
     /// Spins up a webserver to accept submission.
     ///
     /// Accepted submissions will be written to a [`ResultsFile`](crate::results_file::ResultsFile).
@@ -241,7 +256,7 @@ impl AsCsv for Submission {
     fn as_csv(&self) -> String {
         format!(
             "{},{},{},{},{}",
-            self.time.to_rfc3339(),
+            self.time.format(&self.timestamp_format),
             self.grade,
             self.passed.join(";"),
             self.failed.join(";"),
@@ -365,5 +380,13 @@ mod tests {
 
         let csv = data.as_csv();
         assert!(csv.contains("something,else"));
+    }
+
+    #[test]
+    fn test_custom_timestamp_format() {
+        let mut sub = Submission::new();
+        assert_eq!(sub.timestamp_format, "%Y-%m-%d %a %T %:z");
+        sub.set_timestamp_format("some other format");
+        assert_eq!(sub.timestamp_format, "some other format");
     }
 }
