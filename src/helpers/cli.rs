@@ -96,12 +96,20 @@ pub fn prompt(msg: &str) -> String {
 }
 
 
-/// Runs a command and returns a Result with the output.
+/// Runs a command and returns a Result with the output. This is the Windows version.
 /// 
 /// This is equivilent to using [`Command`](std::process::Command), but it
 /// handles platform differences for you. This is only meant for basic commands. For
 /// anything more advanced than a simple command, use [`Command`](std::process::Command)
 /// yourself.
+/// 
+/// ```rust
+/// use rubric::helpers::cli;
+/// 
+/// let output = cli::cmd("dir");
+/// assert!(output.is_ok());
+/// assert!(output.unwrap().stdout.len() > 0);
+/// ```
 #[cfg(target_family = "windows")]
 pub fn cmd(command: &str) -> std::result::Result<std::process::Output, std::io::Error> {
     Command::new("cmd")
@@ -110,12 +118,20 @@ pub fn cmd(command: &str) -> std::result::Result<std::process::Output, std::io::
 }
 
 
-/// Runs a command and returns a Result with the output.
+/// Runs a command and returns a Result with the output. This is the Unix version.
 /// 
 /// This is equivilent to using [`Command`](std::process::Command), but it
 /// handles platform differences for you. This is only meant for basic commands. For
 /// anything more advanced than a simple command, use [`Command`](std::process::Command)
 /// yourself.
+/// 
+/// ```rust
+/// use rubric::helpers::cli;
+/// 
+/// let output = cli::cmd("ls");
+/// assert!(output.is_ok());
+/// assert!(output.unwrap().stdout.len() > 0);
+/// ```
 #[cfg(target_os = "unix")]
 pub fn cmd(command: &str) {
     Command::new("sh")
