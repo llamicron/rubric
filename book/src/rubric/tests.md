@@ -51,7 +51,7 @@ I strongly recommend making a `test.rs` file alongside `main.rs` to keep your te
 Again, I recommend making a `tests.rs` file and keeping them in there. Here's how I set things up.
 
 ```rust ,noplaypen
-// tests.rs;
+// tests.rs
 use rubric::TestData;
 
 fn test_from_tests_rs(_: &TestData) -> bool {

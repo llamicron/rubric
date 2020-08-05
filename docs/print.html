@@ -91,7 +91,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -242,6 +242,58 @@ criteria:
 <p>Things like installing Git or running a web server are easy to verify, but other tasks might not be. Because every criteria has a function, the full force of Rust is on your side. You may have to get creative in writing your tests. You can always look at the <a href="https://github.com/llamicron/rubric/tree/master/examples">examples on Github</a> for inspiration.</p>
 <p>See the <a href="rubric/tests.html">Criteria Tests</a> page for more information on this topic.</p>
 <h1><a class="header" href="#rubric-specification" id="rubric-specification">Rubric Specification</a></h1>
+<p>If you're looking for the syntax of the YAML language itself, then <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">look here</a>. This page is for the allowed items in a rubric's <code>.yml</code> file.</p>
+<h2><a class="header" href="#minimal-rubric" id="minimal-rubric">Minimal Rubric</a></h2>
+<p>Here is a rubric with as few items as possible. Everything here is required.</p>
+<pre><code class="language-yml">name: My rubric
+
+criteria:
+  &quot;first and only criterion&quot;:
+    worth: 10
+</code></pre>
+<h2><a class="header" href="#all-items" id="all-items">All Items</a></h2>
+<p>Here is a full rubric with everything specified, with comments for more information about each key.</p>
+<pre><code class="language-yml"># Required name
+name: My rubric
+# Optional description. Gets shown to the student when grading
+desc: Description of my rubric
+# Sanity check. If the sum of all criteria doesn't add to this number,
+# an error message will be displayed. Just ensures that you give the correct
+# worth to all criteria
+total: 100
+
+criteria:
+  &quot;First criterion&quot;:
+    # Can be any string, as long as it's unique.
+    # If not specified, the stub will be the criterion's name,
+    # lowercased and whitespace replaced with dashes
+    stub: whatever-stub
+    # Any number (even negative). Lowest number is run first.
+    # Criteria without indices do not have consistent order
+    index: 1
+    # A description
+    desc: You should do this to fulfil this criterion
+    # required point value
+    # can be negative
+    worth: 50
+    # success and failure messages
+    # default to &quot;passed&quot; and &quot;failed&quot;
+    messages: [&quot;Passed!&quot;, &quot;not passed&quot;]
+    # This will prevent the criterion from being displayed
+    # to the student. Useful if you want hidden requirements 
+    # or are grading a test
+    # true or false
+    hide: false
+
+  # This criterion has all default values
+  &quot;Second criterion&quot;:
+    stub: second-criterion
+    index: 100
+    desc: &quot;&quot;
+    worth: 0
+    messages: [&quot;passed&quot;, &quot;failed&quot;]
+    hide: false
+</code></pre>
 <h1><a class="header" href="#criteria-tests" id="criteria-tests">Criteria Tests</a></h1>
 <p>As stated on the <a href="rubric/home.html">Rubrics</a> page, a criteria tests is a Rust function that verifies if a criteria was actually fulfilled. They will vary widely. This page will show how to write a test and a few examples to get you started.</p>
 <h2><a class="header" href="#a-single-test" id="a-single-test">A Single Test</a></h2>
@@ -280,7 +332,7 @@ fn some_test(data: &amp;TestData) -&gt; bool {
 <h2><a class="header" href="#organization" id="organization">Organization</a></h2>
 <p>I strongly recommend making a <code>test.rs</code> file alongside <code>main.rs</code> to keep your tests in. Of course, you don't have to. You could keep your tests as loose functions in <code>main.rs</code>, or maybe have a submodule in <code>main.rs</code>.</p>
 <p>Again, I recommend making a <code>tests.rs</code> file and keeping them in there. Here's how I set things up.</p>
-<pre><code class="language-rust noplaypen">// tests.rs;
+<pre><code class="language-rust noplaypen">// tests.rs
 use rubric::TestData;
 
 fn test_from_tests_rs(_: &amp;TestData) -&gt; bool {
@@ -324,6 +376,77 @@ fn main() {
 <p>There are a few helper modules and functions that perform some common tasks. Sometimes your tests will be one-liners from the helper modules. See the <a href="https://docs.rs/rubric/0.11.1/rubric/helpers/index.html"><code>helpers</code></a> module documentation on docs.rs for more info.</p>
 <h2><a class="header" href="#examples" id="examples">Examples</a></h2>
 <p>Some basic examples can be found in the <a href="https://github.com/llamicron/rubric/tree/master/examples"><code>examples</code> directory on Github</a>, specifically in <a href="https://github.com/llamicron/rubric/blob/master/examples/git_lab/src/tests.rs">this file</a> in the <code>git_lab</code> example.</p>
+<h1><a class="header" href="#submission" id="submission">Submission</a></h1>
+<p>A submission represents one students work on an assignment. It contains any data you may want about the student, like name and ID, their grade, which criteria they passed and failed, information about their system, information they provide, etc.</p>
+<p>A submission is the other half to a rubric. While rubrics are identical among all students, every student has their own unique submission. The stucture of a submission is all the same, but the values contained in it are unique to each student.</p>
+<p>A submission is designed to be constructed during the grading process and sent back to you, the instructor. You'll end up with a list of submissions from every student containing their grade and all the data you specified.</p>
+<p>Let's take a gander at a blank <code>Submission</code> struct to see what's in it:</p>
+<pre><code class="language-rust noplaypen">Submission {
+    time: 2020-08-04 Tue 21:13:34 -05:00,
+    grade: 0,
+    data: {},
+    passed: [],
+    failed: [],
+}
+</code></pre>
+<p>There's a few default values like a timestamp, grade, and which criteria the submission passed and failed, but it's pretty empty. The important bit is the <code>data</code> <code>HashMap</code>. This is where all of the data you specify will live. All of this data will be collected when the student runs the grader, and will be sent back as part of the grade report.</p>
+<h2><a class="header" href="#the-data-macro" id="the-data-macro">The <code>data!</code> macro</a></h2>
+<p>I mentioned that the <code>data</code> field on a submission is a <code>HashMap</code>. This is sort of true. It's technically a <code>TestData</code>, which is an alias to <code>HashMap&lt;String, String&gt;</code>.</p>
+<p>If you read the <a href="submission/../rubric/tests.html">Criteria Tests</a> section, you might remember <code>TestData</code> as the value that criteria tests must accept as a parameter. The <code>TestData</code> on a submission is what will be passed into these tests.</p>
+<p>Rust does not have object literals the same way a language like Python does. Instead, this crate provides a <code>data!</code> macro that will create a <code>TestData</code> for you. Here's how to use it.</p>
+<pre><code class="language-rust noplaypen">let data = data! {
+    &quot;some_key&quot; =&gt; &quot;some value&quot;,
+    &quot;other_key&quot; =&gt; &quot;other value&quot;
+};
+</code></pre>
+<p>Since <code>TestData</code> is an alias to <code>HashMap&lt;String, String&gt;</code>, the keys and values must be strings.</p>
+<h2><a class="header" href="#creating-a-submission" id="creating-a-submission">Creating a Submission</a></h2>
+<p>Creating a submission is easy</p>
+<pre><code class="language-rust noplaypen">// creates a blank submission like the one above
+let sub = Submission::new();
+</code></pre>
+<p>You will most likely want to create a submission with some data. You can do that like this.</p>
+<pre><code class="language-rust noplaypen">let data = data! {
+    &quot;key&quot; =&gt; &quot;value&quot;
+};
+
+let sub = Submission::from_data(data);
+
+// This will create the following
+Submission {
+    time: 2020-08-04 Tue 21:13:34 -05:00,
+    grade: 0,
+    data: {
+        &quot;key&quot;: &quot;value&quot;,
+    },
+    passed: [],
+    failed: [],
+}
+</code></pre>
+<h1><a class="header" href="#prompting-for-data" id="prompting-for-data">Prompting for Data</a></h1>
+<p>When creating a submission, you'll almost always want to ask the student for some information. Usually their name and ID, but maybe some other information as well.</p>
+<p>The <code>prompt!</code> macro does this easily. </p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    // Asks for something, enforces the correct type
+    let name = prompt!(&quot;Name: &quot;, String);
+    // Will crash if they enter anything but a number
+    let age = prompt!(&quot;Age: &quot;, usize);
+    // Will crash if they don't enter a valid IPv4 address
+    let ip = prompt!(&quot;IP Addr: &quot;, std::net::IPv4Addr);
+}
+</code></pre></pre>
+<p>You can combine this with the <code>data!</code> macro to easily collect information from the user and encapsulate it in a submission.</p>
+<pre><code class="language-rust noplaypen">fn main() {
+    let data = data! {
+        &quot;name&quot; =&gt; prompt!(&quot;Name: &quot;, String),
+        &quot;id&quot;   =&gt; prompt!(&quot;ID: &quot;, String)
+    }
+}
+</code></pre>
+<blockquote>
+<p>Note: because <code>TestData</code> must contain string values, you lose out on the type enforcement that <code>prompt!</code> provides. This is an unfortunate side effect of the <code>TestData</code> type; all values must be strings.</p>
+</blockquote>
+<p>There is also a <code>prompt</code> function under <a href="https://docs.rs/rubric/0.11.1/rubric/helpers/cli/fn.prompt.html"><code>helpers::cli::prompt</code></a> which will loop until it gets a valid value, but it does not have the same type enforcement feature that <code>prompt!</code> has; it only returns strings.</p>
 
                     </main>
 

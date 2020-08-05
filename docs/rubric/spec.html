@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../rubric/spec.html" class="active"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="../rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../rubric/spec.html" class="active"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="../rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="../submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -156,6 +156,58 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#rubric-specification" id="rubric-specification">Rubric Specification</a></h1>
+<p>If you're looking for the syntax of the YAML language itself, then <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">look here</a>. This page is for the allowed items in a rubric's <code>.yml</code> file.</p>
+<h2><a class="header" href="#minimal-rubric" id="minimal-rubric">Minimal Rubric</a></h2>
+<p>Here is a rubric with as few items as possible. Everything here is required.</p>
+<pre><code class="language-yml">name: My rubric
+
+criteria:
+  &quot;first and only criterion&quot;:
+    worth: 10
+</code></pre>
+<h2><a class="header" href="#all-items" id="all-items">All Items</a></h2>
+<p>Here is a full rubric with everything specified, with comments for more information about each key.</p>
+<pre><code class="language-yml"># Required name
+name: My rubric
+# Optional description. Gets shown to the student when grading
+desc: Description of my rubric
+# Sanity check. If the sum of all criteria doesn't add to this number,
+# an error message will be displayed. Just ensures that you give the correct
+# worth to all criteria
+total: 100
+
+criteria:
+  &quot;First criterion&quot;:
+    # Can be any string, as long as it's unique.
+    # If not specified, the stub will be the criterion's name,
+    # lowercased and whitespace replaced with dashes
+    stub: whatever-stub
+    # Any number (even negative). Lowest number is run first.
+    # Criteria without indices do not have consistent order
+    index: 1
+    # A description
+    desc: You should do this to fulfil this criterion
+    # required point value
+    # can be negative
+    worth: 50
+    # success and failure messages
+    # default to &quot;passed&quot; and &quot;failed&quot;
+    messages: [&quot;Passed!&quot;, &quot;not passed&quot;]
+    # This will prevent the criterion from being displayed
+    # to the student. Useful if you want hidden requirements 
+    # or are grading a test
+    # true or false
+    hide: false
+
+  # This criterion has all default values
+  &quot;Second criterion&quot;:
+    stub: second-criterion
+    index: 100
+    desc: &quot;&quot;
+    worth: 0
+    messages: [&quot;passed&quot;, &quot;failed&quot;]
+    hide: false
+</code></pre>
 
                     </main>
 
