@@ -11,13 +11,9 @@ fn flush() {
 }
 
 /// Calls [`prompt`](./helpers/cli/fn.prompt.html), then tries to parse the input
-/// into the provided type. If parsing fails, it will print an error message
-/// **and then quit the current process**.
+/// into the provided type. If parsing fails, it will try again.
 ///
 /// This method trims whitespace on the beginning and end of the input string.
-///
-/// If you wish to deal with the error yourself instead of quitting,
-/// then call `prompt`, then `parse` yourself.
 ///
 /// ## Example
 /// ```no_run
@@ -32,8 +28,6 @@ fn flush() {
 ///     let number = prompt!("Enter a number: ", u32);
 ///     println!("{}", number);
 ///
-///     // This will exit with an error message if they
-///     // don't enter a valid IP
 ///     let another = prompt!("Enter an IP: ", Ipv4Addr);
 ///     println!("{}", another);
 /// }
@@ -44,19 +38,22 @@ fn flush() {
 /// Here's a string
 /// Enter a number: 123
 /// 123
-/// Enter another number: not a number
-/// Could not parse input
+/// Enter an IP: not an IP
+/// Could not parse input. Try again.
+/// Enter an IP: 192.168.0.1
+/// 192.168.0.1
 /// ```
 #[macro_export]
 macro_rules! prompt {
     ( $msg:expr, $type:ty ) => {
-        match rubric::helpers::cli::prompt($msg).parse::<$type>() {
-            Ok(val) => val,
-            Err(_) => {
-                eprintln!("Could not parse input");
-                std::process::exit(1);
-            }
-        }
+        loop {
+            match rubric::helpers::cli::prompt($msg).parse::<$type>() {
+                Ok(val) => break val,
+                Err(_) => {
+                    eprintln!("Could not parse input. Try again.");
+                }
+            };
+        };
     };
 }
 
