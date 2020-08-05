@@ -3,9 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Rubric</title>
-        
-        <meta name="robots" content="noindex" />
+        <title>Rubrics - Rubric</title>
         
         
 
@@ -19,23 +17,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
         
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
         
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         
@@ -45,7 +43,7 @@
     <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
-            var path_to_root = "";
+            var path_to_root = "../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
@@ -91,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../rubric/home.html" class="active"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="../rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -126,7 +124,7 @@
                     <h1 class="menu-title">Rubric</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         
@@ -157,11 +155,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
-<blockquote>
-<p>IMPORTANT! I just deleted this entire book. The framework is changing quite a bit and it needs to be rewriten. More coming soon.</p>
-</blockquote>
-<h1><a class="header" href="#rubrics" id="rubrics">Rubrics</a></h1>
+                        <h1><a class="header" href="#rubrics" id="rubrics">Rubrics</a></h1>
 <p>Rubrics are the main component of this framework. A rubric is simply a list of criteria. They are the first thing you should write down when writing a grader.</p>
 <p>Within this framework, rubrics are represented with <code>.yml</code> files in the <code>rubrics/</code> directory. &quot;YAML&quot; is a markup language that you can <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">read about here</a>. It's pretty common within sysadmin tools and chances are you're already familiar with it. We can use YAML to write out the details of our criteria.</p>
 <h2><a class="header" href="#a-practical-example" id="a-practical-example">A Practical Example</a></h2>
@@ -222,7 +216,7 @@ criteria:
     # The're just some extra information for the student
     messages: [&quot;installed&quot;, &quot;not installed&quot;]
 </code></pre>
-<p>There are a few more options that you can provide, which you can read about on the <a href="rubric/spec.html">Rubric Specification Page</a>.</p>
+<p>There are a few more options that you can provide, which you can read about on the <a href="spec.html">Rubric Specification Page</a>.</p>
 <h2><a class="header" href="#loading-a-rubric" id="loading-a-rubric">Loading a Rubric</a></h2>
 <p>After writing out a rubric in a <code>.yml</code> file, we can load it into our grader and use it.</p>
 <p>The first step to loading a rubric is reading the file. This is done with the <code>yaml!</code> macro.</p>
@@ -240,97 +234,22 @@ criteria:
 <p>We have a rubric loaded, but it has no way to actually verify that the criteria have been fulfilled. We're going to write one function for each of the criteria. The function (called a &quot;criteria test&quot; or just &quot;test&quot;) has the responsibility of ensuring the criteria was actually fulfilled by the student.</p>
 <p>Assignments obviously vary greatly in scope and material, so writing these tests is the bulk of the work to be done when writing a grader. It all depends on what the student should be doing.</p>
 <p>Things like installing Git or running a web server are easy to verify, but other tasks might not be. Because every criteria has a function, the full force of Rust is on your side. You may have to get creative in writing your tests. You can always look at the <a href="https://github.com/llamicron/rubric/tree/master/examples">examples on Github</a> for inspiration.</p>
-<p>See the <a href="rubric/tests.html">Criteria Tests</a> page for more information on this topic.</p>
-<h1><a class="header" href="#rubric-specification" id="rubric-specification">Rubric Specification</a></h1>
-<h1><a class="header" href="#criteria-tests" id="criteria-tests">Criteria Tests</a></h1>
-<p>As stated on the <a href="rubric/home.html">Rubrics</a> page, a criteria tests is a Rust function that verifies if a criteria was actually fulfilled. They will vary widely. This page will show how to write a test and a few examples to get you started.</p>
-<h2><a class="header" href="#a-single-test" id="a-single-test">A Single Test</a></h2>
-<p>Tests are just functions, but they must have a specific signature. They must always accept the same parameters and return the same type of value. Here's the signature</p>
-<pre><code class="language-rust noplaypen">// Be sure TestData is imported
-use rubric::TestData;
-
-fn my_test(data: &amp;TestData) -&gt; bool {
-    // Test code goes here...
-}
-</code></pre>
-<p>Every test must accept a reference to a <code>TestData</code> struct. This <code>TestData</code> is stored on a <a href="rubric/../submission/home.html"><code>Submission</code></a>, which I'll cover in a different section. What you should know now is that it's <em>an alias to</em> <code>HashMap&lt;String, String&gt;</code>.</p>
-<p>Sometimes you won't need <code>TestData</code> in a test, in which case you can just name the parameter <code>_</code> and Rust won't complain.</p>
-<p>Tests must also return a boolean. <code>true</code> if it passes, <code>false</code> otherwise. If a test returns <code>true</code>, then the associated criteria's worth will be added to the point total. If all the criteria tests return true, the maximum score is achieved.</p>
-<h3><a class="header" href="#using-testdata" id="using-testdata">Using <code>TestData</code></a></h3>
-<p>Remember that a <code>TestData</code> struct is really just a <code>HashMap</code>. It will contains keys and values that <em>you specify</em> when setting up a <a href="rubric/../submission/home.html"><code>Submission</code></a>. You can use any of the <a href="https://doc.rust-lang.org/beta/std/collections/struct.HashMap.html">methods that HashMap's have</a>. 90% of the time, you'll just want to read a value from the <code>TestData</code>. There's 2 ways to do that.</p>
-<pre><code class="language-rust noplaypen">
-fn some_test(data: &amp;TestData) -&gt; bool {
-    // The easy but dangerous way to get a value
-    // this will *crash* if the key doesn't exist
-    let my_value = data[&quot;my_key&quot;];
-
-    // The safe way to get a value
-    if let Some(value) = data.get(&quot;my_key&quot;) {
-        // Key exists, now we have the value
-        println!(&quot;Value is {}&quot;, value);
-    } else {
-        // Key doesn't exist, something went wrong, handle error
-        println!(&quot;Value doesn't exist!&quot;);
-    }
-
-    // ...
-}
-</code></pre>
-<p>It's important that you take precautions when writing a grader. You really don't want it to crash while your students are running it. The two examples above to the same thing, but the second method won't crash if the key doesn't exist.</p>
-<h2><a class="header" href="#organization" id="organization">Organization</a></h2>
-<p>I strongly recommend making a <code>test.rs</code> file alongside <code>main.rs</code> to keep your tests in. Of course, you don't have to. You could keep your tests as loose functions in <code>main.rs</code>, or maybe have a submodule in <code>main.rs</code>.</p>
-<p>Again, I recommend making a <code>tests.rs</code> file and keeping them in there. Here's how I set things up.</p>
-<pre><code class="language-rust noplaypen">// tests.rs;
-use rubric::TestData;
-
-fn test_from_tests_rs(_: &amp;TestData) -&gt; bool {
-    // test code goes here
-    return true;
-}
-
-// more tests here...
-</code></pre>
-<pre><code class="language-rust noplaypen">// main.rs
-extern crate rubric;
-
-// declare tests.rs as a module
-mod tests;
-// bring all test functions into scope
-use tests::*;
-// ...
-</code></pre>
-<h2><a class="header" href="#attaching-tests" id="attaching-tests">Attaching Tests</a></h2>
-<p>Each criteria has an associated test, but we need to tell our program which test goes with which criteria. After we've written our tests and loaded our rubric, we can use the <code>attach!</code> macro to assign them. Just point the criteria's <code>stub</code> that you specified in the <code>.yml</code> file to the function name.</p>
-<pre><code class="language-rust noplaypen">
-fn my_criteria_test(_: &amp;TestData) -&gt; bool {
-    // test code goes here...
-    return true;
-}
-
-
-fn main() {
-    // load rubric
-    // code omitted
-    // be sure it's mutable
-    let mut rubric = //...
-
-    attach! {
-        rubric,
-        &quot;criteria-stub&quot; =&gt; my_criteria_test
-    };
-}
-</code></pre>
-<h2><a class="header" href="#helpers" id="helpers">Helpers</a></h2>
-<p>There are a few helper modules and functions that perform some common tasks. Sometimes your tests will be one-liners from the helper modules. See the <a href="https://docs.rs/rubric/0.11.1/rubric/helpers/index.html"><code>helpers</code></a> module documentation on docs.rs for more info.</p>
-<h2><a class="header" href="#examples" id="examples">Examples</a></h2>
-<p>Some basic examples can be found in the <a href="https://github.com/llamicron/rubric/tree/master/examples"><code>examples</code> directory on Github</a>, specifically in <a href="https://github.com/llamicron/rubric/blob/master/examples/git_lab/src/tests.rs">this file</a> in the <code>git_lab</code> example.</p>
+<p>See the <a href="tests.html">Criteria Tests</a> page for more information on this topic.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
+                            <a rel="prev" href="../introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
 
+                        
+                            <a rel="next" href="../rubric/spec.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -340,7 +259,15 @@ fn main() {
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
+                    <a rel="prev" href="../introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
 
+                
+                    <a rel="next" href="../rubric/spec.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                 
             </nav>
 
@@ -361,26 +288,18 @@ fn main() {
         
 
         
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
         
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
         
 
-        
-        
-        <script type="text/javascript">
-        window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
-        });
-        </script>
-        
         
 
     </body>

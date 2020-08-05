@@ -1,3 +1,6 @@
 # Rubric
 
 [Introduction](./introduction.md)
+- [Rubrics](./rubric/home.md)
+    - [Rubric Specification](./rubric/spec.md)
+    - [Criteria Tests](./rubric/tests.md)
