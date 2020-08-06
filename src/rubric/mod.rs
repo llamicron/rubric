@@ -72,6 +72,18 @@ use crate::error::{Result, Error};
 /// ```
 #[macro_export]
 macro_rules! attach {
+    // Short way
+    ($rubric:ident, $($func:path),*) => {
+        $(
+            let func_name = std::stringify!($func);
+            if let Some(c) = $rubric.get(func_name) {
+                c.attach(Box::new($func));
+            } else {
+                panic!("Criteria with ID {} not found. Criteria ID and function name must match exactly", func_name);
+            }
+        )+
+    };
+    // Long way
     ( $rubric:ident, $($stub:literal => $func:path),* ) => {
         $(
             if let Some(c) = $rubric.get($stub) {
@@ -82,6 +94,7 @@ macro_rules! attach {
         )+
     };
 }
+
 
 
 /// A collection of criteria, meant to be serialized from `yaml`.
