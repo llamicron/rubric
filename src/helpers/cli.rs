@@ -93,6 +93,25 @@ pub fn prompt(msg: &str) -> String {
 }
 
 
+/// Prints the message, then returns true if the user enters y/yes, false otherwise.
+/// 
+/// This method will append `[y/N]` to the message.
+///
+/// ```no_run
+/// use rubric::helpers::cli;
+/// 
+/// if cli::confirm("Are you sure?") {
+///     // they entered y
+/// } else {
+///     // they entered anything else
+/// }
+/// ```
+pub fn confirm(message: &str) -> bool {
+    let full_msg = format!("{} [y/N] ", message);
+    return ["Y", "YES", "SI"].contains(&prompt(&full_msg).to_uppercase().as_str());
+}
+
+
 /// Runs a command and returns a Result with the output. This is the Windows version.
 /// 
 /// This is equivilent to using [`Command`](std::process::Command), but it
