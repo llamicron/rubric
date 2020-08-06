@@ -1,3 +1,5 @@
+//! Interaction with the system
+
 // std uses
 use std::fmt;
 use std::process::Command;
