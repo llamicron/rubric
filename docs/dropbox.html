@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Submission - Rubric</title>
+        <title>Dropbox - Rubric</title>
         
         
 
@@ -17,23 +17,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
         
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
         
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="../highlight.css">
-        <link rel="stylesheet" href="../tomorrow-night.css">
-        <link rel="stylesheet" href="../ayu-highlight.css">
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         
@@ -43,7 +43,7 @@
     <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
-            var path_to_root = "../";
+            var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction and Setup</a></li><li class="chapter-item expanded "><a href="../rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="../rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="../submission/home.html" class="active"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="../dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction and Setup</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html" class="active"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -124,7 +124,7 @@
                     <h1 class="menu-title">Rubric</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         
@@ -155,68 +155,66 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#submission" id="submission">Submission</a></h1>
-<p>A submission represents one students work on an assignment. It contains any data you may want about the student, like name and ID, their grade, which criteria they passed and failed, information about their system, information they provide, etc.</p>
-<p>A submission is the other half to a rubric. While rubrics are identical among all students, every student has their own unique submission. The stucture of a submission is all the same, but the values contained in it are unique to each student.</p>
-<p>A submission is designed to be constructed during the grading process and sent back to you, the instructor. You'll end up with a list of submissions from every student containing their grade and all the data you specified.</p>
-<p>Let's take a gander at a blank <code>Submission</code> struct to see what's in it:</p>
-<pre><code class="language-rust noplaypen">Submission {
-    time: 2020-08-04 Tue 21:13:34 -05:00,
-    grade: 0,
-    data: {},
-    passed: [],
-    failed: [],
-}
-</code></pre>
-<p>There's a few default values like a timestamp, grade, and which criteria the submission passed and failed, but it's pretty empty. The important bit is the <code>data</code> <code>HashMap</code>. This is where all of the data you specify will live. All of this data will be collected when the student runs the grader, and will be sent back as part of the grade report.</p>
-<h2><a class="header" href="#the-data-macro" id="the-data-macro">The <code>data!</code> macro</a></h2>
-<p>I mentioned that the <code>data</code> field on a submission is a <code>HashMap</code>. This is sort of true. It's technically a <code>TestData</code>, which is an alias to <code>HashMap&lt;String, String&gt;</code>.</p>
-<p>If you read the <a href="../rubric/tests.html">Criteria Tests</a> section, you might remember <code>TestData</code> as the value that criteria tests must accept as a parameter. The <code>TestData</code> on a submission is what will be passed into these tests.</p>
-<p>Rust does not have object literals the same way a language like Python does. Instead, this crate provides a <code>data!</code> macro that will create a <code>TestData</code> for you. Here's how to use it.</p>
-<pre><code class="language-rust noplaypen">let data = data! {
-    &quot;some_key&quot; =&gt; &quot;some value&quot;,
-    &quot;other_key&quot; =&gt; &quot;other value&quot;
-};
-</code></pre>
-<p>Since <code>TestData</code> is an alias to <code>HashMap&lt;String, String&gt;</code>, the keys and values must be strings.</p>
-<h2><a class="header" href="#creating-a-submission" id="creating-a-submission">Creating a Submission</a></h2>
-<p>Creating a submission is easy</p>
-<pre><code class="language-rust noplaypen">// creates a blank submission like the one above
-let sub = Submission::new();
-</code></pre>
-<p>You will most likely want to create a submission with some data. You can do that like this.</p>
-<pre><code class="language-rust noplaypen">let data = data! {
-    &quot;key&quot; =&gt; &quot;value&quot;
-};
+                        <h1><a class="header" href="#dropbox" id="dropbox">Dropbox</a></h1>
+<p>A dropbox is a place to send submissions after they're done being graded. It recieves submissions in JSON format and writes them to a CSV file for review by the instructor.</p>
+<p>The dropbox is a web server run by you, the instructor. It should be run on a publicly available server with a static IP or DNS name. The web server comes preconfigured, all you need to do is give it an environment to run it.</p>
+<p>You can open the dropbox by calling the <code>dropbox::open(PORT)</code> method, where <code>PORT</code> is a valid port number.</p>
+<pre><pre class="playground"><code class="language-rust">extern crate rubric;
+use rubric::dropbox;
 
-let sub = Submission::from_data(data);
-
-// This will create the following
-Submission {
-    time: 2020-08-04 Tue 21:13:34 -05:00,
-    grade: 0,
-    data: {
-        &quot;key&quot;: &quot;value&quot;,
-    },
-    passed: [],
-    failed: [],
+fn main() {
+    // Runs the dropbox on port 8080
+    dropbox::open(8080);
 }
+</code></pre></pre>
+<p>You'll see the following output</p>
+<pre><code>Dropbox is open! accepting POST requests to /submit
+�🔧 Configured for development.
+    =&gt; address: 0.0.0.0
+    =&gt; port: 8080
+    =&gt; log: normal
+    =&gt; workers: 24
+    =&gt; secret key: generated
+    =&gt; limits: forms = 32KiB
+    =&gt; keep-alive: 5s
+    =&gt; tls: disabled
+🛰  Mounting /:
+    =&gt; GET / (return_ok)
+    =&gt; POST /submit application/json (accept_submission)
+��� Rocket has launched from http://0.0.0.0:8080       
 </code></pre>
+<p>The home route (<code>/</code>) should return an OK status, but no content. If you visit the url of your webserver, you should get a blank web page. This is good, it means everything is working properly.</p>
+<h2><a class="header" href="#submitting-to-the-dropbox" id="submitting-to-the-dropbox">Submitting to the dropbox</a></h2>
+<p>The <code>post_json()</code> method in the <code>helpers::web</code> module is made with the dropbox in mind. After creating and grading a Submission, just pass it and the url of your dropbox to send the submission.</p>
+<pre><pre class="playground"><code class="language-rust">extern crate rubric;
+use rubric::{Submission, dropbox, helpers::web};
+
+fn main() {
+    let submission = Submission::new();
+    
+    // grade...
+
+    // assuming your dropbox is running at this url
+    let url = &quot;http://my.dns.name.or.ip.com:8080/submit&quot;;
+
+    // Submit and give some feedback
+    match web::post_json(&amp;url, &amp;sub) {
+        Ok(_)  =&gt; println!(&quot;Submission recorded!&quot;),
+        Err(e) =&gt; println!(&quot;Something went wrong! {}&quot;, e),
+    };
+}
+</code></pre></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="../rubric/tests.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="submission/prompt.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
-                        
-                            <a rel="next" href="../submission/prompt.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -226,15 +224,11 @@ Submission {
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="../rubric/tests.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="submission/prompt.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
-                
-                    <a rel="next" href="../submission/prompt.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
                 
             </nav>
 
@@ -255,14 +249,14 @@ Submission {
         
 
         
-        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
         
 
-        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
         

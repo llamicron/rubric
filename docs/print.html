@@ -91,7 +91,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction and Setup</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -158,9 +158,25 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
-<blockquote>
-<p>IMPORTANT! I just deleted this entire book. The framework is changing quite a bit and it needs to be rewriten. More coming soon.</p>
-</blockquote>
+<h1><a class="header" href="#setup" id="setup">Setup</a></h1>
+<p>This is a Rust crate and can be installed like any other Rust crate. You'll need Rust and it's build tool, <code>cargo</code> installed. <a href="https://www.rust-lang.org/tools/install">Read more about that here</a>.</p>
+<p>You can create a new Rust project with</p>
+<pre><code>cargo new --bin my_grader
+</code></pre>
+<p>In the <code>Cargo.toml</code> file that cargo creates for you, add this crate as a dependency.</p>
+<pre><code class="language-toml"># ...
+[dependencies]
+rubric = &quot;0.12&quot; # or latest version
+</code></pre>
+<p>In your <code>main.rs</code>, delcare the crate with the <code>#[macro_use]</code> configuration flag. You can import just the items you need (recommended), or import everything with <code>*</code>.</p>
+<pre><code class="language-rust noplaypen">#[macro_use] extern crate rubric;
+
+// import what you need
+use rubric::{Rubric, Submission, TestData, /* ... */};
+// or everything
+use rubric::*;
+</code></pre>
+<p>I would also recommend creating a <code>rubrics/</code> directory alongside your <code>src/</code> directory to store your rubrics.</p>
 <h1><a class="header" href="#rubrics" id="rubrics">Rubrics</a></h1>
 <p>Rubrics are the main component of this framework. A rubric is simply a list of criteria. They are the first thing you should write down when writing a grader.</p>
 <p>Within this framework, rubrics are represented with <code>.yml</code> files in the <code>rubrics/</code> directory. &quot;YAML&quot; is a markup language that you can <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">read about here</a>. It's pretty common within sysadmin tools and chances are you're already familiar with it. We can use YAML to write out the details of our criteria.</p>
@@ -429,10 +445,10 @@ Submission {
 <pre><pre class="playground"><code class="language-rust">fn main() {
     // Asks for something, enforces the correct type
     let name = prompt!(&quot;Name: &quot;, String);
-    // Will crash if they enter anything but a number
+    // Will loop until they enter a number
     let age = prompt!(&quot;Age: &quot;, usize);
-    // Will crash if they don't enter a valid IPv4 address
-    let ip = prompt!(&quot;IP Addr: &quot;, std::net::IPv4Addr);
+    // Will loop until they enter a valid IPv4 address
+    let ip = prompt!(&quot;IP Addr: &quot;, std::net::Ipv4Addr);
 }
 </code></pre></pre>
 <p>You can combine this with the <code>data!</code> macro to easily collect information from the user and encapsulate it in a submission.</p>
@@ -446,7 +462,55 @@ Submission {
 <blockquote>
 <p>Note: because <code>TestData</code> must contain string values, you lose out on the type enforcement that <code>prompt!</code> provides. This is an unfortunate side effect of the <code>TestData</code> type; all values must be strings.</p>
 </blockquote>
-<p>There is also a <code>prompt</code> function under <a href="https://docs.rs/rubric/0.11.1/rubric/helpers/cli/fn.prompt.html"><code>helpers::cli::prompt</code></a> which will loop until it gets a valid value, but it does not have the same type enforcement feature that <code>prompt!</code> has; it only returns strings.</p>
+<h1><a class="header" href="#dropbox" id="dropbox">Dropbox</a></h1>
+<p>A dropbox is a place to send submissions after they're done being graded. It recieves submissions in JSON format and writes them to a CSV file for review by the instructor.</p>
+<p>The dropbox is a web server run by you, the instructor. It should be run on a publicly available server with a static IP or DNS name. The web server comes preconfigured, all you need to do is give it an environment to run it.</p>
+<p>You can open the dropbox by calling the <code>dropbox::open(PORT)</code> method, where <code>PORT</code> is a valid port number.</p>
+<pre><pre class="playground"><code class="language-rust">extern crate rubric;
+use rubric::dropbox;
+
+fn main() {
+    // Runs the dropbox on port 8080
+    dropbox::open(8080);
+}
+</code></pre></pre>
+<p>You'll see the following output</p>
+<pre><code>Dropbox is open! accepting POST requests to /submit
+�🔧 Configured for development.
+    =&gt; address: 0.0.0.0
+    =&gt; port: 8080
+    =&gt; log: normal
+    =&gt; workers: 24
+    =&gt; secret key: generated
+    =&gt; limits: forms = 32KiB
+    =&gt; keep-alive: 5s
+    =&gt; tls: disabled
+🛰  Mounting /:
+    =&gt; GET / (return_ok)
+    =&gt; POST /submit application/json (accept_submission)
+��� Rocket has launched from http://0.0.0.0:8080       
+</code></pre>
+<p>The home route (<code>/</code>) should return an OK status, but no content. If you visit the url of your webserver, you should get a blank web page. This is good, it means everything is working properly.</p>
+<h2><a class="header" href="#submitting-to-the-dropbox" id="submitting-to-the-dropbox">Submitting to the dropbox</a></h2>
+<p>The <code>post_json()</code> method in the <code>helpers::web</code> module is made with the dropbox in mind. After creating and grading a Submission, just pass it and the url of your dropbox to send the submission.</p>
+<pre><pre class="playground"><code class="language-rust">extern crate rubric;
+use rubric::{Submission, dropbox, helpers::web};
+
+fn main() {
+    let submission = Submission::new();
+    
+    // grade...
+
+    // assuming your dropbox is running at this url
+    let url = &quot;http://my.dns.name.or.ip.com:8080/submit&quot;;
+
+    // Submit and give some feedback
+    match web::post_json(&amp;url, &amp;sub) {
+        Ok(_)  =&gt; println!(&quot;Submission recorded!&quot;),
+        Err(e) =&gt; println!(&quot;Something went wrong! {}&quot;, e),
+    };
+}
+</code></pre></pre>
 
                     </main>
 

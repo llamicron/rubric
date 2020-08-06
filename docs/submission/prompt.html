@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="../rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="../submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../submission/prompt.html" class="active"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction and Setup</a></li><li class="chapter-item expanded "><a href="../rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="../rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="../submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../submission/prompt.html" class="active"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="../dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -161,10 +161,10 @@
 <pre><pre class="playground"><code class="language-rust">fn main() {
     // Asks for something, enforces the correct type
     let name = prompt!(&quot;Name: &quot;, String);
-    // Will crash if they enter anything but a number
+    // Will loop until they enter a number
     let age = prompt!(&quot;Age: &quot;, usize);
-    // Will crash if they don't enter a valid IPv4 address
-    let ip = prompt!(&quot;IP Addr: &quot;, std::net::IPv4Addr);
+    // Will loop until they enter a valid IPv4 address
+    let ip = prompt!(&quot;IP Addr: &quot;, std::net::Ipv4Addr);
 }
 </code></pre></pre>
 <p>You can combine this with the <code>data!</code> macro to easily collect information from the user and encapsulate it in a submission.</p>
@@ -178,7 +178,6 @@
 <blockquote>
 <p>Note: because <code>TestData</code> must contain string values, you lose out on the type enforcement that <code>prompt!</code> provides. This is an unfortunate side effect of the <code>TestData</code> type; all values must be strings.</p>
 </blockquote>
-<p>There is also a <code>prompt</code> function under <a href="https://docs.rs/rubric/0.11.1/rubric/helpers/cli/fn.prompt.html"><code>helpers::cli::prompt</code></a> which will loop until it gets a valid value, but it does not have the same type enforcement feature that <code>prompt!</code> has; it only returns strings.</p>
 
                     </main>
 
@@ -190,6 +189,10 @@
                             </a>
                         
 
+                        
+                            <a rel="next" href="../dropbox.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -204,6 +207,10 @@
                     </a>
                 
 
+                
+                    <a rel="next" href="../dropbox.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                 
             </nav>
 
