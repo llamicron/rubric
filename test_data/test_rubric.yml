@@ -2,7 +2,8 @@
 name: Test Rubric
 desc: here's a short description
 total: 80
-deadline: 2020-08-05 23:25:00
+# TODO: My unit tests will start to fail in 75 years
+deadline: 2095-08-05 23:25:00
 
 criteria:
   First Criterion:

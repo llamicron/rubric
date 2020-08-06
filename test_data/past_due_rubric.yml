@@ -1,0 +1,7 @@
+name: Past Due
+desc: This rubric is past due
+deadline: 2001-02-22 00:00:00
+
+criteria:
+  "Test criterion":
+    worth: 0

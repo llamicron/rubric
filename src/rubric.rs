@@ -205,6 +205,13 @@ impl Rubric {
         self.criteria.len()
     }
 
+    pub fn past_due(&self) -> bool {
+        if let Some(deadline) = self.deadline {
+            return deadline.timestamp() < Local::now().timestamp();
+        }
+        false
+    }
+
     /// Prints the rubric name, then each criteria, only taking
     /// one line each. It's a shortened version of `println!("{}", rubric)`.
     pub fn print_short(&self) {
@@ -361,5 +368,15 @@ mod tests {
         "#;
 
         assert!(raw.parse::<Rubric>().is_ok());
+    }
+
+    #[test]
+    fn test_rubric_past_due() {
+        let ok_rubric = Rubric::from_yaml(yaml_data()).unwrap();
+        assert!(!ok_rubric.past_due());
+
+        let yaml = yaml!("../test_data/past_due_rubric.yml").unwrap();
+        let old_rubric = Rubric::from_yaml(yaml).unwrap();
+        assert!(old_rubric.past_due());
     }
 }

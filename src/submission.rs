@@ -6,10 +6,12 @@ use std::collections::HashMap;
 // external uses
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
+use reqwest::blocking::Response;
 
 // internal uses
 use crate::results_file::AsCsv;
 use crate::rubric::Rubric;
+use crate::helpers::web::post_json;
 
 const DEFAULT_TIME_FORMAT: &'static str = "%F %a %T %:z";
 
@@ -185,6 +187,12 @@ impl Submission {
                 self.fail(format!("{}: {}", crit.name, crit.failure_message()));
             }
         }
+    }
+
+    /// Posts the submission to the URL in JSON format. Meant to be sent
+    /// to a dropbox. Really just calls [`helpers::web::post_json`](rubric::helpers::web::post_json).
+    pub fn submit(&self, url: &str) -> Result<Response, reqwest::Error> {
+        post_json(url, self)
     }
 
     /// Overrides the default timestamp format.
