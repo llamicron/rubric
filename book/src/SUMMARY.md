@@ -1,6 +1,7 @@
 # Rubric
 
-[Introduction and Setup](./introduction.md)
+[Setup](./setup.md)
+[Overview](./overview.md)
 - [Rubrics](./rubric/home.md)
     - [Rubric Specification](./rubric/spec.md)
     - [Criteria Tests](./rubric/tests.md)

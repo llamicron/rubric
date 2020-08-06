@@ -1,6 +1,8 @@
-use rubric::dropbox;
+use rubric::{Rubric, yaml};
 
 fn main() {
-    // Runs the dropbox on port 8080
-    dropbox::open(8080);
+    let yaml = yaml!("../test_data/test_rubric.yml").unwrap();
+    let rubric = Rubric::from_yaml(&yaml).unwrap();
+
+    println!("{:#?}", rubric.deadline);
 }

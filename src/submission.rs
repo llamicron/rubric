@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 use crate::results_file::AsCsv;
 use crate::rubric::Rubric;
 
+const DEFAULT_TIME_FORMAT: &'static str = "%F %a %T %:z";
 
 
 /// A type alias to `HashMap<String, String>`
@@ -97,7 +98,7 @@ impl Submission {
             data: TestData::new(),
             passed: Vec::new(),
             failed: Vec::new(),
-            timestamp_format: String::from("%Y-%m-%d %a %T %:z")
+            timestamp_format: String::from(DEFAULT_TIME_FORMAT)
         }
     }
 
@@ -187,7 +188,7 @@ impl Submission {
     }
 
     /// Overrides the default timestamp format.
-    /// The default is `%Y-%m-%d %a %T %:z` which gives
+    /// The default is `%F %a %T %:z` which gives
     /// ```text
     /// 2001-08-04 Thu 00:34:60 +09:30
     /// ```
@@ -362,7 +363,7 @@ mod tests {
     #[test]
     fn test_custom_timestamp_format() {
         let mut sub = Submission::new();
-        assert_eq!(sub.timestamp_format, "%Y-%m-%d %a %T %:z");
+        assert_eq!(sub.timestamp_format, DEFAULT_TIME_FORMAT);
         sub.set_timestamp_format("some other format");
         assert_eq!(sub.timestamp_format, "some other format");
     }

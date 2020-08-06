@@ -1,5 +1,7 @@
 name: Git Lab
 desc: A lab to teach git
+deadline: 2020-08-07 23:59:59
+
 
 criteria:
   "Git installed":

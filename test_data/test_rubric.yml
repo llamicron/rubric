@@ -2,6 +2,7 @@
 name: Test Rubric
 desc: here's a short description
 total: 80
+deadline: 2020-08-05 23:25:00
 
 criteria:
   First Criterion:

@@ -32,6 +32,7 @@ use std::fmt;
 // external uses
 use prettytable::{Table, row, cell};
 use ansi_term::Color;
+use chrono::{DateTime, Local};
 
 // internal uses
 use crate::yaml::RubricYaml;
@@ -91,7 +92,8 @@ pub struct Rubric {
     pub name: String,
     pub desc: Option<String>,
     pub criteria: Vec<Criterion>,
-    pub total: isize
+    pub total: isize,
+    pub deadline: Option<DateTime<Local>>
 }
 
 impl Rubric {
@@ -267,12 +269,28 @@ impl FromStr for Rubric {
         }
 
 
+        let mut deadline: Option<DateTime<Local>> = None;
+        if let Some(deadline_str) = rubric_yaml.deadline {
+            // Add the local timezone to the end so they don't have to specify
+            let added_timezone = format!("{} {}", deadline_str, Local::now().format("%z"));
+            // Parse what they entered + timezone into a DateTime
+            let parsed_deadline = DateTime::parse_from_str(&added_timezone, "%F %T %z").expect("Bad time format");
+            // Convert from DateTime<FixedOffset> to DateTime<Local>
+            deadline = Some(DateTime::from(parsed_deadline));
+
+            if deadline.unwrap().timestamp() < Local::now().timestamp() {
+                eprintln!("Warning! Deadline is in the past!");
+            }
+        }
+
+
         // Construct a rubric
         Ok(Rubric {
             name: rubric_yaml.name,
             desc: rubric_yaml.desc,
             criteria: criteria,
-            total: criteria_total
+            total: criteria_total,
+            deadline: deadline
         })
     }
 }
