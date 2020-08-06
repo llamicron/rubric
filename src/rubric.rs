@@ -93,7 +93,9 @@ pub struct Rubric {
     pub desc: Option<String>,
     pub criteria: Vec<Criterion>,
     pub total: isize,
-    pub deadline: Option<DateTime<Local>>
+    pub deadline: Option<DateTime<Local>>,
+    pub allow_late: bool,
+    pub late_penalty: isize,
 }
 
 impl Rubric {
@@ -290,14 +292,15 @@ impl FromStr for Rubric {
             }
         }
 
-
         // Construct a rubric
         Ok(Rubric {
             name: rubric_yaml.name,
             desc: rubric_yaml.desc,
             criteria: criteria,
             total: criteria_total,
-            deadline: deadline
+            deadline: deadline,
+            allow_late: rubric_yaml.allow_late.unwrap_or(true),
+            late_penalty: rubric_yaml.late_penalty.unwrap_or(0)
         })
     }
 }

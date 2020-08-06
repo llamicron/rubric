@@ -181,8 +181,22 @@ impl Submission {
     /// Tests a submission against a list of criterion
     pub fn grade_against(&mut self, rubric: &mut Rubric) {
         if rubric.past_due() {
+            // Submission is late, mark it as such
             self.late = true;
+            // And subtract the late penalty
+            self.grade -= rubric.late_penalty as i16;
+            self.fail(format!("Late submission (-{})", rubric.late_penalty));
+            // If they disallow late submission
+            if !rubric.allow_late {
+                // Inform the student and return early without grading
+                eprintln!("Deadline ({}) has passed.", rubric.deadline.unwrap());
+                eprintln!("Your instructor has chosen to not allow late submission");
+                eprintln!("This submission will be recorded, but with a grade of 0");
+                self.grade = 0;
+                return;
+            }
         }
+
         for crit in &mut rubric.sorted().into_iter() {
             crit.test_with_data(&self.data);
 
@@ -380,5 +394,18 @@ mod tests {
         assert_eq!(sub.timestamp_format, DEFAULT_TIME_FORMAT);
         sub.set_timestamp_format("some other format");
         assert_eq!(sub.timestamp_format, "some other format");
+    }
+
+    #[test]
+    fn test_grading_past_due() {
+        let yaml = yaml!("../test_data/past_due_rubric.yml").unwrap();
+        let mut past_due_rubric = Rubric::from_yaml(yaml).unwrap();
+
+        let mut sub = Submission::new();
+
+        // This rubric will allow late submission, with a 5 point penalty
+        assert_eq!(sub.grade, 0);
+        sub.grade_against(&mut past_due_rubric);
+        assert_eq!(sub.grade, -5);
     }
 }

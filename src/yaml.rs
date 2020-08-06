@@ -43,7 +43,9 @@ pub struct RubricYaml {
     pub desc: Option<String>,
     pub criteria: HashMap<String, CriterionYaml>,
     pub total: Option<isize>,
-    pub deadline: Option<String>
+    pub deadline: Option<String>,
+    pub allow_late: Option<bool>,
+    pub late_penalty: Option<isize>
 }
 
 /// A yaml representation of [`Criterion`](crate::criterion::Criterion)

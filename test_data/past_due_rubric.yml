@@ -1,6 +1,8 @@
 name: Past Due
 desc: This rubric is past due
 deadline: 2001-02-22 00:00:00
+allow_late: true
+late_penalty: 5
 
 criteria:
   "Test criterion":
