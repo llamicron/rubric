@@ -8,7 +8,7 @@ mod tests;
 use tests::*;
 
 // Bring in the needed items from the rubric crate
-use rubric::{Submission, Rubric, helpers::web};
+use rubric::{Submission, Rubric, helpers::web, dropbox};
 
 
 
@@ -42,23 +42,23 @@ fn load_rubric() -> Rubric {
 }
 
 
-// This will run the submission server only if
-// you run the program with the "server" argument.
+// This will open the dropbox only if
+// you run the program with the "dropbox" argument.
 //
 // You'll need to run this on a publicly available server,
-// and each students grader will submit to this server.
-fn run_submission_server() {
+// and each students grader will submit to this web server.
+fn open_dropbox() {
     // Collect command line args
     let args: Vec<String> = env::args().collect();
-    if args.len() > 1 && args[1] == "server" {
-        Submission::server(8080)
+    if args.len() > 1 && args[1] == "dropbox" {
+        dropbox::open();
     }
 }
 
 
 fn main() {
-    // This won't run unless we use the "server" argument
-    run_submission_server();
+    // This won't run unless we use the "dropbox" argument
+    open_dropbox();
 
     // Use the functions from above
     let mut sub = create_submission();
@@ -80,7 +80,7 @@ fn main() {
     // Print the rubric to show the student the results
     println!("{}", rubric);
 
-    // after grading, we need to submit to the submission server
+    // after grading, we need to submit to the dropbox
     // we can use one of the web helpers
     let url = format!("http://localhost:8080/submit");
     let result = web::post_json(&url, &sub);

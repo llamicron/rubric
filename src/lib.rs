@@ -23,10 +23,10 @@ pub mod results_file;
 pub mod submission;
 pub mod criterion;
 pub mod helpers;
+pub mod dropbox;
 pub mod rubric;
 
 // Private modules
-mod server;
 mod error;
 mod yaml;
 

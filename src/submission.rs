@@ -10,7 +10,6 @@ use serde::{Deserialize, Serialize};
 // internal uses
 use crate::results_file::AsCsv;
 use crate::rubric::Rubric;
-use crate::server;
 
 
 
@@ -195,28 +194,6 @@ impl Submission {
     /// This timestamp format is human readable and also sortable in a spreadsheet.
     pub fn set_timestamp_format(&mut self, new_format: &str) {
         self.timestamp_format = String::from(new_format);
-    }
-
-    /// Spins up a webserver to accept submission.
-    ///
-    /// Accepted submissions will be written to a [`ResultsFile`](crate::results_file::ResultsFile).
-    /// The web server will run on the provided port.
-    ///
-    /// The results file will be placed in the directory you execute the code in,
-    /// and be called `submissions.csv`.
-    ///
-    /// The best way to submit a submission to the server that this function starts is
-    /// to call [`post_json`](crate::helpers::web::post_json) from the web helpers module and
-    /// pass it the url that this server is accessible on, and a submission. It will convert
-    /// it to json for you.
-    ///
-    /// Support for custom results file locations is coming...
-    /// ```no_run
-    /// use rubric::Submission;
-    /// Submission::server(8080);
-    /// ```
-    pub fn server(port: u16) {
-        server::run(port);
     }
 }
 

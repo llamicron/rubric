@@ -1,3 +1,14 @@
+//! A dropbox to collect submissions
+//! 
+//! This is a webserver that accepts Submissions in JSON format
+//! and writes them to a CSV file.
+//! 
+//! You should run this on a publicly available server and be sure 
+//! the correct ports are open. You can run this on whatever port you'd like,
+//! as long as you have permission. The `/submit` route is meant to accept a Submission.
+//! See the [`helpers::web::post_json`](helpers::web::post_json) function for more info on
+//! how to send a submission to the dropbox.
+
 // external uses
 use rocket::Config;
 use rocket::http::Status;
@@ -35,11 +46,8 @@ fn accept_submission(submission: Json<Submission>) -> Status {
     }
 }
 
-/// Spins up a submission server on the given port.
-///
-/// You probably shouldn't call this directly, instead call
-/// the `server` method on [`Submission`](crate::submission::Submission).
-pub fn run(port: u16) -> LaunchError {
+/// Opens the dropbox for submissions on the given port.
+pub fn open(port: u16) -> LaunchError {
     // If debug
     #[cfg(debug_assertions)]
     let builder = Config::build(Environment::Development);
@@ -51,9 +59,10 @@ pub fn run(port: u16) -> LaunchError {
         .address("0.0.0.0")
         .port(port)
         .finalize()
-        .expect("Could not build submission server");
+        .expect("Could not build dropbox server");
 
 
+    println!("Dropbox is open! accepting POST requests to /submit");
     return rocket::custom(config)
         .mount("/", routes![return_ok, accept_submission])
         .launch();
