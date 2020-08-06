@@ -16,7 +16,7 @@ In the `Cargo.toml` file that cargo creates for you, add this crate as a depende
 ```toml
 # ...
 [dependencies]
-rubric = "0.11" # or latest version
+rubric = "0.12" # or latest version
 ```
 
 In your `main.rs`, delcare the crate with the `#[macro_use]` configuration flag. You can import just the items you need (recommended), or import everything with `*`.

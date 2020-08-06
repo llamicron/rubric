@@ -51,7 +51,7 @@ fn open_dropbox() {
     // Collect command line args
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 && args[1] == "dropbox" {
-        dropbox::open();
+        dropbox::open(8080);
     }
 }
 
@@ -82,7 +82,7 @@ fn main() {
 
     // after grading, we need to submit to the dropbox
     // we can use one of the web helpers
-    let url = format!("http://localhost:8080/submit");
+    let url = "http://localhost:8080/submit";
     let result = web::post_json(&url, &sub);
     if result.is_ok() {
         println!("Success! Submission recorded");
