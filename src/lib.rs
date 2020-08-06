@@ -3,6 +3,7 @@
 //! For complete examples, see the [examples](https://github.com/llamicron/rubric/tree/master/examples)
 //! directory on Github.
 
+
 // External crates
 #![feature(proc_macro_hygiene, decl_macro, stmt_expr_attributes)]
 #[macro_use] extern crate rocket;
@@ -17,32 +18,25 @@ extern crate chrono;
 extern crate serde;
 extern crate regex;
 
-// Public modules
-pub mod criterion_builder;
-pub mod results_file;
-pub mod submission;
-pub mod criterion;
-pub mod helpers;
-pub mod dropbox;
-pub mod rubric;
+
 
 // Private modules
 mod error;
 mod yaml;
 
 
-// Public uses
-pub use helpers::{web, fs, system, cli};
-pub use submission::Submission;
-pub use submission::TestData;
+
+
+// Public modules
+pub mod helpers;
+pub mod dropbox;
+pub mod rubric;
+
+// Public Re-exports
 pub use self::rubric::Rubric;
-pub use criterion::Criterion;
-pub use results_file::AsCsv;
-pub use error::Error;
+pub use self::dropbox::{open, Submission, TestData};
+pub use error::{Result, Error};
 
-
-// private uses
-use results_file::ResultsFile;
 
 
 // External testing crates

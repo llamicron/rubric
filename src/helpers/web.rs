@@ -77,7 +77,7 @@ pub fn get(url: &str) -> Result<Response, reqwest::Error> {
 /// the response was successful. Just saves a few lines of code.
 ///
 /// ```rust
-/// # use rubric::web;
+/// # use rubric::helpers::web;
 ///
 /// let url = "https://postman-echo.com/get";
 /// assert!(web::site_responds(url));
@@ -178,7 +178,7 @@ pub fn get_ip() -> Option<Ipv4Addr> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::submission::Submission;
+    use crate::dropbox::Submission;
     use crate::data;
 
 

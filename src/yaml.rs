@@ -17,7 +17,7 @@ use std::collections::HashMap;
 use serde::Deserialize;
 
 // internal uses
-use crate::Criterion;
+use crate::rubric::Criterion;
 
 /// This is an important macro. It reads data from a file using
 /// the include_bytes! macro. When compiling for debug, this will read

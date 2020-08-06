@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use reqwest::blocking::Response;
 
 // internal uses
-use crate::results_file::AsCsv;
+use crate::dropbox::results_file::AsCsv;
 use crate::rubric::Rubric;
 use crate::helpers::web::post_json;
 
@@ -341,7 +341,7 @@ mod tests {
 
     #[test]
     fn test_grade_against_rubric() {
-        let yaml = yaml!("../test_data/test_rubric.yml").unwrap();
+        let yaml = yaml!("../../test_data/test_rubric.yml").unwrap();
         let mut rubric = Rubric::from_yaml(yaml).unwrap();
         let test = |_: &TestData| true;
         attach! {
@@ -403,7 +403,7 @@ mod tests {
 
     #[test]
     fn test_grading_past_due() {
-        let yaml = yaml!("../test_data/past_due_rubric.yml").unwrap();
+        let yaml = yaml!("../../test_data/past_due_rubric.yml").unwrap();
         let mut past_due_rubric = Rubric::from_yaml(yaml).unwrap();
 
         let mut sub = Submission::new();

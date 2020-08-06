@@ -10,7 +10,7 @@ use std::io::{self, Write};
 ///
 /// ## Example Implementation
 /// ```rust
-/// use rubric::results_file::AsCsv;
+/// use rubric::dropbox::AsCsv;
 ///
 /// // A dummy struct so we can impl AsCsv
 /// pub struct Point {
@@ -74,7 +74,7 @@ impl ResultsFile {
     ///
     /// ## Example
     /// ```rust
-    /// use rubric::results_file::ResultsFile;
+    /// use rubric::dropbox::ResultsFile;
     ///
     /// let rf = ResultsFile::new("my_results_file.csv", "").expect("Couldn't create results file");
     /// # use std::fs::remove_file;
@@ -112,7 +112,7 @@ impl ResultsFile {
     ///
     /// ## Example
     /// ```rust
-    /// # use rubric::results_file::ResultsFile;
+    /// # use rubric::dropbox::ResultsFile;
     /// let rf = ResultsFile::new("file.csv", "123").unwrap();
     ///
     /// assert_eq!(rf.length(), 4);
@@ -131,7 +131,7 @@ impl ResultsFile {
     ///
     /// ## Example
     /// ```rust
-    /// # use rubric::results_file::ResultsFile;
+    /// # use rubric::dropbox::ResultsFile;
     /// let mut rf = ResultsFile::new("append.csv", "").unwrap();
     ///
     /// assert_eq!(rf.length(), 1);
@@ -156,7 +156,7 @@ impl ResultsFile {
     /// [ascsv]: crate::results_file::AsCsv
     /// ## Example
     /// ```rust
-    /// # use rubric::results_file::{ResultsFile, AsCsv};
+    /// # use rubric::dropbox::{ResultsFile, AsCsv};
     /// # struct Point { x: i32, y: i32 };
     /// # impl AsCsv for Point {
     /// #     fn as_csv(&self) -> String { format!("{},{}", self.x, self.y) }

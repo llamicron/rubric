@@ -9,6 +9,15 @@
 //! See the [`helpers::web::post_json`](helpers::web::post_json) function for more info on
 //! how to send a submission to the dropbox.
 
+// Re exports to be available from this module
+pub mod results_file;
+pub mod submission;
+
+pub use results_file::{AsCsv, ResultsFile};
+pub use submission::{Submission, TestData};
+
+
+
 // external uses
 use rocket::Config;
 use rocket::http::Status;
@@ -16,9 +25,6 @@ use rocket::error::LaunchError;
 use rocket::config::Environment;
 use rocket_contrib::json::Json;
 
-// internal uses
-use crate::submission::Submission;
-use crate::ResultsFile;
 
 
 /// Just a test route so you can make sure the server is running

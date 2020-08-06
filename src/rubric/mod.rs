@@ -25,6 +25,14 @@
 //! ```
 //! See the [YAML specification](https://github.com/llamicron/rubric/wiki/YAML-Specification) for more info.
 
+// Re exports to be available from this module
+pub mod criterion;
+pub mod criterion_builder;
+
+pub use criterion::Criterion;
+pub use criterion_builder::CriterionBuilder;
+
+
 // std uses
 use std::str::FromStr;
 use std::fmt;
@@ -36,8 +44,9 @@ use chrono::{DateTime, Local};
 
 // internal uses
 use crate::yaml::RubricYaml;
-use crate::Criterion;
 use crate::error::{Result, Error};
+
+
 
 /// Attaches tests to criteria in a rubric.
 ///
@@ -82,7 +91,7 @@ macro_rules! attach {
 /// use rubric::{Rubric, yaml};
 ///
 /// // Relative path to the yaml file
-/// let yaml = yaml!("../test_data/test_rubric.yml").expect("Couldn't load yaml");
+/// let yaml = yaml!("../../test_data/test_rubric.yml").expect("Couldn't load yaml");
 /// let mut rubric = Rubric::from_yaml(yaml).expect("Bad yaml!");
 ///
 /// assert_eq!(rubric.name, "Test Rubric");
@@ -109,7 +118,7 @@ impl Rubric {
     /// ## Example
     /// ```rust
     /// use rubric::{Rubric, yaml};
-    /// let yaml = yaml!("../test_data/test_rubric.yml").expect("Couldn't load yaml");
+    /// let yaml = yaml!("../../test_data/test_rubric.yml").expect("Couldn't load yaml");
     /// // If this is an Err, it will panic with the line/col of the yaml err
     /// let mut rubric = Rubric::from_yaml(yaml).expect("Bad yaml!");
     ///
@@ -133,7 +142,7 @@ impl Rubric {
     ///
     /// ```rust
     /// # use rubric::{Rubric, yaml};
-    /// # let yaml = yaml!("../test_data/test_rubric.yml").expect("Couldn't load yaml");
+    /// # let yaml = yaml!("../../test_data/test_rubric.yml").expect("Couldn't load yaml");
     /// # let mut rubric = Rubric::from_yaml(yaml).expect("Bad yaml!");
     /// // `rubric` contains a criterion with the stub 'first-crit`
     /// let criterion = rubric.get("first-crit");
@@ -325,7 +334,7 @@ mod tests {
     use crate::{yaml, TestData};
 
     fn yaml_data() -> &'static str {
-        yaml!("../test_data/test_rubric.yml").unwrap()
+        yaml!("../../test_data/test_rubric.yml").unwrap()
     }
 
     #[test]
@@ -378,7 +387,7 @@ mod tests {
         let ok_rubric = Rubric::from_yaml(yaml_data()).unwrap();
         assert!(!ok_rubric.past_due());
 
-        let yaml = yaml!("../test_data/past_due_rubric.yml").unwrap();
+        let yaml = yaml!("../../test_data/past_due_rubric.yml").unwrap();
         let old_rubric = Rubric::from_yaml(yaml).unwrap();
         assert!(old_rubric.past_due());
     }

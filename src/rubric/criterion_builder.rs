@@ -1,5 +1,5 @@
 // internal uses
-use crate::{TestData, Criterion};
+use crate::{TestData, rubric::Criterion};
 
 
 /// A builder struct that builds a Criterion. You should create one
@@ -20,7 +20,7 @@ impl CriterionBuilder {
     /// Creates a new CriterionBuilder
     ///
     /// ```rust
-    /// # use rubric::criterion_builder::CriterionBuilder;
+    /// # use rubric::rubric::CriterionBuilder;
     /// let builder = CriterionBuilder::new("my crit").build();
     /// ```
     pub fn new(name: &str) -> Self {
@@ -42,7 +42,7 @@ impl CriterionBuilder {
     /// also be unique among criteria.
     ///
     /// ```rust
-    /// # use rubric::criterion_builder::CriterionBuilder;
+    /// # use rubric::rubric::CriterionBuilder;
     /// let crit = CriterionBuilder::new("my crit")
     ///     .stub("my-stub")
     ///     .build();
@@ -61,7 +61,7 @@ impl CriterionBuilder {
     /// Attaches a test.
     ///
     /// ```rust
-    /// # use rubric::criterion_builder::CriterionBuilder;
+    /// # use rubric::rubric::CriterionBuilder;
     /// # use rubric::TestData;
     /// fn my_test(_: &TestData) -> bool {
     ///     true
@@ -80,7 +80,7 @@ impl CriterionBuilder {
     /// Sets the messages of a criterion.
     ///
     /// ```rust
-    /// # use rubric::criterion_builder::CriterionBuilder;
+    /// # use rubric::rubric::CriterionBuilder;
     /// let crit = CriterionBuilder::new("my crit")
     ///     .messages("passed", "failed")
     ///     .build();
@@ -97,7 +97,7 @@ impl CriterionBuilder {
     /// relatively short.
     ///
     /// ```rust
-    /// # use rubric::criterion_builder::CriterionBuilder;
+    /// # use rubric::rubric::CriterionBuilder;
     /// let crit = CriterionBuilder::new("Git installed")
     ///     .desc("Tests that Git is installed")
     ///     .build();
@@ -117,7 +117,7 @@ impl CriterionBuilder {
     /// the criterion can't be printed.
     ///
     /// ```rust
-    /// # use rubric::criterion_builder::CriterionBuilder;
+    /// # use rubric::rubric::CriterionBuilder;
     /// let crit = CriterionBuilder::new("my crit")
     ///     .hide(true)
     ///     .build();
@@ -133,7 +133,7 @@ impl CriterionBuilder {
     /// name. It will lowercase it, then replace all whitespace with dashes.
     ///
     /// ```rust
-    /// # use rubric::criterion_builder::CriterionBuilder;
+    /// # use rubric::rubric::CriterionBuilder;
     /// let crit = CriterionBuilder::new("my crit")
     ///     // more confiuration options...
     ///     .build();

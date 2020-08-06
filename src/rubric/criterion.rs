@@ -19,7 +19,7 @@ use ansi_term::Color::{Green, Red, White};
 
 // internal uses
 use crate::TestData;
-use crate::criterion_builder::CriterionBuilder;
+use crate::rubric::CriterionBuilder;
 
 
 /// A single Criterion
@@ -65,7 +65,7 @@ impl Criterion {
     /// ## Example
     /// **A basic criterion**
     /// ```rust
-    /// use rubric::Criterion;
+    /// use rubric::rubric::Criterion;
     ///
     /// let c = Criterion::new("my crit").build();
     /// assert_eq!(c.name, "my crit");
@@ -75,13 +75,13 @@ impl Criterion {
     }
 
     /// Returns the success message, ie. the first message in the
-    /// [`messages`](crate::criterion::Criterion::messages) tuple.
+    /// [`messages`](crate::rubric::criterion::Criterion::messages) tuple.
     pub fn success_message(&self) -> &String {
         &self.messages.0
     }
 
     /// Returns the failure message, ie. the second message in the
-    /// [`messages`](crate::criterion::Criterion::messages) tuple.
+    /// [`messages`](crate::rubric::criterion::Criterion::messages) tuple.
     pub fn failure_message(&self) -> &String {
         &self.messages.1
     }
@@ -110,7 +110,7 @@ impl Criterion {
 
     /// Runs the criterions test and assigns the result to `criterion.status`.
     ///
-    /// This is equivilent to running [`test_with_data`](crate::criterion::Criterion::test_with_data) with
+    /// This is equivilent to running [`test_with_data`](crate::rubric::criterion::Criterion::test_with_data) with
     /// an empty `TestData`.
     ///
     /// You shouldn't call this method directly, instead grade an entire
@@ -151,7 +151,7 @@ impl Criterion {
     }
 
 
-    /// Same as [`status_message`](crate::criterion::Criterion::status_message), but
+    /// Same as [`status_message`](crate::rubric::criterion::Criterion::status_message), but
     /// the success message will be colored green and the failure message red.
     pub fn colored_status_message(&self) -> String {
         if self.status == Some(true) {

@@ -39,7 +39,7 @@ pub struct Version {
 impl Version {
     /// Returns the installed version of the program provided.
     /// ```rust
-    /// use rubric::system::{Version, Program};
+    /// use rubric::helpers::system::{Version, Program};
     ///
     /// // Tests that git is installed
     /// assert!(Version::of(Program::Git).is_some());
@@ -58,7 +58,7 @@ impl Version {
     /// Makes a custom version number. Mostly use to compare to another
     ///
     /// ```rust
-    /// # use rubric::system::Version;
+    /// # use rubric::helpers::system::Version;
     /// #
     /// let v = Version::custom(4, 5, 6);
     /// assert_eq!(v.major(), 4);
