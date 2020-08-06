@@ -72,7 +72,7 @@ use crate::error::{Result, Error};
 /// ```
 #[macro_export]
 macro_rules! attach {
-    ( $rubric:ident, $($stub:literal => $func:ident),* ) => {
+    ( $rubric:ident, $($stub:literal => $func:path),* ) => {
         $(
             if let Some(c) = $rubric.get($stub) {
                 c.attach(Box::new($func));

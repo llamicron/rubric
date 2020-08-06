@@ -33,6 +33,8 @@ pub mod dropbox;
 pub mod rubric;
 
 // Public Re-exports
+// These are commonly imported, so they're at the top
+// also i don't like rubric::rubric::Rubric
 pub use self::rubric::Rubric;
 pub use self::dropbox::{open, Submission, TestData};
 pub use error::{Result, Error};
