@@ -1,6 +1,8 @@
 name: Git Lab
 desc: A lab to teach git
-deadline: 2020-08-07 23:59:59
+
+deadline: 2020-06-07 23:59:59
+allow_late: false
 
 
 criteria:

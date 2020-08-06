@@ -80,6 +80,7 @@ fn main() {
     // Print the rubric to show the student the results
     println!("{}", rubric);
 
+
     // after grading, we need to submit to the dropbox
     // we can use one of the web helpers
     let url = "http://localhost:8080/submit";

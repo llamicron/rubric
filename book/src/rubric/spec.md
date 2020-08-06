@@ -18,6 +18,7 @@ Here is a full rubric with everything specified, with comments for more informat
 
 
 ```yml
+# -- Rubric Details --
 # Required name
 name: My rubric
 # Optional description. Gets shown to the student when grading
@@ -27,6 +28,33 @@ desc: Description of my rubric
 # worth to all criteria
 total: 100
 
+
+
+
+
+# -- Deadline verification --
+# All of these are optional
+#
+# The optional submission deadline. Must be in this format
+#   YYYY-MM-DD HH:MM:SS
+# It will use the current local timezone.
+# If a submission is created after this time, the late flag will be true.
+# If you enter a deadline from the past, you will be warned during compilation, but
+# compilation will continue.
+deadline: 2020-05-21 23:59:59
+# If this is set to false, the submission will always have a 
+# grade of 0 unless manually changed. Defaults to true (allowing late submission).
+# A submission *can* still be submitted if this is false, but its grade will be 0
+# and the late flag will be true
+allow_late: true
+# This amount will be subtracted from the grade if the submission is late
+late_penalty: 10
+
+
+
+
+
+# -- Criteria --
 criteria:
   "First criterion":
     # Can be any string, as long as it's unique.

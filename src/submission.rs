@@ -13,9 +13,6 @@ use crate::results_file::AsCsv;
 use crate::rubric::Rubric;
 use crate::helpers::web::post_json;
 
-const DEFAULT_TIME_FORMAT: &'static str = "%F %a %T %:z";
-
-
 /// A type alias to `HashMap<String, String>`
 ///
 /// This is the data type that all criteria accept,
@@ -52,6 +49,11 @@ macro_rules! data (
      };
 );
 
+// This is a function and not a const so serde can use it
+fn default_timestamp_format() -> String {
+    String::from("%F %a %T %:z")
+}
+
 
 /// A submission is a bundle of data that represents
 /// one student's submission. They will do some sort of work
@@ -69,16 +71,16 @@ pub struct Submission {
     /// Extra data attached to the submission.
     /// Leave it empty if you don't need it
     pub data: TestData,
+    /// If the submission is late or not
+    pub late: bool,
     /// The criteria (name) that this submission passed
     pub passed: Vec<String>,
     /// The citeria (name) that this submission failed
     pub failed: Vec<String>,
     /// How to format the timestamp.
     /// See https://docs.rs/chrono/0.4.13/chrono/format/strftime/index.html for more options
-    #[serde(skip)]
+    #[serde(default = "default_timestamp_format")]
     timestamp_format: String,
-    /// If the submission is late or not
-    late: bool,
 }
 
 impl Submission {
@@ -102,7 +104,7 @@ impl Submission {
             data: TestData::new(),
             passed: Vec::new(),
             failed: Vec::new(),
-            timestamp_format: String::from(DEFAULT_TIME_FORMAT),
+            timestamp_format: default_timestamp_format(),
             late: false
         }
     }
@@ -260,9 +262,10 @@ impl AsCsv for Submission {
     /// Returns the submission's values in csv format. The `TestData` atttached will be
     /// sorted alphabetically by key.
     fn as_csv(&self) -> String {
+        let time = format!("{}", self.time.format(&self.timestamp_format));
         format!(
             "{},{},{},{},{},{}",
-            self.time.format(&self.timestamp_format),
+            time,
             self.late,
             self.grade,
             self.passed.join(";"),
@@ -391,7 +394,9 @@ mod tests {
     #[test]
     fn test_custom_timestamp_format() {
         let mut sub = Submission::new();
-        assert_eq!(sub.timestamp_format, DEFAULT_TIME_FORMAT);
+        assert_eq!(sub.timestamp_format, default_timestamp_format());
+        assert!(format!("{}", sub.time.format(&sub.timestamp_format)).len() > 0);
+        
         sub.set_timestamp_format("some other format");
         assert_eq!(sub.timestamp_format, "some other format");
     }
