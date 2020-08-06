@@ -14,15 +14,15 @@ use rubric::{TestData, helpers::{fs, system, web}};
 // We're using a few helpers functions from the `helpers` modules
 
 
-pub fn confirm_git_init(_: &TestData) -> bool {
+pub fn git_init(_: &TestData) -> bool {
     fs::file_exists(".git/")
 }
 
-pub fn confirm_git_installed(_: &TestData) -> bool {
+pub fn git_installed(_: &TestData) -> bool {
     system::Program::Git.version().is_some()
 }
 
-pub fn confirm_commits_present(_: &TestData) -> bool {
+pub fn commits_present(_: &TestData) -> bool {
     let output = Command::new("cmd")
         .args(&["/C", "git --version"])
         .output()
@@ -30,7 +30,7 @@ pub fn confirm_commits_present(_: &TestData) -> bool {
     output.stdout.len() > 0
 }
 
-pub fn confirm_repo_pushed(data: &TestData) -> bool {
+pub fn repo_pushed(data: &TestData) -> bool {
     let url = format!("https://github.com/{}/{}/", data["gh_name"], data["repo"]);
     web::site_responds(&url)
 }

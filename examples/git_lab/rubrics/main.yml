@@ -7,23 +7,23 @@ allow_late: false
 
 criteria:
   "Git installed":
-    stub: git-installed
+    stub: git_installed
     desc: Git should be installed and accessible
     worth: 25
     messages: ["installed", "not installed"]
 
   "Git initialized in repo":
-    stub: git-init
+    stub: git_init
     desc: Current directory should have git initialized
     worth: 25
     messages: ["initialized", "not initialized"]
 
   "Commits present":
-    stub: commits
+    stub: commits_present
     worth: 25
     desc: Current git repository should have more than 2 commits
 
   "Repo pushed":
-    stub: pushed
+    stub: repo_pushed
     worth: 25
     desc: Current git repository should be pushed to github

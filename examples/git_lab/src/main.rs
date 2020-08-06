@@ -11,8 +11,6 @@ use tests::*;
 use rubric::{Submission, Rubric, helpers::web, dropbox};
 
 
-
-
 // This function will create a submission with some data
 // and return it. We'll call it from main() later.
 fn create_submission() -> Submission {
@@ -65,14 +63,13 @@ fn main() {
     let mut rubric = load_rubric();
 
     // Now we attach all the tests to the proper criteria
-    // The criterions `stub` points to the proper function.
-    attach! {
+    attach!(
         rubric,
-        "git-init" => confirm_git_init,
-        "git-installed" => confirm_git_installed,
-        "commits" => confirm_commits_present,
-        "pushed" => confirm_repo_pushed
-    };
+        git_init,
+        git_installed,
+        commits_present,
+        repo_pushed
+    );
 
     // Grade the submission against the rubric
     sub.grade_against(&mut rubric);
