@@ -76,7 +76,9 @@ pub struct Submission {
     /// How to format the timestamp.
     /// See https://docs.rs/chrono/0.4.13/chrono/format/strftime/index.html for more options
     #[serde(skip)]
-    timestamp_format: String
+    timestamp_format: String,
+    /// If the submission is late or not
+    late: bool,
 }
 
 impl Submission {
@@ -100,7 +102,8 @@ impl Submission {
             data: TestData::new(),
             passed: Vec::new(),
             failed: Vec::new(),
-            timestamp_format: String::from(DEFAULT_TIME_FORMAT)
+            timestamp_format: String::from(DEFAULT_TIME_FORMAT),
+            late: false
         }
     }
 
@@ -177,6 +180,9 @@ impl Submission {
 
     /// Tests a submission against a list of criterion
     pub fn grade_against(&mut self, rubric: &mut Rubric) {
+        if rubric.past_due() {
+            self.late = true;
+        }
         for crit in &mut rubric.sorted().into_iter() {
             crit.test_with_data(&self.data);
 
@@ -241,8 +247,9 @@ impl AsCsv for Submission {
     /// sorted alphabetically by key.
     fn as_csv(&self) -> String {
         format!(
-            "{},{},{},{},{}",
+            "{},{},{},{},{},{}",
             self.time.format(&self.timestamp_format),
+            self.late,
             self.grade,
             self.passed.join(";"),
             self.failed.join(";"),
@@ -257,7 +264,7 @@ impl AsCsv for Submission {
 
     /// Returns a header of all the fields, matching the data in `as_csv`
     fn header(&self) -> String {
-        format!("time,grade,passed,failed,{}", self.data.header())
+        format!("time,late,grade,passed,failed,{}", self.data.header())
     }
 }
 
@@ -308,10 +315,9 @@ mod tests {
         sub.pass("something");
         sub.fail("something");
 
-        // Assert the
         assert!(serde_json::to_string(&sub).unwrap().contains(r#""k2":"v2""#));
 
-        let data = r#"{"time":"2020-05-01T22:23:21.180875-05:00","grade":0,"passed":["something"],"failed":["something"],"data":{"k2":"v2","k":"v"}}"#;
+        let data = r#"{"time":"2020-05-01T22:23:21.180875-05:00","late":false,"grade":0,"passed":["something"],"failed":["something"],"data":{"k2":"v2","k":"v"}}"#;
         let built_sub: Submission = serde_json::from_str(data).unwrap();
         assert_eq!(built_sub.grade, sub.grade);
     }
