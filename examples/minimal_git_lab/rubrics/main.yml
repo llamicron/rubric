@@ -1,4 +1,7 @@
 name: Git lab
+allow_late: true
+late_penalty: 17
+deadline: 2020-08-07 14:59:00
 
 criteria:
   "Git installed":

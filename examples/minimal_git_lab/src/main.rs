@@ -27,7 +27,7 @@ fn main() {
         "custom_data" => "my super secret data"
     });
 
-    sub.set_fingerprint("my secret key don't tell anyone");
+    sub.set_fingerprint("my secret key shhh don't tell anyone");
 
 
     sub.grade_against(&mut rubric);

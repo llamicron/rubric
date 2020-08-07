@@ -14,7 +14,6 @@ pub mod results_file;
 pub mod submission;
 pub mod fingerprint;
 
-use rocket::Rocket;
 pub use results_file::{AsCsv, ResultsFile};
 pub use submission::{Submission, TestData};
 
@@ -24,7 +23,7 @@ use std::env;
 use std::sync::Mutex;
 
 // external uses
-use rocket::{Config, State};
+use rocket::{Rocket, Config, State};
 use rocket::http::Status;
 use rocket::error::LaunchError;
 use rocket::config::Environment;
@@ -67,6 +66,7 @@ fn accept_submission(state: State<SharedResultsFile>, submission: Json<Submissio
     }
 }
 
+/// Builds a rocket instance to launch
 fn new_rocket(port: u16) -> Rocket {
     // If debug
     #[cfg(debug_assertions)]
