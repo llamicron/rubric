@@ -7,4 +7,5 @@
     - [Criteria Tests](./rubric/tests.md)
 - [Submission](./submission/home.md)
     - [Prompting for Data](./submission/prompt.md)
+    - [Fingerprinting and Security](./submission/fingerprint.md)
 - [Dropbox](./dropbox.md)
