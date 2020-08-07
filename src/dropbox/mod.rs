@@ -14,6 +14,7 @@ pub mod results_file;
 pub mod submission;
 pub mod fingerprint;
 
+use rocket::Rocket;
 pub use results_file::{AsCsv, ResultsFile};
 pub use submission::{Submission, TestData};
 
@@ -66,10 +67,7 @@ fn accept_submission(state: State<SharedResultsFile>, submission: Json<Submissio
     }
 }
 
-/// Opens the dropbox for submissions on the given port.
-/// 
-/// You should probably use [`open_with_arg()`](crate::dropbox::open_with_arg)
-pub fn open(port: u16) -> LaunchError {
+fn new_rocket(port: u16) -> Rocket {
     // If debug
     #[cfg(debug_assertions)]
     let builder = Config::build(Environment::Development);
@@ -96,8 +94,14 @@ pub fn open(port: u16) -> LaunchError {
     println!("Dropbox is open! accepting POST requests to /submit");
     return rocket::custom(config)
         .manage(shared_results_file)
-        .mount("/", routes![return_ok, accept_submission])
-        .launch();
+        .mount("/", routes![return_ok, accept_submission]);
+}
+
+/// Opens the dropbox for submissions on the given port.
+/// 
+/// You should probably use [`open_with_arg()`](crate::dropbox::open_with_arg)
+pub fn open(port: u16) -> LaunchError {
+    new_rocket(port).launch()
 }
 
 /// This is the same as [`open()`](crate::dropbox::open), but it will
@@ -129,7 +133,7 @@ mod tests {
     use rocket::http::Header;
 
     fn client() -> Client {
-        let rocket = rocket::ignite().mount("/", routes![return_ok, accept_submission]);
+        let rocket = new_rocket(8080);
         Client::new(rocket).expect("valid rocket instance")
     }
 
