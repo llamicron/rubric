@@ -12,7 +12,7 @@
 //!
 //! criteria:
 //!   First Criterion:
-//!     stub: first-crit
+//!     func: first_crit
 //!     index: 0
 //!     desc: "First criterion short desc"
 //!     worth: 50
@@ -20,7 +20,7 @@
 //!     hide: false
 //!
 //!   Second Criterion:
-//!     stub: second-crit
+//!     func: second_crit
 //!     worth: 30
 //! ```
 //! See the [YAML specification](https://github.com/llamicron/rubric/wiki/YAML-Specification) for more info.
@@ -50,6 +50,11 @@ use crate::error::{Result, Error};
 
 /// Attaches tests to criteria in a rubric.
 ///
+/// This will accept a rubric and one or more function names. It will
+/// then attempt to find a criterion for each function passed in. The criteria
+/// should have a `func` field that matches the name of the function. It will panic
+/// if it doesn't find a matching criteria.
+/// 
 /// When you create a rubric from `yaml`, the criteria inside
 /// don't have tests attached to them. You can call
 /// [`Rubric.attach()`](crate::rubric::Rubric::attach) to achieve the
@@ -64,10 +69,16 @@ use crate::error::{Result, Error};
 ///
 /// fn main() {
 ///     let mut rubric = Rubric::from_yaml(/* some yaml data */);
+///     // Assuming there is a criterion with:
+///     //     func: some_test
+///     attach!(rubric, some_test);
+/// 
+///     // or be explicit
+///     // This is the same thing
 ///     attach! {
 ///         rubric,
-///         "some-stub" => some_test
-///     };
+///         "non_matching_func_key" => some_test
+///     }
 /// }
 /// ```
 #[macro_export]
@@ -79,17 +90,17 @@ macro_rules! attach {
             if let Some(c) = $rubric.get(func_name) {
                 c.attach(Box::new($func));
             } else {
-                panic!("Criteria with ID {} not found. Criteria ID and function name must match exactly", func_name);
+                panic!("Criteria with func `{}` not found. `func` field and function name must match exactly", func_name);
             }
         )+
     };
     // Long way
-    ( $rubric:ident, $($stub:literal => $func:path),* ) => {
+    ( $rubric:ident, $($func_name:literal => $func:path),* ) => {
         $(
-            if let Some(c) = $rubric.get($stub) {
+            if let Some(c) = $rubric.get($func_name) {
                 c.attach(Box::new($func));
             } else {
-                panic!("Criterion with stub {} not found, can't attach function", $stub);
+                panic!("Criterion with func {} not found, can't attach function", $func_name);
             }
         )+
     };
@@ -150,21 +161,21 @@ impl Rubric {
         }
     }
 
-    /// Searches for a criterion with the given stub,
+    /// Searches for a criterion with the given func,
     /// returning None if it couldn't be found
     ///
     /// ```rust
     /// # use rubric::{Rubric, yaml};
     /// # let yaml = yaml!("../../test_data/test_rubric.yml").expect("Couldn't load yaml");
     /// # let mut rubric = Rubric::from_yaml(yaml).expect("Bad yaml!");
-    /// // `rubric` contains a criterion with the stub 'first-crit`
-    /// let criterion = rubric.get("first-crit");
+    /// // `rubric` contains a criterion with the func 'first_crit`
+    /// let criterion = rubric.get("first_crit");
     /// assert!(criterion.is_some());
     /// let not_criterion = rubric.get("doesnt-exist");
     /// assert!(not_criterion.is_none());
     /// ```
-    pub fn get(&mut self, stub: &str) -> Option<&mut Criterion> {
-        self.criteria.iter_mut().find(|c| c.stub == stub)
+    pub fn get(&mut self, func: &str) -> Option<&mut Criterion> {
+        self.criteria.iter_mut().find(|c| c.func == func)
     }
 
     /// Adds a criterion to the rubric.
@@ -362,14 +373,14 @@ mod tests {
         fn test_fn(_: &TestData) -> bool { true };
 
         let mut rubric = Rubric::from_yaml(yaml_data()).expect("Bad yaml");
-        assert!(!rubric.get("first-crit").unwrap().test());
+        assert!(!rubric.get("first_crit").unwrap().test());
 
         attach! {
             rubric,
-            "first-crit" => test_fn
+            "first_crit" => test_fn
         };
 
-        assert!(rubric.get("first-crit").unwrap().test());
+        assert!(rubric.get("first_crit").unwrap().test());
 
     }
 
@@ -380,7 +391,7 @@ mod tests {
             desc: here's a short description
             criteria:
                 First Criterion:
-                    stub: first-crit,
+                    func: first_crit,
                     index: 0
                     desc: "First criterion short desc"
                     worth: 50
@@ -388,7 +399,7 @@ mod tests {
                     hide: false
 
                 Second Criterion:
-                    stub: second-crit
+                    func: second_crit
                     worth: 30
         "#;
 

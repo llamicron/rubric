@@ -7,7 +7,7 @@ deadline: 2095-08-05 23:25:00
 
 criteria:
   First Criterion:
-    stub: first-crit
+    func: first_crit
     index: 0
     desc: "First criterion short desc"
     worth: 50
@@ -15,5 +15,5 @@ criteria:
     hide: false
 
   Second Criterion:
-    stub: second-crit
+    func: second_crit
     worth: 30

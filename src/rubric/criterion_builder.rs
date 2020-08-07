@@ -7,7 +7,7 @@ use crate::{TestData, rubric::Criterion};
 /// instead of directly.
 pub struct CriterionBuilder {
     name: String,
-    stub: Option<String>,
+    func: Option<String>,
     worth: i16,
     messages: (String, String),
     desc: Option<String>,
@@ -26,7 +26,7 @@ impl CriterionBuilder {
     pub fn new(name: &str) -> Self {
         CriterionBuilder {
             name: String::from(name.trim()),
-            stub: None,
+            func: None,
             worth: 0,
             messages: ("passed".to_string(), "failed".to_string()),
             desc: None,
@@ -36,19 +36,23 @@ impl CriterionBuilder {
         }
     }
 
-    /// Sets the stub of a criterion. It's like an identifier.
+    /// Sets the function name of a criterion.
+    /// 
+    /// This only assigns the function name, not the actual function.
+    /// Use the attach! macro or test() method to attach the function.
     ///
-    /// A stub should be lowercase and not contain whitespace, it should
-    /// also be unique among criteria.
+    /// A function name should conform to rust standards, ie. should
+    /// be lowercase and not contain whitespace. I use snake_case,
+    /// but camelCase will also work
     ///
     /// ```rust
     /// # use rubric::rubric::CriterionBuilder;
     /// let crit = CriterionBuilder::new("my crit")
-    ///     .stub("my-stub")
+    ///     .func("my_func")
     ///     .build();
     /// ```
-    pub fn stub(mut self, stub: &str) -> Self {
-        self.stub = Some(String::from(stub));
+    pub fn func(mut self, func: &str) -> Self {
+        self.func = Some(String::from(func));
         self
     }
 
@@ -129,27 +133,27 @@ impl CriterionBuilder {
 
     /// Finalizes the criterion.
     ///
-    /// If a stub wasn't manually set, it will create one based on the
-    /// name. It will lowercase it, then replace all whitespace with dashes.
+    /// If a function name wasn't manually set, it will create one based on the
+    /// name. It will lowercase it, then replace all whitespace with underscores.
     ///
     /// ```rust
     /// # use rubric::rubric::CriterionBuilder;
     /// let crit = CriterionBuilder::new("my crit")
-    ///     // more confiuration options...
+    ///     // more configuration options...
     ///     .build();
     /// ```
     pub fn build(self) -> Criterion {
 
         let name = self.name;
-        let stub = self.stub.unwrap_or_else(|| {
+        let func = self.func.unwrap_or_else(|| {
             name.to_lowercase()
                 .split_whitespace()
                 .collect::<Vec<_>>()
-                .join("-")
+                .join("_")
         });
 
         Criterion {
-            stub: stub,
+            func: func,
             name: name,
             worth: self.worth,
             messages: self.messages,
@@ -180,7 +184,7 @@ mod tests {
             "failed".to_string()
         ));
 
-        assert!(cb.stub.is_none());
+        assert!(cb.func.is_none());
         assert!(cb.desc.is_none());
         assert!(cb.test.is_none());
         assert!(!cb.hide);
@@ -190,7 +194,7 @@ mod tests {
     fn test_default_values() {
         let crit = CriterionBuilder::new("My Crit").build();
         assert_eq!(crit.name, "My Crit");
-        assert_eq!(crit.stub, "my-crit");
+        assert_eq!(crit.func, "my_crit");
         assert_eq!(crit.messages.0, "passed");
         assert_eq!(crit.messages.1, "failed");
         assert!(crit.desc.is_none());
@@ -200,14 +204,14 @@ mod tests {
     #[test]
     fn test_build_parameters() {
         let crit = CriterionBuilder::new("My crit")
-            .stub("my-stub")
+            .func("my_func")
             .messages("success", "failed :(")
             .desc("Here's my desc")
             .hide(true)
             .build();
 
         assert_eq!(crit.name, "My crit");
-        assert_eq!(crit.stub, "my-stub");
+        assert_eq!(crit.func, "my_func");
         assert_eq!(crit.messages, (
             "success".to_string(),
             "failed :(".to_string()
@@ -225,11 +229,11 @@ mod tests {
     }
 
     #[test]
-    fn test_default_stub() {
+    fn test_default_func() {
         let crit = CriterionBuilder::new("My crit 1").build();
-        assert_eq!(crit.stub, "my-crit-1");
+        assert_eq!(crit.func, "my_crit_1");
 
         let crit2 = CriterionBuilder::new("MY CRIT    2").build();
-        assert_eq!(crit2.stub, "my-crit-2");
+        assert_eq!(crit2.func, "my_crit_2");
     }
 }

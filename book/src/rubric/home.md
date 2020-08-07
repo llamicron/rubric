@@ -19,30 +19,35 @@ This is a great start. All we need to do is formalize this into a rubric.
 # Our assignments name
 name: Git Lab
 # An optional description
-desc: This lab is meant to teach the basics of Git and Github
+desc: A lab to teach git
+
+# Set a deadline
+deadline: 2023-06-07 23:59:59
+# Don't allow late submissions
+allow_late: false
 
 
 # A list of our criteria
 criteria:
   "Git installed":
-    stub: git-installed
+    func: git_installed
     desc: Git should be installed and accessible
     worth: 25
     messages: ["installed", "not installed"]
 
   "Git initialized in repo":
-    stub: git-init
+    func: git_init
     desc: Current directory should have git initialized
     worth: 25
     messages: ["initialized", "not initialized"]
 
   "Commits present":
-    stub: commits
+    func: commits_present
     worth: 25
     desc: Current git repository should have more than 2 commits
 
   "Repo pushed":
-    stub: pushed
+    func: repo_pushed
     worth: 25
     desc: Current git repository should be pushed to github
 ```
@@ -55,10 +60,10 @@ Lets dissect one of the criteria
 criteria:
   # The criteria name
   "Git installed":
-    # a stub is an identifier, it must be unique.
-    # if you omit this, the stub will be the criterion's name,
+    # This is the name of the corresponding function.
+    # if you omit this, the function name will be the criterion's name,
     # lower-cased and whitespace replaced with dashes
-    stub: git-installed
+    func: git_installed
     # Just a description. Students will see this when grading
     desc: Git should be installed and accessible
     # The point value, can be any number, even negative.

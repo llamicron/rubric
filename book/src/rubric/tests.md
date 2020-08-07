@@ -76,7 +76,19 @@ use tests::*;
 
 
 ## Attaching Tests
-Each criteria has an associated test, but we need to tell our program which test goes with which criteria. After we've written our tests and loaded our rubric, we can use the `attach!` macro to assign them. Just point the criteria's `stub` that you specified in the `.yml` file to the function name.
+Each criteria has an associated test, but we need to tell our program which test goes with which criteria. In our rubric, each criteria should have a `func` key. This should exactly match the name of the test. Rust uses `snake_case` for function names. After we've written our tests and loaded our rubric, we can use the `attach!` macro to assign them.
+
+```yaml
+name: Basic rubric
+
+criteria:
+  "Only criteria":
+    worth: 50
+    # This is the important bit
+    # it allows attach!() to find the right function
+    func: my_criteria_test
+    # ...
+```
 
 ```rust ,noplaypen
 
@@ -92,10 +104,7 @@ fn main() {
     // be sure it's mutable
     let mut rubric = //...
 
-    attach! {
-        rubric,
-        "criteria-stub" => my_criteria_test
-    };
+    attach!(rubric, my_criteria_test);
 }
 ```
 

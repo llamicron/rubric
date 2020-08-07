@@ -24,8 +24,10 @@ use crate::rubric::CriterionBuilder;
 
 /// A single Criterion
 pub struct Criterion {
-    /// An ID stub used to identify this criterion
-    pub stub: String,
+    /// The name of the function that serves as this criterions test
+    /// This is just the name, used to attach the function.
+    /// See the `test` field.
+    pub func: String,
     /// A short (< 30 characters), descriptive name
     pub name: String,
     /// Point value of this criterion. If it passes, this value
@@ -211,7 +213,7 @@ mod tests {
 
     fn test_crit() -> Criterion {
         Criterion::new("test")
-            .stub("test-stub")
+            .func("test_func")
             .worth(10)
             .messages("success", "failure")
             .desc("short desc")

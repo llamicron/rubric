@@ -57,10 +57,13 @@ late_penalty: 10
 # -- Criteria --
 criteria:
   "First criterion":
-    # Can be any string, as long as it's unique.
-    # If not specified, the stub will be the criterion's name,
-    # lowercased and whitespace replaced with dashes
-    stub: whatever-stub
+    # The name of the corresponding function. This should be unique.
+    # If not specified, the function name will be the criterion's name,
+    # lowercased and whitespace replaced with dashes. But it's best to be
+    # explicit about this.
+    # Should match the function name exactly.
+    # Because this is unique, it is used to find criteria within a rubric.
+    func: whatever_func
     # Any number (even negative). Lowest number is run first.
     # Criteria without indices do not have consistent order
     index: 1
@@ -80,7 +83,7 @@ criteria:
 
   # This criterion has all default values
   "Second criterion":
-    stub: second-criterion
+    func: second_criterion
     index: 100
     desc: ""
     worth: 0

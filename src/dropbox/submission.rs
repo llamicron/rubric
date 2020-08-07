@@ -346,7 +346,7 @@ mod tests {
         let test = |_: &TestData| true;
         attach! {
             rubric,
-            "first-crit" => test
+            "first_crit" => test
         };
 
         let mut sub = Submission::new();

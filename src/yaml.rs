@@ -54,7 +54,7 @@ pub struct RubricYaml {
 /// Criterion with [`into_criterion`](crate::yaml::CriterionYaml::into_criterion).
 #[derive(Deserialize)]
 pub struct CriterionYaml {
-    stub: Option<String>,
+    func: Option<String>,
     index: Option<i64>,
     desc: Option<String>,
     worth: i16,
@@ -72,8 +72,8 @@ impl CriterionYaml {
         if let Some(msg) = self.messages {
             builder = builder.messages(&msg.0, &msg.1)
         }
-        if let Some(stub) = self.stub {
-            builder = builder.stub(&stub)
+        if let Some(func) = self.func {
+            builder = builder.func(&func)
         }
         if let Some(h) = self.hide {
             builder = builder.hide(h)

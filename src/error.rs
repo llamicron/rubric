@@ -20,8 +20,8 @@ impl Error {
     }
 
     #[allow(dead_code)]
-    pub(crate) fn stub_not_found<T: AsRef<str>>(stub: T) -> Error {
-        Error::from(ErrorKind::StubNotFound(stub.as_ref().to_string()))
+    pub(crate) fn func_not_found<T: AsRef<str>>(func: T) -> Error {
+        Error::from(ErrorKind::FuncNotFound(func.as_ref().to_string()))
     }
 
     pub(crate) fn bad_yaml(line: usize, col: usize) -> Error {
@@ -48,8 +48,8 @@ impl fmt::Display for Error {
 /// The specific kind of error that can occur.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ErrorKind {
-    /// When a criterion with the given stub could not be found
-    StubNotFound(String),
+    /// When a criterion with the given func could not be found
+    FuncNotFound(String),
     /// When Rubric YAML data is invalid
     BadYaml {
         line: usize,
@@ -67,8 +67,8 @@ pub enum ErrorKind {
 impl fmt::Display for ErrorKind {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            ErrorKind::StubNotFound(ref stub) => {
-                write!(f, "criterion with stub '{}' not found", stub)
+            ErrorKind::FuncNotFound(ref func) => {
+                write!(f, "criterion with func '{}' not found", func)
             },
             ErrorKind::BadYaml { line, col } => {
                 write!(f, "Bad yaml at line {}, col {}", line, col)
