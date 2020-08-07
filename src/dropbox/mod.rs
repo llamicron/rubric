@@ -20,14 +20,17 @@ pub use submission::{Submission, TestData};
 
 // std uses
 use std::env;
+use std::sync::Mutex;
 
 // external uses
-use rocket::Config;
+use rocket::{Config, State};
 use rocket::http::Status;
 use rocket::error::LaunchError;
 use rocket::config::Environment;
 use rocket_contrib::json::Json;
 
+
+struct SharedResultsFile { results_file: Mutex<ResultsFile> }
 
 
 /// Just a test route so you can make sure the server is running
@@ -38,15 +41,23 @@ fn return_ok() -> Status {
 
 /// Accepts a submission and writes it to the results file
 #[post("/submit", format = "application/json", data = "<submission>")]
-fn accept_submission(submission: Json<Submission>) -> Status {
+fn accept_submission(state: State<SharedResultsFile>, submission: Json<Submission>) -> Status {
+    // Retrieve the submission
     let sub = submission.into_inner();
-    // We can't have a globally managed results file
-    // because the header for this file is generated based on the
-    // data in the submission. We won't know all the headers until
-    // the first submission is sent.
-    let mut rf = ResultsFile::for_item(&sub).expect("Could not open results file");
 
-    if rf.write_csv(&sub).is_ok() {
+    // Lock the results file until we're done with it
+    let shared_rf: &SharedResultsFile = state.inner();
+    let mut lock = shared_rf.results_file.lock().expect("Lock shared results file");
+
+    // Write the header based on first submission
+    if lock.length() == 0 {
+        if lock.append(&sub.header()).is_err() {
+            eprintln!("Error! Could not write csv file header. File is likely locked by another process");
+            return Status::InternalServerError;
+        };
+    }
+
+    if lock.write_csv(&sub).is_ok() {
         return Status::Accepted;
     } else {
         eprintln!("Error: Could not write following submission");
@@ -72,9 +83,19 @@ pub fn open(port: u16) -> LaunchError {
         .finalize()
         .expect("Could not build dropbox server");
 
+    // Create a results file wrapped in a Mutex
+    // The muted is necessary because route handling is asyncronous.
+    // This allows mutliple submissions to be submitted at once. It also will
+    // crash when the instructor opens the dropbox if the file is already in use.
+    let shared_results_file = SharedResultsFile {
+        results_file: Mutex::new(
+            ResultsFile::new_blank("submissions.csv").expect("Couldn't open results file")
+        )
+    };
 
     println!("Dropbox is open! accepting POST requests to /submit");
     return rocket::custom(config)
+        .manage(shared_results_file)
         .mount("/", routes![return_ok, accept_submission])
         .launch();
 }

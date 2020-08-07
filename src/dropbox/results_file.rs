@@ -98,6 +98,16 @@ impl ResultsFile {
         Ok(rf)
     }
 
+    /// Just like `new()`, but doesn't write a header. Instead, leaves the file blank
+    pub fn new_blank<P: AsRef<Path>>(path: P) -> Result<ResultsFile, io::Error> {
+        let handle = OpenOptions::new().append(true).create(true).open(&path)?;
+        let full_path = canonicalize(path)?;
+        Ok(ResultsFile {
+            path: full_path,
+            handle
+        })
+    }
+
     pub fn for_item<I: AsCsv>(item: &I) -> Result<ResultsFile, io::Error> {
         ResultsFile::new(item.filename(), item.header())
     }
@@ -232,6 +242,15 @@ mod tests {
         assert!(rf.path.to_str().unwrap().contains("results_file.csv"));
 
         delete(file);
+    }
+
+    #[test]
+    fn test_new_blank() {
+        let mut file_name = test_dir();
+        file_name.push("blank.csv");
+        let blank = ResultsFile::new_blank(&file_name).unwrap();
+        assert!(blank.length() == 0);
+        delete(file_name);
     }
 
     #[test]

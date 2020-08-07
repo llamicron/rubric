@@ -10,10 +10,6 @@ fn main() {
     
     let yaml_data = yaml!("../rubrics/main.yml").unwrap();
     let mut rubric = Rubric::from_yaml(&yaml_data).unwrap();
-    
-    for crit in rubric.sorted() {
-        println!("{}: {}", crit.name, crit.func);
-    }
 
     attach!(
         rubric,
