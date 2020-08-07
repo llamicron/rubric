@@ -12,6 +12,7 @@
 // Re exports to be available from this module
 pub mod results_file;
 pub mod submission;
+pub mod fingerprint;
 
 pub use results_file::{AsCsv, ResultsFile};
 pub use submission::{Submission, TestData};

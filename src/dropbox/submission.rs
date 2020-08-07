@@ -12,6 +12,7 @@ use reqwest::blocking::Response;
 use crate::dropbox::results_file::AsCsv;
 use crate::rubric::Rubric;
 use crate::helpers::web::post_json;
+use crate::dropbox::fingerprint::Fingerprint;
 
 /// A type alias to `HashMap<String, String>`
 ///
@@ -81,6 +82,7 @@ pub struct Submission {
     /// See https://docs.rs/chrono/0.4.13/chrono/format/strftime/index.html for more options
     #[serde(default = "default_timestamp_format")]
     timestamp_format: String,
+    fingerprint: Option<Fingerprint>
 }
 
 impl Submission {
@@ -105,7 +107,8 @@ impl Submission {
             passed: Vec::new(),
             failed: Vec::new(),
             timestamp_format: default_timestamp_format(),
-            late: false
+            late: false,
+            fingerprint: None
         }
     }
 
@@ -154,6 +157,20 @@ impl Submission {
         let mut sub = Submission::new();
         sub.use_data(data);
         sub
+    }
+
+
+    /// Creates a fingerprint based on the provided secret key.
+    /// 
+    /// The fingerprint will contain the secret key and some automatically
+    /// collected platform information.
+    /// 
+    /// ```no_compile
+    /// let mut sub = Submission::new();
+    /// sub.set_fingerprint("My secret key");
+    /// ```
+    pub fn set_fingerprint(&mut self, secret: &str) {
+        self.fingerprint = Some(Fingerprint::from_secret(secret));
     }
 
     /// Marks a criterion as passed. Provide the name of the criterion.
@@ -262,16 +279,21 @@ impl AsCsv for Submission {
     /// Returns the submission's values in csv format. The `TestData` atttached will be
     /// sorted alphabetically by key.
     fn as_csv(&self) -> String {
-        let time = format!("{}", self.time.format(&self.timestamp_format));
-        format!(
+        let mut csv = format!(
             "{},{},{},{},{},{}",
-            time,
+            self.time.format(&self.timestamp_format),
             self.late,
             self.grade,
             self.passed.join(";"),
             self.failed.join(";"),
             self.data.as_csv()
-        )
+        );
+
+        if let Some(fp) = &self.fingerprint {
+            csv = format!("{},{}", csv, fp.as_csv());
+        }
+
+        csv
     }
 
     /// Returns the filename to use when writing submissions to disk
@@ -281,7 +303,11 @@ impl AsCsv for Submission {
 
     /// Returns a header of all the fields, matching the data in `as_csv`
     fn header(&self) -> String {
-        format!("time,late,grade,passed,failed,{}", self.data.header())
+        let mut header = format!("time,late,grade,passed,failed,{}", self.data.header());
+        if let Some(fp) = &self.fingerprint {
+            header = format!("{},{}", header, fp.header());
+        }
+        header
     }
 }
 
@@ -412,5 +438,20 @@ mod tests {
         assert_eq!(sub.grade, 0);
         sub.grade_against(&mut past_due_rubric);
         assert_eq!(sub.grade, -5);
+    }
+
+    #[test]
+    fn test_add_fingerprint() {
+        let mut sub = Submission::new();
+        assert!(sub.fingerprint.is_none());
+        sub.set_fingerprint("secret key");
+        assert!(sub.fingerprint.is_some());
+    }
+
+    #[test]
+    fn test_submission_as_csv_with_fingerprint() {
+        let mut sub = Submission::new();
+        sub.set_fingerprint("secret key");
+        assert!(sub.header().contains("secret,platform"));
     }
 }
