@@ -1,0 +1,14 @@
+name: Git lab
+
+criteria:
+  "Git installed":
+    worth: 25
+
+  "Git init":
+    worth: 25
+
+  "Commits present":
+    worth: 25
+
+  "Repo pushed":
+    worth: 25

@@ -86,7 +86,8 @@ macro_rules! attach {
     // Short way
     ($rubric:ident, $($func:path),*) => {
         $(
-            let func_name = std::stringify!($func);
+            let chunks: Vec<&str> = std::stringify!($func).split("::").collect();
+            let func_name = chunks.into_iter().next_back().unwrap();
             if let Some(c) = $rubric.get(func_name) {
                 c.attach(Box::new($func));
             } else {
