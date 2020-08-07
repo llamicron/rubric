@@ -3,10 +3,8 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title></title>
+        <title>Setup - Rubric</title>
         
-        
-        <base href="/">
         
 
 
@@ -91,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="setup.html">Setup</a></li><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="setup.html" class="active">Setup</a></li><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -157,8 +155,26 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#document-not-found-404" id="document-not-found-404">Document not found (404)</a></h1>
-<p>This URL is invalid, sorry. Please use the navigation bar or search to continue.</p>
+                        <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
+<h1><a class="header" href="#setup" id="setup">Setup</a></h1>
+<p>This is a Rust crate and can be installed like any other Rust crate. You'll need Rust and it's build tool, <code>cargo</code> installed. <a href="https://www.rust-lang.org/tools/install">Read more about that here</a>.</p>
+<p>You can create a new Rust project with</p>
+<pre><code>cargo new --bin my_grader
+</code></pre>
+<p>In the <code>Cargo.toml</code> file that cargo creates for you, add this crate as a dependency.</p>
+<pre><code class="language-toml"># ...
+[dependencies]
+rubric = &quot;0.12&quot; # or latest version
+</code></pre>
+<p>In your <code>main.rs</code>, delcare the crate with the <code>#[macro_use]</code> configuration flag. You can import just the items you need (recommended), or import everything with <code>*</code>.</p>
+<pre><code class="language-rust noplaypen">#[macro_use] extern crate rubric;
+
+// import what you need
+use rubric::{Rubric, Submission, TestData, /* ... */};
+// or everything
+use rubric::*;
+</code></pre>
+<p>I would also recommend creating a <code>rubrics/</code> directory alongside your <code>src/</code> directory to store your rubrics.</p>
 
                     </main>
 
@@ -166,6 +182,10 @@
                         <!-- Mobile navigation buttons -->
                         
 
+                        
+                            <a rel="next" href="overview.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -176,6 +196,10 @@
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
 
+                
+                    <a rel="next" href="overview.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                 
             </nav>
 

@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction and Setup</a></li><li class="chapter-item expanded "><a href="../rubric/home.html" class="active"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="../rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="../submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="../dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../setup.html">Setup</a></li><li class="chapter-item expanded affix "><a href="../overview.html">Overview</a></li><li class="chapter-item expanded "><a href="../rubric/home.html" class="active"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="../rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="../submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="../dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -171,30 +171,35 @@
 <pre><code class="language-yml"># Our assignments name
 name: Git Lab
 # An optional description
-desc: This lab is meant to teach the basics of Git and Github
+desc: A lab to teach git
+
+# Set a deadline
+deadline: 2023-06-07 23:59:59
+# Don't allow late submissions
+allow_late: false
 
 
 # A list of our criteria
 criteria:
   &quot;Git installed&quot;:
-    stub: git-installed
+    func: git_installed
     desc: Git should be installed and accessible
     worth: 25
     messages: [&quot;installed&quot;, &quot;not installed&quot;]
 
   &quot;Git initialized in repo&quot;:
-    stub: git-init
+    func: git_init
     desc: Current directory should have git initialized
     worth: 25
     messages: [&quot;initialized&quot;, &quot;not initialized&quot;]
 
   &quot;Commits present&quot;:
-    stub: commits
+    func: commits_present
     worth: 25
     desc: Current git repository should have more than 2 commits
 
   &quot;Repo pushed&quot;:
-    stub: pushed
+    func: repo_pushed
     worth: 25
     desc: Current git repository should be pushed to github
 </code></pre>
@@ -204,10 +209,10 @@ criteria:
 criteria:
   # The criteria name
   &quot;Git installed&quot;:
-    # a stub is an identifier, it must be unique.
-    # if you omit this, the stub will be the criterion's name,
+    # This is the name of the corresponding function.
+    # if you omit this, the function name will be the criterion's name,
     # lower-cased and whitespace replaced with dashes
-    stub: git-installed
+    func: git_installed
     # Just a description. Students will see this when grading
     desc: Git should be installed and accessible
     # The point value, can be any number, even negative.
@@ -241,7 +246,7 @@ criteria:
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="../introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../overview.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
@@ -259,7 +264,7 @@ criteria:
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="../introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../overview.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 

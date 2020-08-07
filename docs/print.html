@@ -91,7 +91,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction and Setup</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="setup.html">Setup</a></li><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -177,7 +177,21 @@ use rubric::{Rubric, Submission, TestData, /* ... */};
 use rubric::*;
 </code></pre>
 <p>I would also recommend creating a <code>rubrics/</code> directory alongside your <code>src/</code> directory to store your rubrics.</p>
-<h1><a class="header" href="#rubrics" id="rubrics">Rubrics</a></h1>
+<h1><a class="header" href="#overview" id="overview">Overview</a></h1>
+<p>This framework provides tools for instructors to write student-run grading applications, called a &quot;grader&quot;. Graders are written by instructors and distributed to students. When run by the students, the grader will assess their work and send a report to the dropbox, which is maintained by the instructor.</p>
+<p>There are 3 significant parts to a grading application</p>
+<ol>
+<li>A <strong>rubric</strong> - a list of specific criteria that each student must fulfil</li>
+<li><strong>Submissions</strong> - An evaluation of a specific student's work and progress through a rubric</li>
+<li>A <strong>dropbox</strong> - a collection box for submissions</li>
+</ol>
+<h2><a class="header" href="#rubrics" id="rubrics">Rubrics</a></h2>
+<p>Rubrics are exactly what you would expect; a list of criteria that describe an assignment or test. Each criteria has a point value, and the students grade is determined by the criteria they fulfil.</p>
+<h2><a class="header" href="#submissions" id="submissions">Submissions</a></h2>
+<p>A submission is a bundle of data that tracks how well the student performed, according to the rubric. Rubrics and submissions are useless without each other. Submissions are meant to be <em>submitted</em> (who knew?) to the instructor. </p>
+<h2><a class="header" href="#the-dropbox" id="the-dropbox">The Dropbox</a></h2>
+<p>The dropbox is simply a web server maintained by the instructor that recieves submissions and records them. The submissions are recorded as CSV, which is supported by Microsoft Excel. Sorting and manipulation can be performed in Excel after all the submissions are in.</p>
+<h1><a class="header" href="#rubrics-1" id="rubrics-1">Rubrics</a></h1>
 <p>Rubrics are the main component of this framework. A rubric is simply a list of criteria. They are the first thing you should write down when writing a grader.</p>
 <p>Within this framework, rubrics are represented with <code>.yml</code> files in the <code>rubrics/</code> directory. &quot;YAML&quot; is a markup language that you can <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">read about here</a>. It's pretty common within sysadmin tools and chances are you're already familiar with it. We can use YAML to write out the details of our criteria.</p>
 <h2><a class="header" href="#a-practical-example" id="a-practical-example">A Practical Example</a></h2>
@@ -193,30 +207,35 @@ use rubric::*;
 <pre><code class="language-yml"># Our assignments name
 name: Git Lab
 # An optional description
-desc: This lab is meant to teach the basics of Git and Github
+desc: A lab to teach git
+
+# Set a deadline
+deadline: 2023-06-07 23:59:59
+# Don't allow late submissions
+allow_late: false
 
 
 # A list of our criteria
 criteria:
   &quot;Git installed&quot;:
-    stub: git-installed
+    func: git_installed
     desc: Git should be installed and accessible
     worth: 25
     messages: [&quot;installed&quot;, &quot;not installed&quot;]
 
   &quot;Git initialized in repo&quot;:
-    stub: git-init
+    func: git_init
     desc: Current directory should have git initialized
     worth: 25
     messages: [&quot;initialized&quot;, &quot;not initialized&quot;]
 
   &quot;Commits present&quot;:
-    stub: commits
+    func: commits_present
     worth: 25
     desc: Current git repository should have more than 2 commits
 
   &quot;Repo pushed&quot;:
-    stub: pushed
+    func: repo_pushed
     worth: 25
     desc: Current git repository should be pushed to github
 </code></pre>
@@ -226,10 +245,10 @@ criteria:
 criteria:
   # The criteria name
   &quot;Git installed&quot;:
-    # a stub is an identifier, it must be unique.
-    # if you omit this, the stub will be the criterion's name,
+    # This is the name of the corresponding function.
+    # if you omit this, the function name will be the criterion's name,
     # lower-cased and whitespace replaced with dashes
-    stub: git-installed
+    func: git_installed
     # Just a description. Students will see this when grading
     desc: Git should be installed and accessible
     # The point value, can be any number, even negative.
@@ -269,7 +288,8 @@ criteria:
 </code></pre>
 <h2><a class="header" href="#all-items" id="all-items">All Items</a></h2>
 <p>Here is a full rubric with everything specified, with comments for more information about each key.</p>
-<pre><code class="language-yml"># Required name
+<pre><code class="language-yml"># -- Rubric Details --
+# Required name
 name: My rubric
 # Optional description. Gets shown to the student when grading
 desc: Description of my rubric
@@ -278,12 +298,42 @@ desc: Description of my rubric
 # worth to all criteria
 total: 100
 
+
+
+
+
+# -- Deadline verification --
+# All of these are optional
+#
+# The optional submission deadline. Must be in this format
+#   YYYY-MM-DD HH:MM:SS
+# It will use the current local timezone.
+# If a submission is created after this time, the late flag will be true.
+# If you enter a deadline from the past, you will be warned during compilation, but
+# compilation will continue.
+deadline: 2020-05-21 23:59:59
+# If this is set to false, the submission will always have a 
+# grade of 0 unless manually changed. Defaults to true (allowing late submission).
+# A submission *can* still be submitted if this is false, but its grade will be 0
+# and the late flag will be true
+allow_late: true
+# This amount will be subtracted from the grade if the submission is late
+late_penalty: 10
+
+
+
+
+
+# -- Criteria --
 criteria:
   &quot;First criterion&quot;:
-    # Can be any string, as long as it's unique.
-    # If not specified, the stub will be the criterion's name,
-    # lowercased and whitespace replaced with dashes
-    stub: whatever-stub
+    # The name of the corresponding function. This should be unique.
+    # If not specified, the function name will be the criterion's name,
+    # lowercased and whitespace replaced with dashes. But it's best to be
+    # explicit about this.
+    # Should match the function name exactly.
+    # Because this is unique, it is used to find criteria within a rubric.
+    func: whatever_func
     # Any number (even negative). Lowest number is run first.
     # Criteria without indices do not have consistent order
     index: 1
@@ -303,7 +353,7 @@ criteria:
 
   # This criterion has all default values
   &quot;Second criterion&quot;:
-    stub: second-criterion
+    func: second_criterion
     index: 100
     desc: &quot;&quot;
     worth: 0
@@ -368,7 +418,17 @@ use tests::*;
 // ...
 </code></pre>
 <h2><a class="header" href="#attaching-tests" id="attaching-tests">Attaching Tests</a></h2>
-<p>Each criteria has an associated test, but we need to tell our program which test goes with which criteria. After we've written our tests and loaded our rubric, we can use the <code>attach!</code> macro to assign them. Just point the criteria's <code>stub</code> that you specified in the <code>.yml</code> file to the function name.</p>
+<p>Each criteria has an associated test, but we need to tell our program which test goes with which criteria. In our rubric, each criteria should have a <code>func</code> key. This should exactly match the name of the test. Rust uses <code>snake_case</code> for function names. After we've written our tests and loaded our rubric, we can use the <code>attach!</code> macro to assign them.</p>
+<pre><code class="language-yaml">name: Basic rubric
+
+criteria:
+  &quot;Only criteria&quot;:
+    worth: 50
+    # This is the important bit
+    # it allows attach!() to find the right function
+    func: my_criteria_test
+    # ...
+</code></pre>
 <pre><code class="language-rust noplaypen">
 fn my_criteria_test(_: &amp;TestData) -&gt; bool {
     // test code goes here...
@@ -382,10 +442,7 @@ fn main() {
     // be sure it's mutable
     let mut rubric = //...
 
-    attach! {
-        rubric,
-        &quot;criteria-stub&quot; =&gt; my_criteria_test
-    };
+    attach!(rubric, my_criteria_test);
 }
 </code></pre>
 <h2><a class="header" href="#helpers" id="helpers">Helpers</a></h2>

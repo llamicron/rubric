@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction and Setup</a></li><li class="chapter-item expanded "><a href="../rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../rubric/spec.html" class="active"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="../rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="../submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="../dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../setup.html">Setup</a></li><li class="chapter-item expanded affix "><a href="../overview.html">Overview</a></li><li class="chapter-item expanded "><a href="../rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../rubric/spec.html" class="active"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="../rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="../submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="../dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -167,7 +167,8 @@ criteria:
 </code></pre>
 <h2><a class="header" href="#all-items" id="all-items">All Items</a></h2>
 <p>Here is a full rubric with everything specified, with comments for more information about each key.</p>
-<pre><code class="language-yml"># Required name
+<pre><code class="language-yml"># -- Rubric Details --
+# Required name
 name: My rubric
 # Optional description. Gets shown to the student when grading
 desc: Description of my rubric
@@ -176,12 +177,42 @@ desc: Description of my rubric
 # worth to all criteria
 total: 100
 
+
+
+
+
+# -- Deadline verification --
+# All of these are optional
+#
+# The optional submission deadline. Must be in this format
+#   YYYY-MM-DD HH:MM:SS
+# It will use the current local timezone.
+# If a submission is created after this time, the late flag will be true.
+# If you enter a deadline from the past, you will be warned during compilation, but
+# compilation will continue.
+deadline: 2020-05-21 23:59:59
+# If this is set to false, the submission will always have a 
+# grade of 0 unless manually changed. Defaults to true (allowing late submission).
+# A submission *can* still be submitted if this is false, but its grade will be 0
+# and the late flag will be true
+allow_late: true
+# This amount will be subtracted from the grade if the submission is late
+late_penalty: 10
+
+
+
+
+
+# -- Criteria --
 criteria:
   &quot;First criterion&quot;:
-    # Can be any string, as long as it's unique.
-    # If not specified, the stub will be the criterion's name,
-    # lowercased and whitespace replaced with dashes
-    stub: whatever-stub
+    # The name of the corresponding function. This should be unique.
+    # If not specified, the function name will be the criterion's name,
+    # lowercased and whitespace replaced with dashes. But it's best to be
+    # explicit about this.
+    # Should match the function name exactly.
+    # Because this is unique, it is used to find criteria within a rubric.
+    func: whatever_func
     # Any number (even negative). Lowest number is run first.
     # Criteria without indices do not have consistent order
     index: 1
@@ -201,7 +232,7 @@ criteria:
 
   # This criterion has all default values
   &quot;Second criterion&quot;:
-    stub: second-criterion
+    func: second_criterion
     index: 100
     desc: &quot;&quot;
     worth: 0
