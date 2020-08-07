@@ -39,24 +39,11 @@ fn load_rubric() -> Rubric {
     Rubric::from_yaml(&yaml).expect("Bad yaml!")
 }
 
-
-// This will open the dropbox only if
-// you run the program with the "dropbox" argument.
-//
-// You'll need to run this on a publicly available server,
-// and each students grader will submit to this web server.
-fn open_dropbox() {
-    // Collect command line args
-    let args: Vec<String> = env::args().collect();
-    if args.len() > 1 && args[1] == "dropbox" {
-        dropbox::open(8080);
-    }
-}
-
-
 fn main() {
-    // This won't run unless we use the "dropbox" argument
-    open_dropbox();
+    // This won't run unless we use the "open_sesame" argument.
+    // You'll need to run this on a publicly available server,
+    // and each students grader will submit to this web server.
+    dropbox::open_with_arg("open_sesame", 8080);
 
     // Use the functions from above
     let mut sub = create_submission();

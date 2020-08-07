@@ -17,6 +17,8 @@ pub use results_file::{AsCsv, ResultsFile};
 pub use submission::{Submission, TestData};
 
 
+// std uses
+use std::env;
 
 // external uses
 use rocket::Config;
@@ -53,6 +55,8 @@ fn accept_submission(submission: Json<Submission>) -> Status {
 }
 
 /// Opens the dropbox for submissions on the given port.
+/// 
+/// You should probably use [`open_with_arg()`](crate::dropbox::open_with_arg)
 pub fn open(port: u16) -> LaunchError {
     // If debug
     #[cfg(debug_assertions)]
@@ -72,6 +76,27 @@ pub fn open(port: u16) -> LaunchError {
     return rocket::custom(config)
         .mount("/", routes![return_ok, accept_submission])
         .launch();
+}
+
+/// This is the same as [`open()`](crate::dropbox::open), but it will
+/// only open the dropbox if you run the executable with the arg you provide.
+/// 
+/// The dropbox will open if the provided arg is *anywhere* in the arg vector, ie.
+/// position doesn't matter. 
+/// 
+/// It's probably a good idea to put something that isn't obvious as the arg, perhaps
+/// a password. That way, no one will accidentally (or malicously) opens the dropbox.
+/// 
+/// ```no_compile
+/// // Must run the execuable with `my_grader open_sesame`
+/// dropbox::open_with_arg(8080, "open_sesame");
+/// ```
+pub fn open_with_arg(arg: &str, port: u16) -> Option<LaunchError> {
+    let args: Vec<String> = env::args().collect();
+    if args.contains(&String::from(arg)) {
+        return Some(open(port));
+    }
+    None
 }
 
 

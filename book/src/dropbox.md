@@ -12,6 +12,11 @@ use rubric::dropbox;
 fn main() {
     // Runs the dropbox on port 8080
     dropbox::open(8080);
+
+    // or...
+    // Only opens when you run with the "open_sesame" argument,
+    // otherwise does nothing
+    dropbox::open_with_arg("open_sesame", 8080);
 }
 ```
 You'll see the following output
