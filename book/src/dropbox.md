@@ -35,6 +35,30 @@ Dropbox is open! accepting POST requests to /submit
 The home route (`/`) should return an OK status, but no content. If you visit the url of your webserver, you should get a blank web page. This is good, it means everything is working properly.
 
 ## Submitting to the dropbox
+Submissions come with a `submit()` method meant to work with the dropbox. 
+
+```rust
+extern crate rubric;
+use rubric::Submission;
+
+fn main() {
+    let submission = Submission::new();
+    
+    // grade...
+
+    // assuming your dropbox is running at this url
+    let url = "http://my.dns.name.or.ip.com:8080/submit";
+
+    // Submit and give some feedback
+    match submission.submit(&url) {
+        Ok(_)  => println!("Submission recorded!"),
+        Err(e) => println!("Something went wrong! {}", e),
+    };
+}
+```
+
+
+
 The `post_json()` method in the `helpers::web` module is made with the dropbox in mind. After creating and grading a Submission, just pass it and the url of your dropbox to send the submission.
 
 ```rust

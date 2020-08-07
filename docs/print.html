@@ -91,7 +91,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="setup.html">Setup</a></li><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded affix "><a href="setup.html">Setup</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -157,28 +157,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
-<h1><a class="header" href="#setup" id="setup">Setup</a></h1>
-<p>This is a Rust crate and can be installed like any other Rust crate. You'll need Rust and it's build tool, <code>cargo</code> installed. <a href="https://www.rust-lang.org/tools/install">Read more about that here</a>.</p>
-<p>You can create a new Rust project with</p>
-<pre><code>cargo new --bin my_grader
-</code></pre>
-<p>In the <code>Cargo.toml</code> file that cargo creates for you, add this crate as a dependency.</p>
-<pre><code class="language-toml"># ...
-[dependencies]
-rubric = &quot;0.12&quot; # or latest version
-</code></pre>
-<p>In your <code>main.rs</code>, delcare the crate with the <code>#[macro_use]</code> configuration flag. You can import just the items you need (recommended), or import everything with <code>*</code>.</p>
-<pre><code class="language-rust noplaypen">#[macro_use] extern crate rubric;
-
-// import what you need
-use rubric::{Rubric, Submission, TestData, /* ... */};
-// or everything
-use rubric::*;
-</code></pre>
-<p>I would also recommend creating a <code>rubrics/</code> directory alongside your <code>src/</code> directory to store your rubrics.</p>
-<h1><a class="header" href="#overview" id="overview">Overview</a></h1>
-<p>This framework provides tools for instructors to write student-run grading applications, called a &quot;grader&quot;. Graders are written by instructors and distributed to students. When run by the students, the grader will assess their work and send a report to the dropbox, which is maintained by the instructor.</p>
+                        <h1><a class="header" href="#overview" id="overview">Overview</a></h1>
+<p>This framework provides tools for instructors to write student-run grading applications, called &quot;graders&quot;. Graders are written by instructors and distributed to students. When run by the students, the grader will assess their work and send a report to the dropbox, which is maintained by the instructor.</p>
 <p>There are 3 significant parts to a grading application</p>
 <ol>
 <li>A <strong>rubric</strong> - a list of specific criteria that each student must fulfil</li>
@@ -191,6 +171,34 @@ use rubric::*;
 <p>A submission is a bundle of data that tracks how well the student performed, according to the rubric. Rubrics and submissions are useless without each other. Submissions are meant to be <em>submitted</em> (who knew?) to the instructor. </p>
 <h2><a class="header" href="#the-dropbox" id="the-dropbox">The Dropbox</a></h2>
 <p>The dropbox is simply a web server maintained by the instructor that recieves submissions and records them. The submissions are recorded as CSV, which is supported by Microsoft Excel. Sorting and manipulation can be performed in Excel after all the submissions are in.</p>
+<h1><a class="header" href="#rust-setup" id="rust-setup">Rust Setup</a></h1>
+<p>You'll need the Rust language installed, and it's build tool &quot;cargo&quot;. You can <a href="https://www.rust-lang.org/tools/install">read more about that here</a>. It's pretty easy to install on any platform.</p>
+<p>You'll also want to switch over to the <code>nightly</code> channel. This crate uses experimental features only available in night. Do that with</p>
+<pre><code>$ rustup default nightly
+</code></pre>
+<h2><a class="header" href="#grader-setup" id="grader-setup">Grader Setup</a></h2>
+<p>Once you have Rust installed, you'll want to make a new project to serve as your grading application.</p>
+<p>You can create a new Rust project with</p>
+<pre><code>cargo new --bin my_grader
+</code></pre>
+<p>This is a Rust crate and can be installed like any other Rust crate. In the <code>Cargo.toml</code> file that cargo creates for you, add this crate as a dependency.</p>
+<pre><code class="language-toml"># ...
+[dependencies]
+rubric = &quot;0.14&quot; # or latest version
+</code></pre>
+<p>Now is a good time to create a <code>rubrics/</code> directory alongside your <code>src/</code> directory. You'll use that later.</p>
+<p>In your <code>main.rs</code>, delcare the rubric crate and import the items you need.</p>
+<pre><code class="language-rust noplaypen">#[macro_use] extern crate rubric;
+
+// import what you need
+use rubric::{Rubric, Submission, dropbox};
+
+fn main() {
+    // ...
+}
+</code></pre>
+<p>It's also recommended that you create a <code>tests.rs</code> beside <code>main.rs</code> to hold your <a href="./rubric/tests.html">criteria tests</a>.</p>
+<p>You may need to access certain items or functions in the <code>rubric</code> crate. You can reference the <a href="https://docs.rs/rubric">docs on docs.rs</a> for specific information.</p>
 <h1><a class="header" href="#rubrics-1" id="rubrics-1">Rubrics</a></h1>
 <p>Rubrics are the main component of this framework. A rubric is simply a list of criteria. They are the first thing you should write down when writing a grader.</p>
 <p>Within this framework, rubrics are represented with <code>.yml</code> files in the <code>rubrics/</code> directory. &quot;YAML&quot; is a markup language that you can <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">read about here</a>. It's pretty common within sysadmin tools and chances are you're already familiar with it. We can use YAML to write out the details of our criteria.</p>
@@ -549,6 +557,25 @@ fn main() {
 </code></pre>
 <p>The home route (<code>/</code>) should return an OK status, but no content. If you visit the url of your webserver, you should get a blank web page. This is good, it means everything is working properly.</p>
 <h2><a class="header" href="#submitting-to-the-dropbox" id="submitting-to-the-dropbox">Submitting to the dropbox</a></h2>
+<p>Submissions come with a <code>submit()</code> method meant to work with the dropbox. </p>
+<pre><pre class="playground"><code class="language-rust">extern crate rubric;
+use rubric::Submission;
+
+fn main() {
+    let submission = Submission::new();
+    
+    // grade...
+
+    // assuming your dropbox is running at this url
+    let url = &quot;http://my.dns.name.or.ip.com:8080/submit&quot;;
+
+    // Submit and give some feedback
+    match submission.submit(&amp;url) {
+        Ok(_)  =&gt; println!(&quot;Submission recorded!&quot;),
+        Err(e) =&gt; println!(&quot;Something went wrong! {}&quot;, e),
+    };
+}
+</code></pre></pre>
 <p>The <code>post_json()</code> method in the <code>helpers::web</code> module is made with the dropbox in mind. After creating and grading a Submission, just pass it and the url of your dropbox to send the submission.</p>
 <pre><pre class="playground"><code class="language-rust">extern crate rubric;
 use rubric::{Submission, dropbox, helpers::web};

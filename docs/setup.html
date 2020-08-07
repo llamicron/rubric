@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="setup.html" class="active">Setup</a></li><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded affix "><a href="setup.html" class="active">Setup</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -155,35 +155,47 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
-<h1><a class="header" href="#setup" id="setup">Setup</a></h1>
-<p>This is a Rust crate and can be installed like any other Rust crate. You'll need Rust and it's build tool, <code>cargo</code> installed. <a href="https://www.rust-lang.org/tools/install">Read more about that here</a>.</p>
+                        <h1><a class="header" href="#rust-setup" id="rust-setup">Rust Setup</a></h1>
+<p>You'll need the Rust language installed, and it's build tool &quot;cargo&quot;. You can <a href="https://www.rust-lang.org/tools/install">read more about that here</a>. It's pretty easy to install on any platform.</p>
+<p>You'll also want to switch over to the <code>nightly</code> channel. This crate uses experimental features only available in night. Do that with</p>
+<pre><code>$ rustup default nightly
+</code></pre>
+<h2><a class="header" href="#grader-setup" id="grader-setup">Grader Setup</a></h2>
+<p>Once you have Rust installed, you'll want to make a new project to serve as your grading application.</p>
 <p>You can create a new Rust project with</p>
 <pre><code>cargo new --bin my_grader
 </code></pre>
-<p>In the <code>Cargo.toml</code> file that cargo creates for you, add this crate as a dependency.</p>
+<p>This is a Rust crate and can be installed like any other Rust crate. In the <code>Cargo.toml</code> file that cargo creates for you, add this crate as a dependency.</p>
 <pre><code class="language-toml"># ...
 [dependencies]
-rubric = &quot;0.12&quot; # or latest version
+rubric = &quot;0.14&quot; # or latest version
 </code></pre>
-<p>In your <code>main.rs</code>, delcare the crate with the <code>#[macro_use]</code> configuration flag. You can import just the items you need (recommended), or import everything with <code>*</code>.</p>
+<p>Now is a good time to create a <code>rubrics/</code> directory alongside your <code>src/</code> directory. You'll use that later.</p>
+<p>In your <code>main.rs</code>, delcare the rubric crate and import the items you need.</p>
 <pre><code class="language-rust noplaypen">#[macro_use] extern crate rubric;
 
 // import what you need
-use rubric::{Rubric, Submission, TestData, /* ... */};
-// or everything
-use rubric::*;
+use rubric::{Rubric, Submission, dropbox};
+
+fn main() {
+    // ...
+}
 </code></pre>
-<p>I would also recommend creating a <code>rubrics/</code> directory alongside your <code>src/</code> directory to store your rubrics.</p>
+<p>It's also recommended that you create a <code>tests.rs</code> beside <code>main.rs</code> to hold your <a href="./rubric/tests.html">criteria tests</a>.</p>
+<p>You may need to access certain items or functions in the <code>rubric</code> crate. You can reference the <a href="https://docs.rs/rubric">docs on docs.rs</a> for specific information.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
+                            <a rel="prev" href="overview.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
 
                         
-                            <a rel="next" href="overview.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="rubric/home.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -195,9 +207,13 @@ use rubric::*;
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
+                    <a rel="prev" href="overview.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
 
                 
-                    <a rel="next" href="overview.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="rubric/home.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

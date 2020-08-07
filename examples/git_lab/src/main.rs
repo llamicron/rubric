@@ -24,7 +24,7 @@ fn create_submission() -> Submission {
         "name"      => prompt!("Name: ", String),
         "id"        => prompt!("ID: ", String),
         "gh_name"   => prompt!("Github Username: ", String),
-        "repo" => prompt!("Repo name: ", String)
+        "repo"      => prompt!("Repo name: ", String)
     })
 }
 

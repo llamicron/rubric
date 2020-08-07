@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="setup.html">Setup</a></li><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html" class="active"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded affix "><a href="setup.html">Setup</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html" class="active"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -185,6 +185,25 @@ fn main() {
 </code></pre>
 <p>The home route (<code>/</code>) should return an OK status, but no content. If you visit the url of your webserver, you should get a blank web page. This is good, it means everything is working properly.</p>
 <h2><a class="header" href="#submitting-to-the-dropbox" id="submitting-to-the-dropbox">Submitting to the dropbox</a></h2>
+<p>Submissions come with a <code>submit()</code> method meant to work with the dropbox. </p>
+<pre><pre class="playground"><code class="language-rust">extern crate rubric;
+use rubric::Submission;
+
+fn main() {
+    let submission = Submission::new();
+    
+    // grade...
+
+    // assuming your dropbox is running at this url
+    let url = &quot;http://my.dns.name.or.ip.com:8080/submit&quot;;
+
+    // Submit and give some feedback
+    match submission.submit(&amp;url) {
+        Ok(_)  =&gt; println!(&quot;Submission recorded!&quot;),
+        Err(e) =&gt; println!(&quot;Something went wrong! {}&quot;, e),
+    };
+}
+</code></pre></pre>
 <p>The <code>post_json()</code> method in the <code>helpers::web</code> module is made with the dropbox in mind. After creating and grading a Submission, just pass it and the url of your dropbox to send the submission.</p>
 <pre><pre class="playground"><code class="language-rust">extern crate rubric;
 use rubric::{Submission, dropbox, helpers::web};

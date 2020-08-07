@@ -1,5 +1,5 @@
 # Overview
-This framework provides tools for instructors to write student-run grading applications, called a "grader". Graders are written by instructors and distributed to students. When run by the students, the grader will assess their work and send a report to the dropbox, which is maintained by the instructor.
+This framework provides tools for instructors to write student-run grading applications, called "graders". Graders are written by instructors and distributed to students. When run by the students, the grader will assess their work and send a report to the dropbox, which is maintained by the instructor.
 
 There are 3 significant parts to a grading application
 1. A **rubric** - a list of specific criteria that each student must fulfil
