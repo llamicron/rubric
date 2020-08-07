@@ -8,7 +8,7 @@ use crate::{TestData, rubric::Criterion};
 pub struct CriterionBuilder {
     name: String,
     func: Option<String>,
-    worth: i16,
+    worth: isize,
     messages: (String, String),
     desc: Option<String>,
     test: Option<Box<dyn Fn(&TestData) -> bool>>,
@@ -112,7 +112,7 @@ impl CriterionBuilder {
     }
 
     /// Sets the worth on a Criterion
-    pub fn worth(mut self, worth: i16) -> Self {
+    pub fn worth(mut self, worth: isize) -> Self {
         self.worth = worth;
         self
     }

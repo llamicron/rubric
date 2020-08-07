@@ -57,7 +57,7 @@ pub struct CriterionYaml {
     func: Option<String>,
     index: Option<i64>,
     desc: Option<String>,
-    worth: i16,
+    worth: isize,
     messages: Option<(String, String)>,
     hide: Option<bool>,
 }

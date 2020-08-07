@@ -67,7 +67,7 @@ pub struct Submission {
     pub time: DateTime<Local>,
     /// Numerical grade for the submission.
     /// Each criterion will add to this grade if it passes.
-    pub grade: i16,
+    pub grade: isize,
     /// Extra data attached to the submission.
     /// Leave it empty if you don't need it
     pub data: TestData,
@@ -186,7 +186,7 @@ impl Submission {
             // Submission is late, mark it as such
             self.late = true;
             // And subtract the late penalty
-            self.grade -= rubric.late_penalty as i16;
+            self.grade -= rubric.late_penalty;
             self.fail(format!("Late submission (-{})", rubric.late_penalty));
             // If they disallow late submission
             if !rubric.allow_late {
