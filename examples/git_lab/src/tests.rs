@@ -12,6 +12,8 @@ use rubric::{TestData, helpers::{fs, system, web}};
 // the Submission in `main.rs`.
 //
 // We're using a few helpers functions from the `helpers` modules
+// 
+// Function names and the `func` key in the criteria must match.
 
 
 pub fn git_init(_: &TestData) -> bool {
