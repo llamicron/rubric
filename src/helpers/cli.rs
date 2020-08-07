@@ -149,7 +149,7 @@ pub fn cmd(command: &str) -> std::result::Result<std::process::Output, std::io::
 /// assert!(output.unwrap().stdout.len() > 0);
 /// ```
 #[cfg(target_family = "unix")]
-pub fn cmd(command: &str) {
+pub fn cmd(command: &str) -> std::result::Result<std::process::Output, std::io::Error> {
     Command::new("sh")
         .arg("-c")
         .arg(command)
