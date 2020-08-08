@@ -1,6 +1,6 @@
 [package]
 name = "rubric"
-version = "0.14.0"
+version = "0.15.0"
 authors = ["llamicron <llamicron@gmail.com>"]
 edition = "2018"
 description = "A crate to help grade labs and assignments"
