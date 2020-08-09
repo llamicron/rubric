@@ -198,7 +198,12 @@ deadline: 2020-05-21 23:59:59
 allow_late: true
 # This amount will be subtracted from the grade if the submission is late
 late_penalty: 10
-
+# This will subtract this many points per day after the deadline.
+# One second after the deadline is the first late day, so -5 points.
+# 24 hrs + 1 second after the deadline is the second late day, so -10.
+# You probably shouldn't use both this and &quot;late_penalty&quot;, as they will 
+# both take effect if you provide both.
+late_penalty_per_day: 5
 
 
 
