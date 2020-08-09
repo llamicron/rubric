@@ -161,10 +161,10 @@ impl Submission {
 
 
     /// Creates a fingerprint based on the provided secret key.
-    /// 
+    ///
     /// The fingerprint will contain the secret key and some automatically
     /// collected platform information.
-    /// 
+    ///
     /// ```no_compile
     /// let mut sub = Submission::new();
     /// sub.set_fingerprint("My secret key");
@@ -199,7 +199,7 @@ impl Submission {
             self.penalty(self.grade, "Past final deadline");
             return;
         }
-        
+
         if rubric.past_due() {
             // Submission is late, mark it as such
             self.late = true;
@@ -423,7 +423,7 @@ mod tests {
 
     #[test]
     fn test_test_data_gets_sorted() {
-        let data = data! { 
+        let data = data! {
             "a" => "something",
             "b" => "else"
         };
@@ -437,7 +437,7 @@ mod tests {
         let mut sub = Submission::new();
         assert_eq!(sub.timestamp_format, default_timestamp_format());
         assert!(format!("{}", sub.time.format(&sub.timestamp_format)).len() > 0);
-        
+
         sub.set_timestamp_format("some other format");
         assert_eq!(sub.timestamp_format, "some other format");
     }

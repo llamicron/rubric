@@ -1,7 +1,12 @@
 // std uses
 use std::path::{PathBuf, Path};
 use std::fs::{File, canonicalize, OpenOptions, metadata};
-use std::io::{self, Write};
+use std::io::Write;
+
+// External uses
+// For error handling
+use crate::{Result, Error};
+use anyhow::Context;
 
 
 /// Trait to convert a struct to csv (comma separated values).
@@ -80,26 +85,35 @@ impl ResultsFile {
     /// # use std::fs::remove_file;
     /// # remove_file("my_results_file.csv").unwrap();
     /// ```
-    pub fn new<P: AsRef<Path>, S: AsRef<str>>(path: P, header: S) -> Result<ResultsFile, io::Error> {
+    pub fn new<P: AsRef<Path>, S: AsRef<str>>(path: P, header: S) -> Result<ResultsFile> {
+        let path = path.as_ref();
         // Create the file if it doesn't already exist
-        let handle = OpenOptions::new().append(true).create(true).open(&path)?;
+        let handle = OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(&path)
+            .context(
+                format!("Couldn't open ResultsFile at {}", path.display())
+            )?;
         // Get the full canonical path to the file path provided
-        let full_path = canonicalize(path)?;
+        let full_path = canonicalize(path).context(
+            format!("Couldn't canonicalize path from {}", path.display())
+        )?;
 
         let mut rf = ResultsFile {
             path: full_path,
             handle
         };
         if rf.length() == 0 {
-            if let Err(e) = rf.append(&header.as_ref()) {
-                return Err(io::Error::from(e));
-            }
+            rf.append(&header.as_ref()).context(
+                format!("Couldn't append header to ResultsFile at {}", path.display())
+            )?;
         }
         Ok(rf)
     }
 
     /// Just like `new()`, but doesn't write a header. Instead, leaves the file blank
-    pub fn new_blank<P: AsRef<Path>>(path: P) -> Result<ResultsFile, io::Error> {
+    pub fn new_blank<P: AsRef<Path>>(path: P) -> Result<ResultsFile> {
         let handle = OpenOptions::new().append(true).create(true).open(&path)?;
         let full_path = canonicalize(path)?;
         Ok(ResultsFile {
@@ -108,7 +122,7 @@ impl ResultsFile {
         })
     }
 
-    pub fn for_item<I: AsCsv>(item: &I) -> Result<ResultsFile, io::Error> {
+    pub fn for_item<I: AsCsv>(item: &I) -> Result<ResultsFile> {
         ResultsFile::new(item.filename(), item.header())
     }
 
@@ -136,8 +150,7 @@ impl ResultsFile {
 
     /// Appends the given `&str` to the file, with a trailing newline.
     ///
-    /// Returns an `io::Result` containing the size written.
-    /// `ResultsFile` must be mutable.
+    /// Returns the size written.
     ///
     /// ## Example
     /// ```rust
@@ -152,9 +165,13 @@ impl ResultsFile {
     /// # use std::fs::remove_file;
     /// # remove_file("append.csv").unwrap();
     /// ```
-    pub fn append(&mut self, record: &str) -> io::Result<usize> {
+    pub fn append(&mut self, record: &str) -> Result<usize> {
         let to_write = format!("{}\n", record);
-        self.handle.write(to_write.as_bytes())
+        // This is weird but i need to make sure it's the right type
+        match self.handle.write(to_write.as_bytes()) {
+            Ok(v) => return Ok(v),
+            Err(e) => return Err(Error::new(e)),
+        }
     }
 
     /// Writes an item to the csv file in csv format. This item must implement
@@ -185,7 +202,7 @@ impl ResultsFile {
     /// # use std::fs::remove_file;
     /// # remove_file(point.filename()).unwrap()
     /// ```
-    pub fn write_csv<R: AsCsv>(&mut self, record: &R) -> io::Result<usize> {
+    pub fn write_csv<R: AsCsv>(&mut self, record: &R) -> Result<usize> {
         self.append(&format!("{}", record.as_csv()))
     }
 }

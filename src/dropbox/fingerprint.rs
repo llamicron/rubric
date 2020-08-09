@@ -32,7 +32,7 @@ impl AsCsv for Fingerprint {
     fn as_csv(&self) -> String {
         format!("{},{}", self.secret, self.platform)
     }
-    
+
     fn filename(&self) -> String {
         format!("fingerprint.csv")
     }

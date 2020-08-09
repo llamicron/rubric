@@ -41,10 +41,11 @@ use std::fmt;
 use prettytable::{Table, row, cell};
 use ansi_term::Color;
 use chrono::{DateTime, Local};
+use anyhow::Context;
 
 // internal uses
 use crate::yaml::RubricYaml;
-use crate::error::{Result, Error};
+use crate::Result;
 
 
 
@@ -54,7 +55,7 @@ use crate::error::{Result, Error};
 /// then attempt to find a criterion for each function passed in. The criteria
 /// should have a `func` field that matches the name of the function. It will panic
 /// if it doesn't find a matching criteria.
-/// 
+///
 /// When you create a rubric from `yaml`, the criteria inside
 /// don't have tests attached to them. You can call
 /// [`Rubric.attach()`](crate::rubric::Rubric::attach) to achieve the
@@ -72,7 +73,7 @@ use crate::error::{Result, Error};
 ///     // Assuming there is a criterion with:
 ///     //     func: some_test
 ///     attach!(rubric, some_test);
-/// 
+///
 ///     // or be explicit
 ///     // This is the same thing
 ///     attach! {
@@ -153,15 +154,7 @@ impl Rubric {
     /// assert_eq!(rubric.criteria().len(), 2);
     /// ```
     pub fn from_yaml(yaml: &str) -> Result<Self> {
-        match yaml.parse::<Self>() {
-            Ok(rubric) => Ok(rubric),
-            Err(e) => {
-                match e.location() {
-                    Some(loc) => return Err(Error::bad_yaml(loc.line(), loc.column())),
-                    None => return Err(Error::bad_yaml(0, 0)),
-                }
-            }
-        }
+        yaml.parse::<Self>().context("Couldn't parse YAML into rubric")
     }
 
     /// Searches for a criterion with the given func,
@@ -296,12 +289,12 @@ impl Rubric {
 
 
 impl FromStr for Rubric {
-    type Err = serde_yaml::Error;
+    type Err = anyhow::Error;
 
-    
+
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
         // Construct RubricYaml from yaml data
-        // See yaml.rs 
+        // See yaml.rs
         let rubric_yaml = serde_yaml::from_str::<RubricYaml>(s)?;
 
         // Pull out the criteria and count the total
@@ -323,7 +316,7 @@ impl FromStr for Rubric {
         }
 
 
-        
+
         // Parse deadline, if any
         let mut deadline: Option<DateTime<Local>> = None;
         if let Some(deadline_str) = rubric_yaml.deadline {
@@ -334,7 +327,7 @@ impl FromStr for Rubric {
             // Convert from DateTime<FixedOffset> to DateTime<Local>
             deadline = Some(DateTime::from(parsed_deadline));
         }
-        
+
         // Parse final deadline, if any
         let mut final_deadline: Option<DateTime<Local>> = None;
         if let Some(final_deadline_str) = rubric_yaml.final_deadline {

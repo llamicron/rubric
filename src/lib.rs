@@ -12,34 +12,30 @@ extern crate prettytable;
 extern crate serde_yaml;
 extern crate serde_json;
 extern crate ansi_term;
-extern crate failure;
 extern crate reqwest;
 extern crate chrono;
+extern crate anyhow;
 extern crate serde;
 extern crate regex;
 
 
-
 // Private modules
-mod error;
 mod yaml;
-
-
-
 
 // Public modules
 pub mod helpers;
 pub mod dropbox;
 pub mod rubric;
 
+
 // Public Re-exports
 // These are commonly imported, so they're at the top
-// also i don't like rubric::rubric::Rubric
+// also I don't like rubric::rubric::Rubric
 pub use self::rubric::Rubric;
 pub use self::dropbox::{open, Submission, TestData};
-pub use error::{Result, Error};
 
-
+pub type Result<T> = anyhow::Result<T>;
+pub type Error = anyhow::Error;
 
 // External testing crates
 #[cfg(test)]
