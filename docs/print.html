@@ -323,7 +323,8 @@ deadline: 2020-05-21 23:59:59
 # If this is set to false, the submission will always have a 
 # grade of 0 unless manually changed. Defaults to true (allowing late submission).
 # A submission *can* still be submitted if this is false, but its grade will be 0
-# and the late flag will be true
+# and the late flag will be true.
+# If this is true, `deadline` functions exactly like `final_deadline`
 allow_late: true
 # This amount will be subtracted from the grade if the submission is late
 late_penalty: 10
@@ -333,6 +334,12 @@ late_penalty: 10
 # You probably shouldn't use both this and &quot;late_penalty&quot;, as they will 
 # both take effect if you provide both.
 late_penalty_per_day: 5
+# Same format as deadline.
+# If this is provided, absolutely no submissions will be graded
+# after this time. This is mostly used when you want to set a 
+# soft deadline (with `deadline`), then late penalties per day, 
+# then a hard deadline.
+final_deadline: 2020-05-24 23:59:59
 
 
 
