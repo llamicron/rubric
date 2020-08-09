@@ -188,6 +188,14 @@ impl Submission {
     /// Tests a submission against a list of criterion
     pub fn grade_against(&mut self, rubric: &mut Rubric) {
         // Penalties
+        if rubric.past_final_deadline() {
+            eprintln!("Final deadline ({}) has passed.", rubric.final_deadline.unwrap());
+            eprintln!("Your instructor has chosen to not allow late submission");
+            eprintln!("This submission will be recorded, but with a grade of 0");
+            self.penalty(self.grade, "Past final deadline");
+            return;
+        }
+        
         if rubric.past_due() {
             // Submission is late, mark it as such
             self.late = true;
@@ -213,7 +221,7 @@ impl Submission {
                 eprintln!("Your instructor has chosen to not allow late submission");
                 eprintln!("This submission will be recorded, but with a grade of 0");
                 // Penalize 100% of the points and return
-                self.penalty(self.grade, "Past hard deadline");
+                self.penalty(self.grade, "Past deadline");
                 return;
             }
 

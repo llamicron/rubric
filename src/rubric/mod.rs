@@ -128,6 +128,7 @@ pub struct Rubric {
     pub criteria: Vec<Criterion>,
     pub total: isize,
     pub deadline: Option<DateTime<Local>>,
+    pub final_deadline: Option<DateTime<Local>>,
     pub allow_late: bool,
     pub late_penalty: isize,
     pub daily_penalty: isize
@@ -249,6 +250,13 @@ impl Rubric {
         false
     }
 
+    pub fn past_final_deadline(&self) -> bool {
+        if let Some(final_deadline) = self.final_deadline {
+            return final_deadline.timestamp() < Local::now().timestamp();
+        }
+        false
+    }
+
     /// Prints the rubric name, then each criteria, only taking
     /// one line each. It's a shortened version of `println!("{}", rubric)`.
     pub fn print_short(&self) {
@@ -315,6 +323,8 @@ impl FromStr for Rubric {
         }
 
 
+        
+        // Parse deadline, if any
         let mut deadline: Option<DateTime<Local>> = None;
         if let Some(deadline_str) = rubric_yaml.deadline {
             // Add the local timezone to the end so they don't have to specify
@@ -323,10 +333,17 @@ impl FromStr for Rubric {
             let parsed_deadline = DateTime::parse_from_str(&added_timezone, "%F %T %z").expect("Bad time format");
             // Convert from DateTime<FixedOffset> to DateTime<Local>
             deadline = Some(DateTime::from(parsed_deadline));
-
-            if deadline.unwrap().timestamp() < Local::now().timestamp() {
-                eprintln!("Warning! Deadline is in the past!");
-            }
+        }
+        
+        // Parse final deadline, if any
+        let mut final_deadline: Option<DateTime<Local>> = None;
+        if let Some(final_deadline_str) = rubric_yaml.final_deadline {
+            // Add the local timezone to the end so they don't have to specify
+            let added_timezone = format!("{} {}", final_deadline_str, Local::now().format("%z"));
+            // Parse what they entered + timezone into a DateTime
+            let parsed_deadline = DateTime::parse_from_str(&added_timezone, "%F %T %z").expect("Bad time format");
+            // Convert from DateTime<FixedOffset> to DateTime<Local>
+            final_deadline = Some(DateTime::from(parsed_deadline));
         }
 
         // Construct a rubric
@@ -336,6 +353,7 @@ impl FromStr for Rubric {
             criteria: criteria,
             total: criteria_total,
             deadline: deadline,
+            final_deadline: final_deadline,
             allow_late: rubric_yaml.allow_late.unwrap_or(true),
             late_penalty: rubric_yaml.late_penalty.unwrap_or(0),
             daily_penalty: rubric_yaml.late_penalty_per_day.unwrap_or(0)

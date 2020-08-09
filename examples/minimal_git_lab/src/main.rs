@@ -19,11 +19,18 @@ fn main() {
         tests::repo_pushed
     );
 
+    // let mut sub = Submission::from_data(data! {
+    //     "name" => prompt!("Name: ", String),
+    //     "id" => prompt!("ID: ", String),
+    //     "gh_name" => prompt!("Github Username: ", String),
+    //     "repo" => prompt!("Repo name: ", String),
+    //     "custom_data" => "my super secret data"
+    // });
     let mut sub = Submission::from_data(data! {
-        "name" => prompt!("Name: ", String),
-        "id" => prompt!("ID: ", String),
-        "gh_name" => prompt!("Github Username: ", String),
-        "repo" => prompt!("Repo name: ", String),
+        "name" => "Luke",
+        "id" => "1001764631",
+        "gh_name" => "llamicron",
+        "repo" => "rubric",
         "custom_data" => "my super secret data"
     });
 
@@ -32,6 +39,9 @@ fn main() {
 
     sub.grade_against(&mut rubric);
     println!("{}{}/{}", rubric, sub.grade, rubric.total_points());
+
+    println!("{:#?}", sub.passed);
+    println!("{:#?}", sub.failed);
 
     let url = format!("http://localhost:8080/submit");
     if sub.submit(&url).is_ok() {
