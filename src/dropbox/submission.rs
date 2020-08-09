@@ -173,6 +173,10 @@ impl Submission {
         self.fingerprint = Some(Fingerprint::from_secret(secret));
     }
 
+    pub fn fingerprint(&self) -> &Option<Fingerprint> {
+        &self.fingerprint
+    }
+
     /// Adds to the grade, with a message why
     fn addition(&mut self, to_add: isize, message: &str) {
         self.grade += to_add;

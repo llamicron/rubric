@@ -22,6 +22,8 @@ This is a Rust crate and can be installed like any other Rust crate. In the `Car
 rubric = "0.14" # or latest version
 ```
 
+> Note: Also in `Cargo.toml` is a version number. If you distribute your grader and it has bugs, you can fix them, update the version, and redistribute. It's a good idea to update it from time to time.
+
 Now is a good time to create a `rubrics/` directory alongside your `src/` directory. You'll use that later.
 
 In your `main.rs`, delcare the rubric crate and import the items you need.
