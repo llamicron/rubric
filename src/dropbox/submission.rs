@@ -199,12 +199,24 @@ impl Submission {
 
     /// Tests a submission against a list of criterion
     pub fn grade_against(&mut self, rubric: &mut Rubric) {
+        // Penalties
         if rubric.past_due() {
             // Submission is late, mark it as such
             self.late = true;
+
             // And subtract the late penalty
             self.grade -= rubric.late_penalty;
             self.fail(format!("Late submission (-{})", rubric.late_penalty));
+            // Related, subtract the late penalty per day
+            let how_late = rubric.deadline
+                .unwrap()
+                .signed_duration_since(Local::now())
+                .num_days()
+                .abs() + 1;
+            let daily_penalty = rubric.daily_penalty * how_late as isize;
+            self.grade -= daily_penalty;
+            self.fail(format!("{} day(s) late (-{})", how_late, daily_penalty));
+
             // If they disallow late submission
             if !rubric.allow_late {
                 // Inform the student and return early without grading
@@ -214,12 +226,13 @@ impl Submission {
                 self.grade = 0;
                 return;
             }
+
+
         }
 
+        // Additions
         for crit in &mut rubric.sorted().into_iter() {
-            crit.test_with_data(&self.data);
-
-            if crit.status.unwrap() {
+            if crit.test_with_data(&self.data) {
                 self.grade += crit.worth;
                 self.pass(format!("{}: {}", crit.name, crit.success_message()));
             } else {

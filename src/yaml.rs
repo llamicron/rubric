@@ -8,6 +8,8 @@
 //! structs that mirror the structs I want to serialize. These proxy structs have
 //! a slightly different structure, which allows the YAML format I want. They are meant
 //! to be consumed and transformed into the target structs.
+//! 
+//! It is very unlikely that you actually need to use these.
 
 
 // std uses
@@ -45,7 +47,8 @@ pub struct RubricYaml {
     pub total: Option<isize>,
     pub deadline: Option<String>,
     pub allow_late: Option<bool>,
-    pub late_penalty: Option<isize>
+    pub late_penalty: Option<isize>,
+    pub late_penalty_per_day: Option<isize>
 }
 
 /// A yaml representation of [`Criterion`](crate::criterion::Criterion)

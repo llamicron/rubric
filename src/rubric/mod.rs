@@ -130,6 +130,7 @@ pub struct Rubric {
     pub deadline: Option<DateTime<Local>>,
     pub allow_late: bool,
     pub late_penalty: isize,
+    pub daily_penalty: isize
 }
 
 impl Rubric {
@@ -289,8 +290,10 @@ impl Rubric {
 impl FromStr for Rubric {
     type Err = serde_yaml::Error;
 
+    
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
         // Construct RubricYaml from yaml data
+        // See yaml.rs 
         let rubric_yaml = serde_yaml::from_str::<RubricYaml>(s)?;
 
         // Pull out the criteria and count the total
@@ -334,7 +337,8 @@ impl FromStr for Rubric {
             total: criteria_total,
             deadline: deadline,
             allow_late: rubric_yaml.allow_late.unwrap_or(true),
-            late_penalty: rubric_yaml.late_penalty.unwrap_or(0)
+            late_penalty: rubric_yaml.late_penalty.unwrap_or(0),
+            daily_penalty: rubric_yaml.late_penalty_per_day.unwrap_or(0)
         })
     }
 }

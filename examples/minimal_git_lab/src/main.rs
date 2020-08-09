@@ -31,7 +31,7 @@ fn main() {
 
 
     sub.grade_against(&mut rubric);
-    println!("{}", rubric);
+    println!("{}{}/{}", rubric, sub.grade, rubric.total_points());
 
     let url = format!("http://localhost:8080/submit");
     if sub.submit(&url).is_ok() {
