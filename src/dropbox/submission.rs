@@ -11,7 +11,7 @@ use reqwest::blocking::Response;
 // internal uses
 use crate::dropbox::results_file::AsCsv;
 use crate::rubric::Rubric;
-use crate::helpers::web::post_json;
+use crate::helpers::web;
 use crate::dropbox::fingerprint::Fingerprint;
 
 /// A type alias to `HashMap<String, String>`
@@ -173,28 +173,16 @@ impl Submission {
         self.fingerprint = Some(Fingerprint::from_secret(secret));
     }
 
-    /// Marks a criterion as passed. Provide the name of the criterion.
-    ///
-    /// This struct does not include an actual [`Criterion`](crate::criterion::Criterion)
-    /// struct in it's `passed` and `failed` fields, because it's impossible to
-    /// serialize a `Criterion`. `Submission`s must be serializable. Instead, only the
-    /// name and message of the criterion are stored on the submission
-    ///
-    /// ## Example
-    /// ```rust
-    /// # use rubric::Submission;
-    /// let mut sub = Submission::new();
-    /// sub.pass("Some criterion name");
-    ///
-    /// assert!(sub.passed.contains(&"Some criterion name".to_string()));
-    /// ```
-    pub fn pass<C: AsRef<str>>(&mut self, criterion: C) {
-        self.passed.push(criterion.as_ref().to_string());
+    /// Adds to the grade, with a message why
+    fn addition(&mut self, to_add: isize, message: &str) {
+        self.grade += to_add;
+        self.passed.push(format!("{} (+{})", message, to_add));
     }
 
-    /// Same as [`pass`](crate::submission::Submission::pass), but adds to the `failed` vector
-    pub fn fail<C: AsRef<str>>(&mut self, criterion: C) {
-        self.failed.push(criterion.as_ref().to_string());
+    /// Subtracts from the grade, with a message why
+    fn penalty(&mut self, to_penalize: isize, message: &str) {
+        self.grade -= to_penalize;
+        self.failed.push(format!("{} (-{})", message, to_penalize));
     }
 
     /// Tests a submission against a list of criterion
@@ -205,17 +193,18 @@ impl Submission {
             self.late = true;
 
             // And subtract the late penalty
-            self.grade -= rubric.late_penalty;
-            self.fail(format!("Late submission (-{})", rubric.late_penalty));
+            self.penalty(rubric.late_penalty, "Late submission");
             // Related, subtract the late penalty per day
+            // This returns the amount of whole days since the deadline + 1.
+            // One second after the deadline counts as 1 day,
+            // exactly 24 hours + 1 second after the deadline is 2 days.
             let how_late = rubric.deadline
                 .unwrap()
                 .signed_duration_since(Local::now())
                 .num_days()
                 .abs() + 1;
             let daily_penalty = rubric.daily_penalty * how_late as isize;
-            self.grade -= daily_penalty;
-            self.fail(format!("{} day(s) late (-{})", how_late, daily_penalty));
+            self.penalty(daily_penalty, &format!("{} days late", how_late));
 
             // If they disallow late submission
             if !rubric.allow_late {
@@ -223,7 +212,8 @@ impl Submission {
                 eprintln!("Deadline ({}) has passed.", rubric.deadline.unwrap());
                 eprintln!("Your instructor has chosen to not allow late submission");
                 eprintln!("This submission will be recorded, but with a grade of 0");
-                self.grade = 0;
+                // Penalize 100% of the points and return
+                self.penalty(self.grade, "Past hard deadline");
                 return;
             }
 
@@ -233,10 +223,10 @@ impl Submission {
         // Additions
         for crit in &mut rubric.sorted().into_iter() {
             if crit.test_with_data(&self.data) {
-                self.grade += crit.worth;
-                self.pass(format!("{}: {}", crit.name, crit.success_message()));
+                self.addition(crit.worth, &crit.name);
             } else {
-                self.fail(format!("{}: {}", crit.name, crit.failure_message()));
+                // Failing a criteria just means +0 points
+                self.penalty(0, &crit.name);
             }
         }
     }
@@ -244,7 +234,7 @@ impl Submission {
     /// Posts the submission to the URL in JSON format. Meant to be sent
     /// to a dropbox. Really just calls [`helpers::web::post_json`](rubric::helpers::web::post_json).
     pub fn submit(&self, url: &str) -> Result<Response, reqwest::Error> {
-        post_json(url, self)
+        web::post_json(url, self)
     }
 
     /// Overrides the default timestamp format.
@@ -368,8 +358,8 @@ mod tests {
     #[test]
     fn test_serialize_deserialize_json() {
         let mut sub = Submission::from_data(data! { "k2" => "v2", "k" => "v" });
-        sub.pass("something");
-        sub.fail("something");
+        sub.passed.push(String::from("something"));
+        sub.failed.push(String::from("something"));
 
         assert!(serde_json::to_string(&sub).unwrap().contains(r#""k2":"v2""#));
 
