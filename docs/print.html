@@ -312,7 +312,7 @@ total: 100
 
 # -- Deadline verification --
 # All of these are optional
-#
+
 # The optional submission deadline. Must be in this format
 #   YYYY-MM-DD HH:MM:SS
 # It will use the current local timezone.
@@ -346,6 +346,11 @@ final_deadline: 2020-05-24 23:59:59
 
 # -- Criteria --
 criteria:
+  # Each criteria has its name as the key.
+  # While the quotes are strictly necessary,
+  # they are good practice.
+  # I usually indent YAML with 2 spaces.
+
   &quot;First criterion&quot;:
     # The name of the corresponding function. This should be unique.
     # If not specified, the function name will be the criterion's name,
@@ -355,7 +360,8 @@ criteria:
     # Because this is unique, it is used to find criteria within a rubric.
     func: whatever_func
     # Any number (even negative). Lowest number is run first.
-    # Criteria without indices do not have consistent order
+    # Criteria without indices do not have consistent order,
+    # and may be tested concurrently.
     index: 1
     # A description
     desc: You should do this to fulfil this criterion
@@ -368,7 +374,6 @@ criteria:
     # This will prevent the criterion from being displayed
     # to the student. Useful if you want hidden requirements 
     # or are grading a test
-    # true or false
     hide: false
 
   # This criterion has all default values
