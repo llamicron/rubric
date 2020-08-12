@@ -7,21 +7,23 @@ fn first(_: &TestData) -> bool {
 }
 
 fn second(_: &TestData) -> bool {
-    true
+    false
 }
 
 fn third(_: &TestData) -> bool {
-    true
+    false
 }
 
 fn main() {
     let mut sub = Submission::new();
-    let mut yaml_data = yaml!("../main.yml").unwrap();
+    let yaml_data = yaml!("../main.yml").unwrap();
     let mut rubric = Rubric::from_yaml(yaml_data).unwrap();
 
     attach!(rubric, first, second, third);
 
     sub.grade_against(&mut rubric);
 
-    println!("{}", rubric);
+    // rubric.print_short();
+    // rubric.print_table();
+    rubric.print_long();
 }

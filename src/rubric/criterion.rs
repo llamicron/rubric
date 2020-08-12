@@ -10,12 +10,8 @@
 //! but you can if you want. Instead, you should define your criteria in `YAML` then
 //! build that into a [`Rubric`](crate::rubric::Rubric).
 
-// std uses
-use std::fmt;
-use std::fmt::Write;
-
 // external uses
-use ansi_term::Color::{Green, Red, White};
+use paris::{Logger, formatter::Formatter};
 
 // internal uses
 use crate::TestData;
@@ -122,23 +118,59 @@ impl Criterion {
     }
 
     /// Prints the essential criterion information in one line.
-    ///
-    /// Names will be padded with spaces on the left to 30 characters wide,
-    /// so that printing many criteria at once will look better.
+    /// Will do nothing if the `hide` field is true
     pub fn print_short(&self) {
+        if self.hide {
+            return;
+        }
+
+        let mut log = Logger::new();
+        
         if let Some(s) = self.status {
+            // Already tested, diff color based on status
             if s {
-                println!("{}  {}",
-                    self.name,
-                    Green.paint(self.success_message()));
+                log.same().success(&self.name).log(
+                    format!("\t<green>{}</>", self.status_message())
+                );
             } else {
-                println!("{}  {}",
-                    self.name,
-                    Red.paint(self.failure_message()));
+                log.same().error(&self.name).log(
+                    format!("\t<red>{}</>", self.status_message())
+                );
             }
         } else {
-            println!("{}  not tested", self.name);
+            // Not tested
+            log.same().warn(&self.name).log("<bold>Not Tested</>");
         }
+    }
+
+    pub fn print_long(&self) {
+        // Never print if it's hidden
+        if self.hide {
+            return;
+        }
+
+        let mut log = Logger::new();
+        // Name and status
+        if let Some(s) = self.status {
+            if s {
+                log.same().success(&self.name);
+            } else {
+                log.same().error(&self.name);
+            }
+            // Status message, color already added
+            log.same().log("  ").log(self.colored_status_message());
+        } else {
+            // Hasn't been tested
+            log.warn(format!("{}  <bold>Not Tested</>", self.name));
+        }
+
+        // Description
+        if let Some(desc) = &self.desc {
+            log.info(desc);
+        }
+        
+        // Worth
+        log.info(format!("Worth: <bold>{}</>", self.worth));
     }
 
 
@@ -156,55 +188,16 @@ impl Criterion {
     /// Same as [`status_message`](crate::rubric::criterion::Criterion::status_message), but
     /// the success message will be colored green and the failure message red.
     pub fn colored_status_message(&self) -> String {
+        let fmt = Formatter::new();
         if self.status == Some(true) {
-            format!("{}", Green.paint(self.success_message()))
+            fmt.colorize(&format!("<green>{}</>", self.success_message()))
         } else {
-            format!("{}", Red.paint(self.failure_message()))
+            fmt.colorize(&format!("<red>{}</>", self.failure_message()))
         }
     }
 
 
 }
-
-/// Displays the results of the criterion.
-/// You should test the criterion before printing it.
-impl fmt::Display for Criterion {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        if self.hide {
-            return write!(f, "");
-        }
-        let mut buffer = String::new();
-        if let Some(status) = self.status {
-            if status {
-                // Success
-                writeln!(&mut buffer, "{}", Green.bold().paint(&self.name)).unwrap();
-                if let Some(d) = &self.desc {
-                    writeln!(&mut buffer, "{}", White.paint(d)).unwrap();
-                }
-                writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
-                writeln!(&mut buffer, "Status: {}", Green.paint(self.success_message())).unwrap();
-            } else {
-                // Failure
-                writeln!(&mut buffer, "{}", Red.bold().paint(&self.name)).unwrap();
-                if let Some(d) = &self.desc {
-                    writeln!(&mut buffer, "{}", White.paint(d)).unwrap();
-                }
-                writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
-                writeln!(&mut buffer, "Status: {}", Red.paint(self.failure_message())).unwrap();
-            }
-        } else {
-            // Neutral
-            writeln!(&mut buffer, "{}", White.bold().paint(&self.name)).unwrap();
-            if let Some(d) = &self.desc {
-                writeln!(&mut buffer, "{}", White.paint(d)).unwrap();
-            }
-            writeln!(&mut buffer, "Worth: {} pts", self.worth).unwrap();
-            writeln!(&mut buffer, "Status: not tested").unwrap();
-        }
-        write!(f, "{}", buffer)
-    }
-}
-
 
 #[cfg(test)]
 mod tests {

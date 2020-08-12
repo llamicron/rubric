@@ -28,7 +28,6 @@
 // Re exports to be available from this module
 pub mod criterion;
 pub mod criterion_builder;
-mod formatter;
 
 pub use criterion::Criterion;
 pub use criterion_builder::CriterionBuilder;
@@ -36,13 +35,13 @@ pub use criterion_builder::CriterionBuilder;
 
 // std uses
 use std::str::FromStr;
-use std::fmt;
+use std::default::Default;
 
 // external uses
 use prettytable::{Table, row, cell};
-use ansi_term::Color;
 use chrono::{DateTime, Local};
 use anyhow::Context;
+use paris::Logger;
 
 // internal uses
 use crate::yaml::RubricYaml;
@@ -134,6 +133,25 @@ pub struct Rubric {
     pub allow_late: bool,
     pub late_penalty: isize,
     pub daily_penalty: isize
+}
+
+impl Default for Rubric {
+    /// This is only used for testing and examples.
+    /// You shouldn't use this to create a new Rubric, instead
+    /// use `from_yaml()`.
+    fn default() -> Rubric {
+        Rubric {
+            name: String::new(),
+            desc: None,
+            criteria: Vec::new(),
+            total: 0,
+            deadline: None,
+            final_deadline: None,
+            allow_late: true,
+            late_penalty: 0,
+            daily_penalty: 0
+        }
+    }
 }
 
 impl Rubric {
@@ -252,14 +270,54 @@ impl Rubric {
     }
 
     /// Prints the rubric name, then each criteria, only taking
-    /// one line each. It's a shortened version of `println!("{}", rubric)`.
+    /// one line each.
     pub fn print_short(&self) {
-        println!("-- {} --", Color::White.bold().paint(&self.name));
+        let mut log = Logger::new();
+        log.info(format!("<bold>{}</>", self.name));
 
+        // The amount of hidden criteria
+        let mut hidden = 0;
+        
         for crit in &self.criteria {
             crit.print_short();
+            if crit.hide {
+                hidden += 1;
+            }
         }
-        println!("{}/{}", self.points(), self.total_points());
+
+        if hidden > 0 {
+            log.warn(format!("{} criteria hidden", hidden));
+        }
+
+        log.info(format!("Grade:\t\t<bold>{}/{}</>", self.points(), self.total_points())).newline(1);
+    }
+
+    pub fn print_long(&self) {
+        let mut log = Logger::new();
+
+        log.newline(1);
+        log.info(format!("<bold>{}</>", self.name));
+        
+        if let Some(desc) = &self.desc {
+            log.info(desc);
+        }
+        log.newline(1);
+
+        let mut hidden = 0;
+
+        for crit in &self.criteria {
+            crit.print_long();
+            if !crit.hide {
+                hidden += 1;
+                log.newline(2);
+            }
+        }
+
+        if hidden > 0 {
+            log.same().warn(hidden).log(" criteria hidden");
+        }
+
+        log.info(format!("Grade: <bold>{}/{}</>", self.points(), self.total_points())).newline(1);
     }
 
     /// Prints a table with the rubric info and all the criteria to stdout
@@ -310,9 +368,12 @@ impl FromStr for Rubric {
 
         if let Some(t) = rubric_yaml.total {
             if criteria_total != t {
-                eprint!("{}", Color::Red.paint("Warning: "));
-                eprintln!("Rubric total does not match criteria total: rubric = {}, criteria = {}",
-                    t, criteria_total);
+                let mut log = Logger::new();
+                log.error(format!(
+                    "Warning: Rubric total does not match criteria total: rubric = {}, criteria = {}",
+                    t,
+                    criteria_total
+                ));
             }
         }
 
@@ -352,19 +413,6 @@ impl FromStr for Rubric {
             late_penalty: rubric_yaml.late_penalty.unwrap_or(0),
             daily_penalty: rubric_yaml.late_penalty_per_day.unwrap_or(0)
         })
-    }
-}
-
-impl fmt::Display for Rubric {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        writeln!(f, "\n-- {} --", Color::White.bold().paint(&self.name)).unwrap();
-        if let Some(desc) = &self.desc {
-            writeln!(f, "{}\n", desc).unwrap();
-        }
-        for crit in &self.criteria {
-            writeln!(f, "{}", crit).unwrap();
-        }
-        write!(f, "")
     }
 }
 

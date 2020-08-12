@@ -62,7 +62,7 @@ fn main() {
     sub.grade_against(&mut rubric);
 
     // Print the rubric to show the student the results
-    println!("{}", rubric);
+    rubric.print_long();
 
 
     // after grading, we need to submit to the dropbox
