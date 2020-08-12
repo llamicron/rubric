@@ -17,6 +17,7 @@ extern crate chrono;
 extern crate anyhow;
 extern crate serde;
 extern crate regex;
+extern crate paris;
 
 
 // Private modules

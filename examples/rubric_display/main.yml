@@ -1,0 +1,37 @@
+name: Rubric Name
+desc: "Here's a short description of a rubric,
+and it can even have multiple line. You can write whatever
+you want right here.
+
+Here's a new paragraph."
+
+deadline: 2020-08-13 00:00:00
+allow_late: true
+late_penalty: 10
+final_deadline: 2020-08-14 00:00:00
+
+criteria:
+  "First Criteria":
+    func: first
+    index: 1
+    desc: First criteria description
+    worth: 25
+    messages: ["Passed!", "Failed!"]
+    hide: false
+
+  "Second Criteria":
+    func: second
+    index: 2
+    desc: Second criteria description
+    worth: 9
+    messages: ["good job!", "oh no!"]
+    hide: false
+  
+  "Third Criteria":
+    func: third
+    index: 3
+    desc: Third criteria description (should be hidden)
+    worth: 45
+    messages: ["doesnt matter", "whatever"]
+    hide: true
+

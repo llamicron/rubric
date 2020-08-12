@@ -28,6 +28,7 @@
 // Re exports to be available from this module
 pub mod criterion;
 pub mod criterion_builder;
+mod formatter;
 
 pub use criterion::Criterion;
 pub use criterion_builder::CriterionBuilder;
