@@ -26,6 +26,7 @@ mod yaml;
 pub mod helpers;
 pub mod dropbox;
 pub mod rubric;
+pub mod report;
 
 
 // Public Re-exports

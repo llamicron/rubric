@@ -5,7 +5,7 @@ you want right here.
 
 Here's a new paragraph."
 
-deadline: 2020-08-13 00:00:00
+deadline: 2021-08-13 00:00:00
 allow_late: true
 late_penalty: 10
 final_deadline: 2021-08-14 00:00:00
@@ -30,8 +30,15 @@ criteria:
   "Third Criteria":
     func: third
     index: 3
-    desc: Third criteria description (should be hidden)
+    desc: Third criteria description
     worth: 45
     messages: ["doesnt matter", "whatever"]
+    hide: false
+
+  "Fourth":
+    func: fourth
+    index: 4
+    desc: This one should be hidden
+    worth: 1
     hide: true
 
