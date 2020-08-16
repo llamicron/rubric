@@ -16,7 +16,6 @@
 /// hidden
 /// grade / total
 /// submission time
-/// late?
 
 /// -- Short --
 /// name
@@ -61,12 +60,32 @@ pub fn short(mut rubric: &mut Rubric, sub: &Submission) {
 }
 
 
+pub fn long(mut rubric: &mut Rubric, sub: &Submission) {
+    let mut log = Logger::new();
+
+    components::rubric_name(&rubric);
+    log.newline(1);
+
+    components::deadline(&rubric);
+    components::allow_late(&rubric);
+    components::daily_penalty(&rubric);
+    components::final_deadline(&rubric);
+    log.newline(1);
+
+    components::long_criteria(&mut rubric);
+
+    components::hidden(&rubric);
+    components::grade(&rubric, &sub);
+    components::current_time();
+}
+
 
 /// All of these functions just print a different piece of the rubric or submission.
 /// I want to add color and styles to the output, so it gets a little more complicated
 /// than you'd think. This also helps us have different levels of verbosity when printing.
 mod components {
     use paris::Logger;
+    use chrono::Local;
     use crate::{Rubric, Submission, dropbox::submission::default_timestamp_format};
 
     pub fn rubric_name(rubric: &Rubric) {
@@ -84,9 +103,42 @@ mod components {
         }
     }
 
+    pub fn final_deadline(rubric: &Rubric) {
+        let mut log = Logger::new();
+        if let Some(deadline) = rubric.final_deadline {
+            if rubric.past_due() {
+                log.error(format!("Final Deadline: <red>{}</>", deadline.format(&default_timestamp_format())));
+            } else {
+                log.success(format!("Final Deadline: {}", deadline.format(&default_timestamp_format())));
+            }
+        }
+    }
+
+    pub fn daily_penalty(rubric: &Rubric) {
+        if rubric.daily_penalty > 0 {
+            Logger::new().info(format!("Late penalty per day: {}", rubric.daily_penalty));
+        }
+    }
+
+    pub fn allow_late(rubric: &Rubric) {
+        let mut log = Logger::new();
+        if rubric.allow_late {
+            log.info(format!("Late submission allowed with {} point penalty", rubric.late_penalty));
+        } else {
+            log.info("Late submission not allowed");
+        }
+    }
+
     pub fn short_criteria(rubric: &mut Rubric) {
         for crit in rubric.sorted() {
             crit.print_short();
+        }
+    }
+
+    pub fn long_criteria(rubric: &mut Rubric) {
+        for crit in rubric.sorted() {
+            crit.print_long();
+            println!();
         }
     }
 
@@ -112,5 +164,12 @@ mod components {
         if hidden > 0 {
             log.info(format!("{} criteria hidden", hidden));
         }
+    }
+
+    pub fn current_time() {
+        let now = Local::now();
+        Logger::new().info(
+            format!("Submitted at {}", now.format(&default_timestamp_format()))
+        );
     }
 }

@@ -51,6 +51,7 @@ macro_rules! data (
 );
 
 // This is a function and not a const so serde can use it
+// TODO: #34 Move this to dropbox::mod
 pub fn default_timestamp_format() -> String {
     String::from("%F %a %T %:z")
 }

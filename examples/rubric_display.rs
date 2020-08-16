@@ -20,5 +20,5 @@ fn main() {
     // rubric.print_short();
     // rubric.print_table();
     // rubric.print_long();
-    report::short(&mut rubric, &sub);
+    report::long(&mut rubric, &sub);
 }
