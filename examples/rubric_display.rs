@@ -16,13 +16,14 @@ fn third(_: &TestData) -> bool {
 
 fn main() {
     let mut sub = Submission::new();
-    let yaml_data = yaml!("../main.yml").unwrap();
+    let yaml_data = yaml!("rubric_display.yml").unwrap();
     let mut rubric = Rubric::from_yaml(yaml_data).unwrap();
 
     attach!(rubric, first, second, third);
 
     sub.grade_against(&mut rubric);
 
+    // Different printing options, try them out
     // rubric.print_short();
     // rubric.print_table();
     rubric.print_long();

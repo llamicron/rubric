@@ -277,7 +277,7 @@ impl Rubric {
 
         // The amount of hidden criteria
         let mut hidden = 0;
-        
+
         for crit in &self.criteria {
             crit.print_short();
             if crit.hide {
@@ -297,7 +297,7 @@ impl Rubric {
 
         log.newline(1);
         log.info(format!("<bold>{}</>", self.name));
-        
+
         if let Some(desc) = &self.desc {
             log.info(desc);
         }

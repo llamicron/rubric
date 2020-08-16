@@ -1,14 +1,39 @@
 #[macro_use] extern crate rubric;
 
-mod tests;
-
 use rubric::{Rubric, Submission, dropbox};
+
+mod tests {
+    use std::process::Command;
+    use rubric::helpers::{fs, system, web};
+    use rubric::TestData;
+
+    pub fn git_init(_: &TestData) -> bool {
+        fs::file_exists(".git/")
+    }
+
+    pub fn git_installed(_: &TestData) -> bool {
+        system::Program::Git.version().is_some()
+    }
+
+    pub fn commits_present(_: &TestData) -> bool {
+        let output = Command::new("cmd")
+            .args(&["/C", "git --version"])
+            .output()
+            .expect("Failed to execute process");
+        output.stdout.len() > 0
+    }
+
+    pub fn repo_pushed(data: &TestData) -> bool {
+        let url = format!("https://github.com/{}/{}/", data["gh_name"], data["repo"]);
+        web::site_responds(&url)
+    }
+}
 
 
 fn main() {
     dropbox::open_with_arg("open_sesame", 8080);
-    
-    let yaml_data = yaml!("../rubrics/main.yml").unwrap();
+
+    let yaml_data = yaml!("minimal_git_lab.yml").unwrap();
     let mut rubric = Rubric::from_yaml(&yaml_data).unwrap();
 
     attach!(
@@ -36,12 +61,8 @@ fn main() {
 
     sub.set_fingerprint("my secret key shhh don't tell anyone");
 
-
     sub.grade_against(&mut rubric);
-    println!("{}{}/{}", rubric, sub.grade, rubric.total_points());
-
-    println!("{:#?}", sub.passed);
-    println!("{:#?}", sub.failed);
+    rubric.print_long();
 
     let url = format!("http://localhost:8080/submit");
     if sub.submit(&url).is_ok() {

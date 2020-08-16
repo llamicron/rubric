@@ -8,7 +8,7 @@ Here's a new paragraph."
 deadline: 2020-08-13 00:00:00
 allow_late: true
 late_penalty: 10
-final_deadline: 2020-08-14 00:00:00
+final_deadline: 2021-08-14 00:00:00
 
 criteria:
   "First Criteria":
@@ -26,7 +26,7 @@ criteria:
     worth: 9
     messages: ["good job!", "oh no!"]
     hide: false
-  
+
   "Third Criteria":
     func: third
     index: 3
