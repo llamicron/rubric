@@ -45,6 +45,8 @@ use paris::Logger;
 
 // internal uses
 use crate::yaml::RubricYaml;
+// For printing the timestamp later, ensures it's a consistent format
+use crate::dropbox::submission::default_timestamp_format;
 use crate::Result;
 
 
@@ -297,6 +299,19 @@ impl Rubric {
 
         log.newline(1);
         log.info(format!("<bold>{}</>", self.name));
+
+        // Print deadline, if any
+        if let Some(deadline) = self.deadline {
+            log.warn(format!("Deadline: {}", deadline.format(&default_timestamp_format())));
+            log.warn(format!("Late penalty: {}", self.late_penalty));
+            log.warn(format!("Late penalty per day: {}", self.daily_penalty));
+        }
+        // Print final deadline, if any
+        if let Some(final_deadline) = self.final_deadline {
+            log.info(format!("Final Deadline: {}", final_deadline.format(&default_timestamp_format())));
+        }
+
+        println!();
 
         if let Some(desc) = &self.desc {
             log.info(desc);

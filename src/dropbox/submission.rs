@@ -51,7 +51,7 @@ macro_rules! data (
 );
 
 // This is a function and not a const so serde can use it
-fn default_timestamp_format() -> String {
+pub fn default_timestamp_format() -> String {
     String::from("%F %a %T %:z")
 }
 
