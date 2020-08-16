@@ -26,7 +26,7 @@
 
 use paris::Logger;
 
-use crate::{Rubric, Submission};
+use crate::Rubric;
 
 
 /// Prints a very short report of the rubric and submission, with
@@ -45,7 +45,7 @@ use crate::{Rubric, Submission};
 /// ℹ 1 criteria hidden
 /// ℹ Grade: 79/80
 /// ```
-pub fn short(mut rubric: &mut Rubric, sub: &Submission) {
+pub fn short(mut rubric: &mut Rubric) {
     let mut log = Logger::new();
 
     components::rubric_name(&rubric);
@@ -56,11 +56,11 @@ pub fn short(mut rubric: &mut Rubric, sub: &Submission) {
     log.newline(1);
 
     components::hidden(&rubric);
-    components::grade(&rubric, &sub);
+    components::grade(&rubric);
 }
 
 
-pub fn long(mut rubric: &mut Rubric, sub: &Submission) {
+pub fn long(mut rubric: &mut Rubric) {
     let mut log = Logger::new();
 
     components::rubric_name(&rubric);
@@ -75,7 +75,7 @@ pub fn long(mut rubric: &mut Rubric, sub: &Submission) {
     components::long_criteria(&mut rubric);
 
     components::hidden(&rubric);
-    components::grade(&rubric, &sub);
+    components::grade(&rubric);
     components::current_time();
 }
 
@@ -142,12 +142,12 @@ mod components {
         }
     }
 
-    pub fn grade(rubric: &Rubric, sub: &Submission) {
+    pub fn grade(rubric: &Rubric) {
         let mut log = Logger::new();
-        if sub.grade >= rubric.total_points() {
-            log.success(format!("<bold>Grade: <green>{}/{}</>", sub.grade, rubric.total_points()));
+        if rubric.points() as isize >= rubric.total_points() {
+            log.success(format!("<bold>Grade: <green>{}/{}</>", rubric.points(), rubric.total_points()));
         } else {
-            log.info(format!("<bold>Grade: {}/{}</>", sub.grade, rubric.total_points()));
+            log.info(format!("<bold>Grade: {}/{}</>", rubric.points(), rubric.total_points()));
         }
     }
 

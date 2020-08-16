@@ -38,16 +38,15 @@ use std::str::FromStr;
 use std::default::Default;
 
 // external uses
-use prettytable::{Table, row, cell};
+// use prettytable::{Table, row, cell};
 use chrono::{DateTime, Local};
 use anyhow::Context;
 use paris::Logger;
 
 // internal uses
-use crate::yaml::RubricYaml;
+use crate::{Result, yaml::RubricYaml};
 // For printing the timestamp later, ensures it's a consistent format
-use crate::dropbox::submission::default_timestamp_format;
-use crate::Result;
+// use crate::dropbox::submission::default_timestamp_format;
 
 
 
@@ -271,93 +270,29 @@ impl Rubric {
         false
     }
 
-    /// Prints the rubric name, then each criteria, only taking
-    /// one line each.
-    pub fn print_short(&self) {
-        let mut log = Logger::new();
-        log.info(format!("<bold>{}</>", self.name));
+    // Prints a table with the rubric info and all the criteria to stdout
+    // pub fn print_table(&mut self) {
+    //     let mut table = Table::new();
 
-        // The amount of hidden criteria
-        let mut hidden = 0;
+    //     // Rubric name and description
+    //     table.add_row(row!["", "", b->self.name, self.desc.as_ref().unwrap_or(&String::new())]);
 
-        for crit in &self.criteria {
-            crit.print_short();
-            if crit.hide {
-                hidden += 1;
-            }
-        }
+    //     // Headers
+    //     table.add_row(row![b->"Criteria", b->"Worth", b->"Status", b->"Description"]);
 
-        if hidden > 0 {
-            log.warn(format!("{} criteria hidden", hidden));
-        }
+    //     // Add each criterion as a row
+    //     for crit in self.sorted() {
+    //         if !crit.hide {
+    //             let default_desc = String::new();
+    //             let desc = crit.desc.as_ref().unwrap_or(&default_desc);
+    //             table.add_row(row![crit.name, crit.worth, crit.colored_status_message(), desc]);
+    //         }
+    //     }
 
-        log.info(format!("Grade:\t\t<bold>{}/{}</>", self.points(), self.total_points())).newline(1);
-    }
-
-    pub fn print_long(&self) {
-        let mut log = Logger::new();
-
-        log.newline(1);
-        log.info(format!("<bold>{}</>", self.name));
-
-        // Print deadline, if any
-        if let Some(deadline) = self.deadline {
-            log.warn(format!("Deadline: {}", deadline.format(&default_timestamp_format())));
-            log.warn(format!("Late penalty: {}", self.late_penalty));
-            log.warn(format!("Late penalty per day: {}", self.daily_penalty));
-        }
-        // Print final deadline, if any
-        if let Some(final_deadline) = self.final_deadline {
-            log.info(format!("Final Deadline: {}", final_deadline.format(&default_timestamp_format())));
-        }
-
-        println!();
-
-        if let Some(desc) = &self.desc {
-            log.info(desc);
-        }
-        log.newline(1);
-
-        let mut hidden = 0;
-
-        for crit in &self.criteria {
-            crit.print_long();
-            if !crit.hide {
-                hidden += 1;
-                log.newline(2);
-            }
-        }
-
-        if hidden > 0 {
-            log.same().warn(hidden).log(" criteria hidden");
-        }
-
-        log.info(format!("Grade: <bold>{}/{}</>", self.points(), self.total_points())).newline(1);
-    }
-
-    /// Prints a table with the rubric info and all the criteria to stdout
-    pub fn print_table(&mut self) {
-        let mut table = Table::new();
-
-        // Rubric name and description
-        table.add_row(row!["", "", b->self.name, self.desc.as_ref().unwrap_or(&String::new())]);
-
-        // Headers
-        table.add_row(row![b->"Criteria", b->"Worth", b->"Status", b->"Description"]);
-
-        // Add each criterion as a row
-        for crit in self.sorted() {
-            if !crit.hide {
-                let default_desc = String::new();
-                let desc = crit.desc.as_ref().unwrap_or(&default_desc);
-                table.add_row(row![crit.name, crit.worth, crit.colored_status_message(), desc]);
-            }
-        }
-
-        // Add total to bottom of worth row
-        table.add_row(row![br->"Total", br->format!("{}/{}", self.points(), self.total_points()), "", ""]);
-        table.printstd();
-    }
+    //     // Add total to bottom of worth row
+    //     table.add_row(row![br->"Total", br->format!("{}/{}", self.points(), self.total_points()), "", ""]);
+    //     table.printstd();
+    // }
 
 }
 

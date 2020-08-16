@@ -17,8 +17,6 @@ fn main() {
     sub.grade_against(&mut rubric);
 
     // Different printing options, try them out
-    // rubric.print_short();
-    // rubric.print_table();
-    // rubric.print_long();
-    report::long(&mut rubric, &sub);
+    report::long(&mut rubric);
+    report::short(&mut rubric);
 }

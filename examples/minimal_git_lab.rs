@@ -1,6 +1,6 @@
 #[macro_use] extern crate rubric;
 
-use rubric::{Rubric, Submission, dropbox};
+use rubric::{Rubric, Submission, dropbox, report};
 
 mod tests {
     use std::process::Command;
@@ -62,7 +62,7 @@ fn main() {
     sub.set_fingerprint("my secret key shhh don't tell anyone");
 
     sub.grade_against(&mut rubric);
-    rubric.print_long();
+    report::long(&mut rubric);
 
     let url = format!("http://localhost:8080/submit");
     if sub.submit(&url).is_ok() {

@@ -8,7 +8,7 @@ mod tests;
 use tests::*;
 
 // Bring in the needed items from the rubric crate
-use rubric::{Submission, Rubric, helpers::web, dropbox};
+use rubric::{Submission, Rubric, helpers::web, dropbox, report};
 
 
 // This function will create a submission with some data
@@ -35,7 +35,7 @@ fn load_rubric() -> Rubric {
     // This will read from the filesystem and embed the contents into the
     // compiled executable. This way, you won't have to distribute the .yml file.
     let yaml = yaml!("../rubrics/main.yml").expect("Couldn't load rubric!");
-    
+
     Rubric::from_yaml(&yaml).expect("Bad yaml!")
 }
 
@@ -62,7 +62,7 @@ fn main() {
     sub.grade_against(&mut rubric);
 
     // Print the rubric to show the student the results
-    rubric.print_long();
+    report::long(&mut rubric);
 
 
     // after grading, we need to submit to the dropbox
