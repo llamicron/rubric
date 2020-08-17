@@ -5,7 +5,7 @@ use paris::Logger;
 use crate::Rubric;
 
 
-/// Prints a very short report of the rubric and submission, with
+/// Prints a very short report of the rubric, with
 /// only necessary information.
 ///
 /// ## Example
@@ -35,7 +35,7 @@ pub fn short(mut rubric: &mut Rubric) {
     components::grade(&rubric);
 }
 
-
+/// Prints the full rubric and all criteria
 pub fn long(mut rubric: &mut Rubric) {
     let mut log = Logger::new();
 
@@ -62,7 +62,7 @@ pub fn long(mut rubric: &mut Rubric) {
 mod components {
     use paris::Logger;
     use chrono::Local;
-    use crate::{Rubric, TIMESTAMP_FORMAT};
+    use crate::{Rubric, HR_TIMESTAMP_FORMAT};
 
     pub fn rubric_name(rubric: &Rubric) {
         Logger::new().info(format!("<bold>{}</>", rubric.name));
@@ -72,9 +72,9 @@ mod components {
         let mut log = Logger::new();
         if let Some(deadline) = rubric.deadline {
             if rubric.past_due() {
-                log.error(format!("Deadline: <red>{}</>", deadline.format(TIMESTAMP_FORMAT)));
+                log.error(format!("Deadline: <red>{}</>", deadline.format(HR_TIMESTAMP_FORMAT)));
             } else {
-                log.success(format!("Deadline: {}", deadline.format(TIMESTAMP_FORMAT)));
+                log.success(format!("Deadline: {}", deadline.format(HR_TIMESTAMP_FORMAT)));
             }
         }
     }
@@ -83,9 +83,9 @@ mod components {
         let mut log = Logger::new();
         if let Some(deadline) = rubric.final_deadline {
             if rubric.past_due() {
-                log.error(format!("Final Deadline: <red>{}</>", deadline.format(TIMESTAMP_FORMAT)));
+                log.error(format!("Final Deadline: <red>{}</>", deadline.format(HR_TIMESTAMP_FORMAT)));
             } else {
-                log.success(format!("Final Deadline: {}", deadline.format(TIMESTAMP_FORMAT)));
+                log.success(format!("Final Deadline: {}", deadline.format(HR_TIMESTAMP_FORMAT)));
             }
         }
     }
@@ -145,7 +145,7 @@ mod components {
     pub fn current_time() {
         let now = Local::now();
         Logger::new().info(
-            format!("Submitted at {}", now.format(TIMESTAMP_FORMAT))
+            format!("Submitted at {}", now.format(HR_TIMESTAMP_FORMAT))
         );
     }
 }

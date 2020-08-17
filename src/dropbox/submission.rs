@@ -81,7 +81,7 @@ pub struct Submission {
     /// The citeria (name) that this submission failed
     pub failed: Vec<String>,
     /// How to format the timestamp.
-    /// See https://docs.rs/chrono/0.4.13/chrono/format/strftime/index.html for more options
+    /// This uses TIMESTAMP_FORMAT from the crate root.
     #[serde(default = "default_timestamp_format")]
     timestamp_format: String,
     fingerprint: Option<Fingerprint>

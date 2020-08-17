@@ -17,6 +17,10 @@ extern crate serde;
 extern crate regex;
 extern crate paris;
 
+// External testing crates
+#[cfg(test)]
+#[macro_use] extern crate pretty_assertions;
+
 
 // Private modules
 mod yaml;
@@ -37,9 +41,10 @@ pub use self::dropbox::{open, Submission, TestData};
 pub type Result<T> = anyhow::Result<T>;
 pub type Error = anyhow::Error;
 
-// External testing crates
-#[cfg(test)]
-#[macro_use] extern crate pretty_assertions;
 
-
+// This is the full timestamp format with date, time, and timezone
+// Example: 2001-07-08 Sun 00:34:59 +09:30
 const TIMESTAMP_FORMAT: &'static str = "%F %a %T %:z";
+// This is a more human friendly timestamp
+// Example: Sunday 01:34AM 8-Jul-2001
+const HR_TIMESTAMP_FORMAT: &'static str = "%A %R%p %v";
