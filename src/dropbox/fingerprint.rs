@@ -1,4 +1,4 @@
-//! A set of data to verify a Submissions validity
+//! A set of data to verify a Submission's validity
 
 // std uses
 use std::env;
@@ -10,6 +10,11 @@ use serde::{Serialize, Deserialize};
 use crate::dropbox::AsCsv;
 
 
+/// A set of data to verify a Submission. This struct contains some system data, and
+/// some data provided by the instructor.
+/// 
+/// You shouldn't create one of these directly, instead add a fingerprint to a submission
+/// with [`Submission::set_fingerprint`](crate::dropbox::submission::Submission::set_fingerprint).
 #[derive(Debug, Serialize, Deserialize, PartialEq, PartialOrd)]
 pub struct Fingerprint {
     /// Any random string

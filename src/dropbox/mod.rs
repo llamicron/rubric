@@ -1,7 +1,10 @@
-//! A dropbox to collect submissions
+//! A dropbox to collect submissions.
 //! 
 //! This is a webserver that accepts Submissions in JSON format
 //! and writes them to a CSV file.
+//! 
+//! Note that this has no relation to [Dropbox](https://www.dropbox.com/), and doesn't 
+//! function the same at all.
 //! 
 //! You should run this on a publicly available server and be sure 
 //! the correct ports are open. You can run this on whatever port you'd like,
@@ -30,8 +33,10 @@ use rocket::config::Environment;
 use rocket_contrib::json::Json;
 
 
-struct SharedResultsFile { results_file: Mutex<ResultsFile> }
-
+/// A ResultsFile wrapped in a Mutex for thread locking.
+/// This allows concurrent acceptance of submissions without
+/// screwing up the results file.
+struct SharedResultsFile(Mutex<ResultsFile>);
 
 /// Just a test route so you can make sure the server is running
 #[get("/")]
@@ -47,7 +52,7 @@ fn accept_submission(state: State<SharedResultsFile>, submission: Json<Submissio
 
     // Lock the results file until we're done with it
     let shared_rf: &SharedResultsFile = state.inner();
-    let mut lock = shared_rf.results_file.lock().expect("Lock shared results file");
+    let mut lock = shared_rf.0.lock().expect("Lock shared results file");
 
     // Write the header based on first submission
     if lock.length() == 0 {
@@ -85,11 +90,11 @@ fn new_rocket(port: u16) -> Rocket {
     // The muted is necessary because route handling is asyncronous.
     // This allows mutliple submissions to be submitted at once. It also will
     // crash when the instructor opens the dropbox if the file is already in use.
-    let shared_results_file = SharedResultsFile {
-        results_file: Mutex::new(
+    let shared_results_file = SharedResultsFile(
+        Mutex::new(
             ResultsFile::new_blank("submissions.csv").expect("Couldn't open results file")
         )
-    };
+    );
 
     println!("Dropbox is open! accepting POST requests to /submit");
     return rocket::custom(config)
@@ -99,7 +104,7 @@ fn new_rocket(port: u16) -> Rocket {
 
 /// Opens the dropbox for submissions on the given port.
 /// 
-/// You should probably use [`open_with_arg()`](crate::dropbox::open_with_arg)
+/// You should probably use [`open_with_arg()`](crate::dropbox::open_with_arg).
 pub fn open(port: u16) -> LaunchError {
     new_rocket(port).launch()
 }
