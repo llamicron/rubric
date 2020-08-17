@@ -175,6 +175,7 @@ impl Submission {
         self.fingerprint = Some(Fingerprint::from_secret(secret));
     }
 
+    /// Returns the submissions fingerprint. It may not be set.
     pub fn fingerprint(&self) -> &Option<Fingerprint> {
         &self.fingerprint
     }

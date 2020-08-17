@@ -66,8 +66,6 @@ impl ResultsFile {
     /// **Note**: You probably shouldn't use this. Instead, try `ResultsFile::for_item` below.
     ///
     /// A file will be created at the given path, and write the given header.
-    /// The path provided is anything that can be converted from to a
-    /// [`Path`][path], so [`Path`][path], [`PathBuf`][pathbuf], or `&str` will all work.
     ///
     /// If the file already exists, it will still use that file. This will return
     /// a [`std::io::Error`][err] if the file, for one reason or another,
@@ -122,6 +120,9 @@ impl ResultsFile {
         })
     }
 
+    /// Creates a new results file meant for an item that implements AsCsv.
+    /// AsCsv specifies the item provide a filename and header, which will be written
+    /// when the file is created.
     pub fn for_item<I: AsCsv>(item: &I) -> Result<ResultsFile> {
         ResultsFile::new(item.filename(), item.header())
     }
