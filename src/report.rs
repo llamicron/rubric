@@ -1,29 +1,5 @@
 /// This module is responsible for printing the rubric
 /// and submission after grading
-
-
-/// -- Long --
-/// name
-/// desc
-/// deadline
-/// allow_late
-/// late_penaly
-/// daily_penalty
-/// final_deadline
-///
-/// criteria
-///
-/// hidden
-/// grade / total
-/// submission time
-
-/// -- Short --
-/// name
-/// deadline (red if late, green otherwise)
-/// criteria (green for passed, red otherwise)
-/// hidden
-/// grade (green if full)
-
 use paris::Logger;
 
 use crate::Rubric;
@@ -86,7 +62,7 @@ pub fn long(mut rubric: &mut Rubric) {
 mod components {
     use paris::Logger;
     use chrono::Local;
-    use crate::{Rubric, Submission, dropbox::submission::default_timestamp_format};
+    use crate::{Rubric, TIMESTAMP_FORMAT};
 
     pub fn rubric_name(rubric: &Rubric) {
         Logger::new().info(format!("<bold>{}</>", rubric.name));
@@ -96,9 +72,9 @@ mod components {
         let mut log = Logger::new();
         if let Some(deadline) = rubric.deadline {
             if rubric.past_due() {
-                log.error(format!("Deadline: <red>{}</>", deadline.format(&default_timestamp_format())));
+                log.error(format!("Deadline: <red>{}</>", deadline.format(TIMESTAMP_FORMAT)));
             } else {
-                log.success(format!("Deadline: {}", deadline.format(&default_timestamp_format())));
+                log.success(format!("Deadline: {}", deadline.format(TIMESTAMP_FORMAT)));
             }
         }
     }
@@ -107,9 +83,9 @@ mod components {
         let mut log = Logger::new();
         if let Some(deadline) = rubric.final_deadline {
             if rubric.past_due() {
-                log.error(format!("Final Deadline: <red>{}</>", deadline.format(&default_timestamp_format())));
+                log.error(format!("Final Deadline: <red>{}</>", deadline.format(TIMESTAMP_FORMAT)));
             } else {
-                log.success(format!("Final Deadline: {}", deadline.format(&default_timestamp_format())));
+                log.success(format!("Final Deadline: {}", deadline.format(TIMESTAMP_FORMAT)));
             }
         }
     }
@@ -169,7 +145,7 @@ mod components {
     pub fn current_time() {
         let now = Local::now();
         Logger::new().info(
-            format!("Submitted at {}", now.format(&default_timestamp_format()))
+            format!("Submitted at {}", now.format(TIMESTAMP_FORMAT))
         );
     }
 }

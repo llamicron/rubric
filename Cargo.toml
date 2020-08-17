@@ -24,7 +24,6 @@ chrono = { version = "0.4.11", features = [ "serde" ] }
 serde_yaml = "0.8.12"
 regex = "1"
 failure = "0.1.8"
-prettytable-rs = "0.8.0"
 
 [dev-dependencies]
 tempdir = "0.3"

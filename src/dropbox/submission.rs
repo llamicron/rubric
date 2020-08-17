@@ -13,6 +13,7 @@ use crate::dropbox::results_file::AsCsv;
 use crate::rubric::Rubric;
 use crate::helpers::web;
 use crate::dropbox::fingerprint::Fingerprint;
+use crate::TIMESTAMP_FORMAT;
 
 /// A type alias to `HashMap<String, String>`
 ///
@@ -50,10 +51,10 @@ macro_rules! data (
      };
 );
 
-// This is a function and not a const so serde can use it
+// This is only a function so serde can use it
 // TODO: #34 Move this to dropbox::mod
-pub fn default_timestamp_format() -> String {
-    String::from("%F %a %T %:z")
+fn default_timestamp_format() -> String {
+    String::from(TIMESTAMP_FORMAT)
 }
 
 
@@ -436,7 +437,7 @@ mod tests {
     #[test]
     fn test_custom_timestamp_format() {
         let mut sub = Submission::new();
-        assert_eq!(sub.timestamp_format, default_timestamp_format());
+        assert_eq!(sub.timestamp_format, TIMESTAMP_FORMAT);
         assert!(format!("{}", sub.time.format(&sub.timestamp_format)).len() > 0);
 
         sub.set_timestamp_format("some other format");

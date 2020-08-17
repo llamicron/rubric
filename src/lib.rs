@@ -8,7 +8,6 @@
 #![feature(proc_macro_hygiene, decl_macro, stmt_expr_attributes)]
 #[macro_use] extern crate rocket;
 extern crate rocket_contrib;
-extern crate prettytable;
 extern crate serde_yaml;
 extern crate serde_json;
 extern crate reqwest;
@@ -41,3 +40,6 @@ pub type Error = anyhow::Error;
 // External testing crates
 #[cfg(test)]
 #[macro_use] extern crate pretty_assertions;
+
+
+const TIMESTAMP_FORMAT: &'static str = "%F %a %T %:z";

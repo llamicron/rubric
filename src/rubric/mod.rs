@@ -38,15 +38,12 @@ use std::str::FromStr;
 use std::default::Default;
 
 // external uses
-// use prettytable::{Table, row, cell};
 use chrono::{DateTime, Local};
 use anyhow::Context;
 use paris::Logger;
 
 // internal uses
 use crate::{Result, yaml::RubricYaml};
-// For printing the timestamp later, ensures it's a consistent format
-// use crate::dropbox::submission::default_timestamp_format;
 
 
 
@@ -269,30 +266,6 @@ impl Rubric {
         }
         false
     }
-
-    // Prints a table with the rubric info and all the criteria to stdout
-    // pub fn print_table(&mut self) {
-    //     let mut table = Table::new();
-
-    //     // Rubric name and description
-    //     table.add_row(row!["", "", b->self.name, self.desc.as_ref().unwrap_or(&String::new())]);
-
-    //     // Headers
-    //     table.add_row(row![b->"Criteria", b->"Worth", b->"Status", b->"Description"]);
-
-    //     // Add each criterion as a row
-    //     for crit in self.sorted() {
-    //         if !crit.hide {
-    //             let default_desc = String::new();
-    //             let desc = crit.desc.as_ref().unwrap_or(&default_desc);
-    //             table.add_row(row![crit.name, crit.worth, crit.colored_status_message(), desc]);
-    //         }
-    //     }
-
-    //     // Add total to bottom of worth row
-    //     table.add_row(row![br->"Total", br->format!("{}/{}", self.points(), self.total_points()), "", ""]);
-    //     table.printstd();
-    // }
 
 }
 
