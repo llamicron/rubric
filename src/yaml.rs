@@ -21,19 +21,6 @@ use serde::Deserialize;
 // internal uses
 use crate::rubric::Criterion;
 
-/// This is an important macro. It reads data from a file using
-/// the include_bytes! macro. When compiling for debug, this will read
-/// from the filesystem. When compiling for release, this will embed the data
-/// in the executable. Graders built using this crate need to have the data embedded
-/// in the executable to make it easier to distribute and to keep the data private.
-///
-/// Returns `Result<&str, Utf8Error>`.
-#[macro_export]
-macro_rules! yaml {
-    ( $file:expr ) => {
-        ::std::str::from_utf8(include_bytes!($file))
-    };
-}
 
 /// A yaml representation of a [`Rubric`](crate::rubric::Rubric).
 ///

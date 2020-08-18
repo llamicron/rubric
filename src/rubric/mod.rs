@@ -47,67 +47,6 @@ use crate::{Result, yaml::RubricYaml};
 
 
 
-/// Attaches tests to criteria in a rubric.
-///
-/// This will accept a rubric and one or more function names. It will
-/// then attempt to find a criterion for each function passed in. The criteria
-/// should have a `func` field that matches the name of the function. It will panic
-/// if it doesn't find a matching criteria.
-///
-/// When you create a rubric from `yaml`, the criteria inside
-/// don't have tests attached to them. You can call
-/// [`Rubric.attach()`](crate::rubric::Rubric::attach) to achieve the
-/// same thing, but this is faster and easier.
-///
-/// ## Example
-/// ```no_compile
-/// // A test meant to be attached to a criteria
-/// fn some_test(_: &TestData) -> bool {
-///     true
-/// }
-///
-/// fn main() {
-///     let mut rubric = Rubric::from_yaml(/* some yaml data */);
-///     // Assuming there is a criterion with:
-///     //     func: some_test
-///     attach!(rubric, some_test);
-///
-///     // or be explicit
-///     // This is the same thing
-///     attach! {
-///         rubric,
-///         "non_matching_func_key" => some_test
-///     }
-/// }
-/// ```
-#[macro_export]
-macro_rules! attach {
-    // Short way
-    ($rubric:ident, $($func:path),*) => {
-        $(
-            let chunks: Vec<&str> = std::stringify!($func).split("::").collect();
-            let func_name = chunks.into_iter().next_back().unwrap();
-            if let Some(c) = $rubric.get(func_name) {
-                c.attach(Box::new($func));
-            } else {
-                panic!("Criteria with func `{}` not found. `func` field and function name must match exactly", func_name);
-            }
-        )+
-    };
-    // Long way
-    ( $rubric:ident, $($func_name:literal => $func:path),* ) => {
-        $(
-            if let Some(c) = $rubric.get($func_name) {
-                c.attach(Box::new($func));
-            } else {
-                panic!("Criterion with func {} not found, can't attach function", $func_name);
-            }
-        )+
-    };
-}
-
-
-
 /// A collection of criteria, meant to be serialized from `yaml`.
 ///
 /// ## Example
@@ -343,7 +282,7 @@ impl FromStr for Rubric {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{yaml, TestData};
+    use crate::{yaml, attach, TestData};
 
     fn yaml_data() -> &'static str {
         yaml!("../../test_data/test_rubric.yml").unwrap()
@@ -369,7 +308,6 @@ mod tests {
         };
 
         assert!(rubric.get("first_crit").unwrap().test());
-
     }
 
     #[test]

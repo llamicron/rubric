@@ -30,6 +30,7 @@ pub mod helpers;
 pub mod dropbox;
 pub mod rubric;
 pub mod report;
+mod macros;
 
 
 // Public Re-exports

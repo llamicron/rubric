@@ -22,35 +22,6 @@ use crate::TIMESTAMP_FORMAT;
 pub type TestData = HashMap<String, String>;
 
 
-/// A macro to easily create a [`TestData`](crate::submission::TestData)
-/// struct, which is really just an alias to `HashMap<String, String>`.
-///
-/// ## Example
-/// ```rust
-/// # extern crate rubric;
-/// use rubric::{TestData, data};
-///
-/// // The long way
-/// let mut map = TestData::new();
-/// map.insert(String::from("key"), String::from("value"));
-///
-/// // the macro way
-/// let data = data! { "key" => "value" };
-/// assert_eq!(map, data);
-/// ```
-#[macro_export]
-macro_rules! data (
-    { $($key:expr => $value:expr),+ } => {
-        {
-            let mut m = ::std::collections::HashMap::new();
-            $(
-                m.insert(String::from($key), String::from($value));
-            )+
-            m
-        }
-     };
-);
-
 // This is only a function so serde can use it
 // TODO: #34 Move this to dropbox::mod
 fn default_timestamp_format() -> String {
