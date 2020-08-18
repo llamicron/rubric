@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded affix "><a href="setup.html" class="active">Setup</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li><li class="chapter-item expanded "><a href="submission/fingerprint.html"><strong aria-hidden="true">2.2.</strong> Fingerprinting and Security</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded affix "><a href="setup.html" class="active">Setup</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li><li class="chapter-item expanded "><a href="submission/fingerprint.html"><strong aria-hidden="true">2.2.</strong> Fingerprinting and Security</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox/home.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="dropbox/error_handling.html"><strong aria-hidden="true">3.1.</strong> Error Handling</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -170,6 +170,9 @@
 [dependencies]
 rubric = &quot;0.14&quot; # or latest version
 </code></pre>
+<blockquote>
+<p>Note: Also in <code>Cargo.toml</code> is a version number. If you distribute your grader and it has bugs, you can fix them, update the version, and redistribute. It's a good idea to update it from time to time.</p>
+</blockquote>
 <p>Now is a good time to create a <code>rubrics/</code> directory alongside your <code>src/</code> directory. You'll use that later.</p>
 <p>In your <code>main.rs</code>, delcare the rubric crate and import the items you need.</p>
 <pre><code class="language-rust noplaypen">#[macro_use] extern crate rubric;

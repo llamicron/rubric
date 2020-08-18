@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Overview - Rubric</title>
+        <title>Error Handling - Rubric</title>
         
         
 
@@ -17,23 +17,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
         
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
         
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         
@@ -43,7 +43,7 @@
     <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
-            var path_to_root = "";
+            var path_to_root = "../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="overview.html">Overview</a></li><li class="chapter-item expanded affix "><a href="setup.html">Setup</a></li><li class="chapter-item expanded "><a href="rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li><li class="chapter-item expanded "><a href="submission/fingerprint.html"><strong aria-hidden="true">2.2.</strong> Fingerprinting and Security</a></li></ol></li><li class="chapter-item expanded "><a href="dropbox/home.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="dropbox/error_handling.html"><strong aria-hidden="true">3.1.</strong> Error Handling</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../overview.html">Overview</a></li><li class="chapter-item expanded affix "><a href="../setup.html">Setup</a></li><li class="chapter-item expanded "><a href="../rubric/home.html"><strong aria-hidden="true">1.</strong> Rubrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../rubric/spec.html"><strong aria-hidden="true">1.1.</strong> Rubric Specification</a></li><li class="chapter-item expanded "><a href="../rubric/tests.html"><strong aria-hidden="true">1.2.</strong> Criteria Tests</a></li></ol></li><li class="chapter-item expanded "><a href="../submission/home.html"><strong aria-hidden="true">2.</strong> Submission</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../submission/prompt.html"><strong aria-hidden="true">2.1.</strong> Prompting for Data</a></li><li class="chapter-item expanded "><a href="../submission/fingerprint.html"><strong aria-hidden="true">2.2.</strong> Fingerprinting and Security</a></li></ol></li><li class="chapter-item expanded "><a href="../dropbox/home.html"><strong aria-hidden="true">3.</strong> Dropbox</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dropbox/error_handling.html" class="active"><strong aria-hidden="true">3.1.</strong> Error Handling</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -124,7 +124,7 @@
                     <h1 class="menu-title">Rubric</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         
@@ -155,31 +155,38 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#overview" id="overview">Overview</a></h1>
-<p>This framework provides tools for instructors to write student-run grading applications, called &quot;graders&quot;. Graders are written by instructors and distributed to students. When run by the students, the grader will assess their work and send a report to the dropbox, which is maintained by the instructor.</p>
-<p>There are 3 significant parts to a grading application</p>
-<ol>
-<li>A <strong>rubric</strong> - a list of specific criteria that each student must fulfil</li>
-<li><strong>Submissions</strong> - An evaluation of a specific student's work and progress through a rubric</li>
-<li>A <strong>dropbox</strong> - a collection box for submissions</li>
-</ol>
-<h2><a class="header" href="#rubrics" id="rubrics">Rubrics</a></h2>
-<p>Rubrics are exactly what you would expect; a list of criteria that describe an assignment or test. Each criteria has a point value, and the students grade is determined by the criteria they fulfil.</p>
-<h2><a class="header" href="#submissions" id="submissions">Submissions</a></h2>
-<p>A submission is a bundle of data that tracks how well the student performed, according to the rubric. Rubrics and submissions are useless without each other. Submissions are meant to be <em>submitted</em> (who knew?) to the instructor. </p>
-<h2><a class="header" href="#the-dropbox" id="the-dropbox">The Dropbox</a></h2>
-<p>The dropbox is simply a web server maintained by the instructor that recieves submissions and records them. The submissions are recorded as CSV, which is supported by Microsoft Excel. Sorting and manipulation can be performed in Excel after all the submissions are in.</p>
+                        <h1><a class="header" href="#error-handling" id="error-handling">Error Handling</a></h1>
+<p>When sending a submission to the dropbox, it's very important to provide feedback to the student. They should know if the submission went through successfully.</p>
+<p>Submitting with the <code>Submission::submit()</code> function returns a <code>Result</code> that you can use to handle any possible errors. The <code>Err</code> variant of the <code>Result</code> is a <a href="https://docs.rs/reqwest/0.10.7/reqwest/struct.Error.html"><code>reqwest::Error</code></a>.</p>
+<pre><pre class="playground"><code class="language-rust">// some code omitted
+fn main() {
+    // Open the dropbox somewhere else
+    dropbox::open_with_arg(&quot;open_sesame&quot;, 8080);
+
+    let mut sub = Submission::new();
+    
+    // Grading, etc goes here...
+
+    // using `match` gives us basic error handling.
+    // here, we're just printing the error. This can give more insight
+    // as to what went wrong.
+    match sub.submit(&quot;http://localhost:8080/submit&quot;) {
+        Ok(_) =&gt; println!(&quot;Submission recorded!&quot;),
+        Err(e) =&gt; println!(&quot;Error! Couldn't record submission.\n{}&quot;, e);
+    }
+}
+</code></pre></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-
-                        
-                            <a rel="next" href="setup.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
+                            <a rel="prev" href="../dropbox/home.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
                             </a>
+                        
+
                         
 
                         <div style="clear: both"></div>
@@ -189,11 +196,11 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-
-                
-                    <a rel="next" href="setup.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
+                    <a rel="prev" href="../dropbox/home.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
                     </a>
+                
+
                 
             </nav>
 
@@ -214,14 +221,14 @@
         
 
         
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
         
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
         

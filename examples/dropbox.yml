@@ -1,0 +1,7 @@
+# This example uses the dropbox, the rubric doesn't matter
+name: Dropbox example
+
+criteria:
+  "Only criteria":
+    worth: 10
+    func: only
