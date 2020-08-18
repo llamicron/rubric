@@ -23,7 +23,6 @@ rocket_contrib = { version = "0.4.5", features = [ "json" ] }
 chrono = { version = "0.4.11", features = [ "serde" ] }
 serde_yaml = "0.8.12"
 regex = "1"
-failure = "0.1.8"
 
 [dev-dependencies]
 tempdir = "0.3"
