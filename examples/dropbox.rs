@@ -25,9 +25,7 @@ fn main() {
     sub.grade_against(&mut rubric);
 
     match sub.submit("http://localhost:8080/submit") {
-        Ok(v) => println!("{:#?}", v),
-        Err(e) => {
-            println!("{}", e);
-        }
+        Ok(_) => println!("Submitted successfully!"),
+        Err(e) => println!("Error, couldn't submit. {}", e),
     }
 }
